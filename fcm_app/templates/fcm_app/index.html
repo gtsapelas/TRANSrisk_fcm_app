@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+{#    <link href="{% static 'fcm_app/css/css_name.css' %}" rel="stylesheet" />#}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <h1>Hello World!</h1>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'fcm_app/js/js_name.js' %}"></script>
+{% endblock %}
