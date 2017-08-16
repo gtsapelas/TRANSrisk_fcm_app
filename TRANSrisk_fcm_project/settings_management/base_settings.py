@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     #apps
     'fcm_app',
+    'authentication_app',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -119,3 +120,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = 'staticfiles'
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/fcm/'

@@ -1,5 +1,5 @@
 # django
-Django==1.9
+Django==1.11
 
 # deployment
 dj-config-url==0.1.1

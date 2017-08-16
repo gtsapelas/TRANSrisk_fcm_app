@@ -20,6 +20,10 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-	# appTemplate
+	# FCM app
     url(r'^fcm/', include('fcm_app.urls')),
+
+    # Authentication app
+    url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('authentication_app.urls')),
 ]

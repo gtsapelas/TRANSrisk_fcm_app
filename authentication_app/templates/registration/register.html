@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+{#    <link href="{% static 'fcm_app/css/css_name.css' %}" rel="stylesheet" />#}
+{% endblock %}
+
+{% block content %}
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        {{userform}}
+        {{userprofileform}}
+        <input type="submit">
+    </form>
+
+{% endblock %}

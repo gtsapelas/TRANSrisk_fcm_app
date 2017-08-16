@@ -638,8 +638,9 @@ h2.title {
 .main-panel {
   position: relative;
   z-index: 2;
+  float: right;
   overflow: auto;
-  width: 90%;
+  width: 100%;
   min-height: 100%;
   -webkit-transform: translate3d(0px, 0, 0);
   -moz-transform: translate3d(0px, 0, 0);
@@ -653,9 +654,9 @@ h2.title {
   transition: all 0.33s cubic-bezier(0.685, 0.0473, 0.346, 1);
 }
 .main-panel > .content {
-  margin-top: 70px;
-  padding: 30px 15px;
-  min-height: 90%;
+  margin-top: 140px;
+  padding: 15px 30px;
+  min-height: calc(100% - 193px);
 }
 .main-panel > .footer {
   border-top: 1px solid #e7e7e7;
@@ -878,6 +879,11 @@ h2.title {
 .navbar .navbar-nav > li > a.btn.btn-info {
   box-shadow: 0 2px 2px 0 rgba(0, 188, 212, 0.14), 0 3px 1px -2px rgba(0, 188, 212, 0.2), 0 1px 5px 0 rgba(0, 188, 212, 0.12);
 }
+
+
+.nav>li:hover {background-color: #edf1e7;}
+
+
 .btn.btn-info, .btn.btn-info:hover, .btn.btn-info:focus, .btn.btn-info:active, .btn.btn-info.active, .btn.btn-info:active:focus, .btn.btn-info:active:hover, .btn.btn-info.active:focus, .btn.btn-info.active:hover, .open > .btn.btn-info.dropdown-toggle, .open > .btn.btn-info.dropdown-toggle:focus, .open > .btn.btn-info.dropdown-toggle:hover,
 .navbar .navbar-nav > li > a.btn.btn-info,
 .navbar .navbar-nav > li > a.btn.btn-info:hover,
@@ -1756,7 +1762,7 @@ output {
   background-image: linear-gradient(#9c27b0, #9c27b0), linear-gradient(#D2D2D2, #D2D2D2);
   background-size: 0 2px, 100% 1px;
   background-repeat: no-repeat;
-  background-position: center bottom, center 90%;
+  background-position: center bottom, center calc(100% - 1px);
   background-color: transparent;
   transition: background 0s ease-out;
   float: none;
@@ -2872,7 +2878,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   border: 0;
   border-radius: 3px;
   border-bottom: 1px solid #ededf3;
-  padding: 10px 0;
+  padding: 0;
 }
 .navbar .navbar-brand {
   position: relative;
@@ -2912,8 +2918,8 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   padding-top: 15px;
   padding-bottom: 15px;
   font-weight: 400;
-  font-size: 12px;
-  text-transform: uppercase;
+  font-size: 13pt;
+  /* text-transform: uppercase; */
   border-radius: 3px;
 }
 .navbar .navbar-nav > li > a:hover, .navbar .navbar-nav > li > a:focus {
@@ -3310,7 +3316,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
   background-color: #3f51b5;
 }
 .navbar.navbar-transparent {
-  background-color: transparent;
+  background-color: white;
   box-shadow: none;
   border-bottom: 0;
 }
@@ -3358,8 +3364,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .navbar-absolute {
   position: absolute;
   width: 100%;
-  padding-top: 10px;
-  z-index: 1029;
+  :
 }
 
 .popover, .tooltip-inner {
@@ -3428,7 +3433,8 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 footer {
-  padding: 15px 0;
+  padding: 0;
+  background-color: white;
 }
 footer ul {
   margin-bottom: 0;
@@ -4632,6 +4638,10 @@ footer .btn {
   .navbar-nav.navbar-right > li > .dropdown-menu:after {
     left: auto;
     right: 12px;
+  }
+
+  .navbar-right{
+    margin-right: 30px;
   }
 
   .footer:not(.footer-big) nav > ul li:first-child {
