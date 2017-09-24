@@ -1,0 +1,23 @@
+.fcm-import-card .card-header{
+    height: 60px;
+    line-height: 60px;
+    vertical-align: middle;
+    font-size: 15pt;
+    padding: 1% 2%;
+    margin: -30px;
+}
+
+.fcm-import-card .card-content{
+    height: 100%;
+}
+
+.fcm-import-card .card{
+    padding: 2% 10%;
+    height: 100%;
+}
+
+.fcm-import-card .form-group textarea{
+    border-style: solid;
+    border-width: 1px 1px 0px 1px;
+    border-color: lightgrey;
+}

@@ -1,0 +1,37 @@
+.panel-body {
+    padding: 0px 15px;
+}
+
+.panel-body h1{
+    padding: 0;
+    margin: 0;
+    /* line-height: 45px; */
+    font-size: 200%;
+}
+
+.panel-body #creation{
+    padding: 0;
+    margin: 0;
+    font-size: 75%;
+    font-style: italic;
+}
+
+.panel-body .btn{
+    padding: 1%;
+    margin: 1% 0%;
+    text-transform: none;
+    font-size: 75%;
+    background-color: #60b15f;
+    /*box-shadow: 0 2px 2px 0 rgb(97, 180, 96), 0 3px 1px -2px rgb(96, 177, 95), 0 1px 5px 0 rgb(96, 177, 95);*/
+    box-shadow: none;
+}
+
+.panel-body .btn:hover, .panel-body .btn:focus, .panel-body .btn:active{
+    background-color: #1A6617;
+    /*box-shadow: 0 2px 2px 0 rgb(26, 102, 23), 0 3px 1px -2px rgb(26, 102, 23), 0 1px 5px 0 rgb(26, 102, 23);*/
+    box-shadow: none;
+}
+
+.panel-body #demo{
+    font-size: 85%;
+}

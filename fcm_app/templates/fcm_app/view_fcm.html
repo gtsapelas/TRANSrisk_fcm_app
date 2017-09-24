@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/view_fcm.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+        <div class="panel-body">
+            <h1>{{ fcm.title}}</h1>
+            <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
+            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Description</button>
+            <div id="demo" class="collapse">
+                {{ fcm.description }}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+        <div class="panel-body" style="margin: 0; padding: 0">
+            {% autoescape off %}
+                {{ map_body }}
+            {% endautoescape %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    {% autoescape off %}
+        {{ script }}
+    {% endautoescape %}
+
+{% endblock %}

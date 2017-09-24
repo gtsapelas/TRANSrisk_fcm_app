@@ -1,5 +1,14 @@
 # django
 Django==1.11
 
+# authentication
+django-allauth
+
 # deployment
 dj-config-url==0.1.1
+
+#upload images
+pillow==4.2.1
+
+# utils
+bs4

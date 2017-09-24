@@ -1,0 +1,38 @@
+.card-container{
+    height: 310px;
+    overflow: hidden;
+    margin-bottom: 0px;
+}
+
+
+.card-container .card-header{
+    height: 50px;
+    line-height: 50px;
+    overflow: hidden;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12pt;
+    padding: 0% 2%;
+}
+
+.card-container .card-content{
+    height: 220px;
+    padding: 2% 10%;
+    overflow: hidden;
+}
+
+.card-container .card-content img{
+    /* height: 90%; */
+    vertical-align: middle;
+}
+
+.card-container .card-footer{
+    background-color: rgba(228, 228, 228, 0.77);
+    font-size: 7pt;
+    font-style: italic;
+    height: 20px;
+    margin: 0;
+    padding: 1%;
+    line-height: 10px;
+}
