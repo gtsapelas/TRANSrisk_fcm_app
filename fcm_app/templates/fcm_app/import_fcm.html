@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="col-sm-12 alert alert-success">
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            </div>
+        {% endfor %}
+
+    {% endif %}
+
+    <div class="col-sm-offset-2 col-sm-8 fcm-import-card">
+        <div class="card">
+            <form class="form-horizontal" action="{% url 'fcm_app:import_map' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card-header card-header-text" data-background-color="rose">
+                    <h4 class="card-title">Import a new FCM</h4>
+                </div>
+                <div class="card-content">
+                    {% for field in form %}
+                        <div class="row">
+                            <div class="col-sm-offset-1 col-sm-10">
+                                {% if field.label != 'Image' and field.label != 'HTML' %}
+                                    <div class="form-group is-empty">
+                                         <label>{{ field.label }}</label>
+                                        {{ field }}
+                                    </div>
+                                {% else %}
+                                    <div class="form-file-group is-empty">
+                                        <label>{{ field.label }}</label>
+                                        {{ field }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                         </div>
+                    {% endfor %}
+                </div>
+                 <div class="row">
+                     <div class="col-sm-offset-1 col-sm-8">
+                            <button type="submit" class="btn btn-success btn-rose">Submit<div class="ripple-container"></div></button>
+                     </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/fcm_browse.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div>
+
+        <h1>Fuzzy Cognitive Maps</h1>
+        <div class="col-sm-3 col-sm-offset-1" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
+            <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
+                <div class="form-group is-empty" style="display: inline-block">
+                    <label>Title:</label>
+                    <input class="searchbox-input form-control" type="text">
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-7">
+            {% for fcm in all_fcms %}
+                <div class="col-sm-6 card-container">
+                    <a href="{% url 'fcm_app:view_fcm' fcm.id %}" class="card">
+                        <div class="card-header text-center" title="{{ fcm.title }}">
+                           {{ fcm.title }}
+                        </div>
+                        <div class="card-content text-center">
+                            <img src="{{ fcm.map_image.url }}" alt="{{ fcm.description }}" class="img-responsive">
+                        </div>
+                        <div class="card-footer text-center"> Created at {{ fcm.creation_date|date:"d M Y" }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-9 text-center">
+            {% if all_fcms.has_other_pages %}
+              <ul class="pagination">
+                {% if all_fcms.has_previous %}
+                  <li><a href="?page={{ all_fcms.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&laquo;</span></li>
+                {% endif %}
+                {% for i in all_fcms.paginator.page_range %}
+                  {% if all_fcms.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if all_fcms.has_next %}
+                  <li><a href="?page={{ all_fcms.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="disabled"><span>&raquo;</span></li>
+                {% endif %}
+              </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+
+
