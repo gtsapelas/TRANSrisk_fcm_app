@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^import_map$', views.import_fcm, name='import_map'),
     url(r'^browse$', views.browse, name='browse'),
     url(r'^view-fcm/(?P<fcm_id>[\d-]+)/$', views.view_fcm, name='view_fcm'),
+    url(r'^view-fcm-concept/(?P<fcm_id>[\d-]+)/$', views.view_fcm_concept, name='view_fcm_concept'),
+    url(r'^view-fcm-concept-info/(?P<fcm_id>[\d-]+)/$', views.view_fcm_concept_info, name='view_fcm_concept_info'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,11 +1,15 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
-from .forms import FCMForm
+from .forms import FCMForm,FCMCONCEPTForm
 from .models import FCM
+from .models import FCM_CONCEPT
+from .models import FCM_CONCEPT_INFO
 from django.http import HttpResponse
 from django.contrib import messages
 from bs4 import BeautifulSoup
+from django.shortcuts import get_object_or_404
+
 
 # Create your views here.
 def index(request):
@@ -33,14 +37,23 @@ def import_fcm(request):
         form = FCMForm(request.POST, request.FILES)
         if form.is_valid():
             print request.user
-            fcm = FCM(user=request.user,
-                      title=form.cleaned_data['title'],
-                      description=form.cleaned_data['description'],
-                      creation_date=datetime.now(),
-                      map_image=form.cleaned_data['map_image'],
-                      map_html=form.cleaned_data['map_html'])
-            fcm.save()
-            messages.success(request, 'FCM imported successfully')
+            user = request.user
+            if user.is_authenticated():
+                fcm = FCM(user=user,
+                          title=form.cleaned_data['title'],
+                          description=form.cleaned_data['description'],
+                          creation_date=datetime.now(),
+                          map_image=form.cleaned_data['map_image'],
+                          map_html=form.cleaned_data['map_html'])
+                fcm.save()
+                soup = BeautifulSoup(fcm.map_html, "html.parser")  # vazo i lxml  i html.parser
+                x = soup.findAll("div", class_="tooltip")
+                for div in x:
+                    fcm_concept = FCM_CONCEPT(fcmname=fcm, title=div.text)
+                    fcm_concept.save()
+                messages.success(request, 'FCM imported successfully')
+            else:
+                messages.error(request, "You must login to import a map")
     form = FCMForm()
     return render(request, 'fcm_app/import_fcm.html', {
         'form': form
@@ -61,4 +74,26 @@ def view_fcm(request, fcm_id):
         'map_image': fcm.map_image,
         'script': script,
         'fcm': fcm,
+    })
+
+
+def view_fcm_concept(request, fcm_id):
+    concepts = FCM_CONCEPT.objects.filter(fcmname=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
+    form = FCMCONCEPTForm()
+    return render(request, 'fcm_app/view_fcm_concept.html', {"form": form, "concepts": concepts})
+
+
+def view_fcm_concept_info(request, fcm_id):
+    if request.method == 'POST':
+        form = FCMCONCEPTForm(request.POST)
+        if form.is_valid():
+            my_concept = get_object_or_404(FCM_CONCEPT, pk=request.POST['concept'])
+            #my_concept  = FCM_CONCEPT.objects.get(fcmname=fcm_id, title="BUSINESS SERVICES")
+            #my_concept = selected_map.objects.get(pk=request.POST['concept'])
+            fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept = my_concept, info = form.cleaned_data['information_text'])
+            fcm_concept_info.save()
+    form = FCMCONCEPTForm()
+    concepts = FCM_CONCEPT.objects.filter(fcmname=fcm_id)  # den ksero mipos prepei na ginei get anti gia filter
+    return render(request, 'fcm_app/view_fcm_concept_info.html/', {
+        'form': form, 'concepts': concepts,
     })

@@ -10,9 +10,15 @@
 
     {% if messages %}
         {% for message in messages %}
-            <div class="col-sm-12 alert alert-success">
-                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-            </div>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                </div>
+            {% endif %}
         {% endfor %}
 
     {% endif %}

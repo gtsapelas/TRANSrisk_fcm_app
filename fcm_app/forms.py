@@ -6,3 +6,7 @@ class FCMForm(forms.Form):
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
     map_image = forms.FileField(label='Image', widget=forms.FileInput())
     map_html = forms.FileField(label='HTML', widget=forms.FileInput)
+
+
+class FCMCONCEPTForm(forms.Form):
+    information_text = forms.CharField(widget=forms.Textarea)

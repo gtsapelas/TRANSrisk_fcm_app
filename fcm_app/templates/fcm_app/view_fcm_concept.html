@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/fcm_browse.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+{% for concept in concepts %}
+
+{{ concept.title }}
+
+{% endfor %}
+
+{% endblock %}

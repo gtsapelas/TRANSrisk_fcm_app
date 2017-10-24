@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/fcm_browse.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+<br><br>
+<!--select>
+{% for concept in concepts %}
+
+<option value="{{ concept.title }}">{{ concept.title }}</option>
+<br>
+{{ concept.title }}
+
+{% endfor %}
+</select-->
+
+<form action="." method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+{% for concept in concepts %}
+<!--option value="{{ concept.title }}">{{ concept.title }}</option-->
+        <input type="radio" name="concept" id="concept{{ forloop.counter }}" value="{{ concept.id }}" />
+        <label for="concept{{ forloop.counter }}">{{ concept.title }}</label><br />
+{% endfor %}
+    {{ form }}
+    <button type='submit' value='submit'>Save</button>
+</form>
+
+
+
+{% endblock %}
