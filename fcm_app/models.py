@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
 from django.db import models
+from ckeditor.fields import RichTextField
 
 
 # Create your models here.
@@ -27,7 +28,7 @@ class FCM_CONCEPT(models.Model):
 
 class FCM_CONCEPT_INFO(models.Model):
     fcm_concept = models.ForeignKey(FCM_CONCEPT)
-    info = models.CharField(max_length=200)
+    info = RichTextField()
 
     def __str__(self):
         return self.info

@@ -85,14 +85,29 @@ def view_fcm_concept(request, fcm_id):
 
 
 def view_fcm_concept_info(request, fcm_id, concept_id):
+    concept = FCM_CONCEPT.objects.get(fcmname=fcm_id, pk=concept_id)
+    concept_info = FCM_CONCEPT_INFO()
+    try:
+        concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concept_id)
+        data = {'concept_info': concept_info.info}
+    except concept_info.DoesNotExist:
+        data = {}
+
+    form = FCMCONCEPTForm(initial=data)
     if request.method == 'POST':
         form = FCMCONCEPTForm(request.POST)
         if form.is_valid():
             my_concept = get_object_or_404(FCM_CONCEPT, pk=concept_id)
-            fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=my_concept, info=form.cleaned_data['information_text'])
+            fcm_concept_info = FCM_CONCEPT_INFO()
+            try:
+                fcm_concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=my_concept)
+                fcm_concept_info.info = form.cleaned_data['concept_info']
+            except fcm_concept_info.DoesNotExist:
+                fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=my_concept, info=form.cleaned_data['concept_info'])
             fcm_concept_info.save()
-    form = FCMCONCEPTForm()
-    concept = FCM_CONCEPT.objects.get(fcmname=fcm_id, pk=concept_id)
+            messages.success(request, 'edited successfully')
+        else:
+            messages.error(request, "an error occured")
     return render(request, 'fcm_app/view_fcm_concept_info.html/', {
         'form': form, 'concept': concept,
     })

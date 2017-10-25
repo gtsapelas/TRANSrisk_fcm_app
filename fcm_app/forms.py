@@ -1,4 +1,5 @@
 from django import forms
+from ckeditor.widgets import CKEditorWidget
 
 
 class FCMForm(forms.Form):
@@ -9,4 +10,4 @@ class FCMForm(forms.Form):
 
 
 class FCMCONCEPTForm(forms.Form):
-    information_text = forms.CharField(widget=forms.Textarea)
+    concept_info = forms.CharField(widget=CKEditorWidget)

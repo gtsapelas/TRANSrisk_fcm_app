@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 
     # WYSIWYG editor
-    'tinymce',
+    'ckeditor',
+    'ckeditor_uploader',
 
     # apps
     'fcm_app',

@@ -18,6 +18,8 @@
                     {{ concept.title }}
                 </a>
             </div>
+        {% empty %}
+            <p style="text-align: center">No concepts available</p>
         {% endfor %}
      </div>
 
