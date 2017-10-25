@@ -12,3 +12,4 @@ pillow==4.2.1
 
 # utils
 bs4
+django-tinymce

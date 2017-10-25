@@ -16,7 +16,7 @@
                 </div>
             {% else %}
                 <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
                 </div>
             {% endif %}
         {% endfor %}

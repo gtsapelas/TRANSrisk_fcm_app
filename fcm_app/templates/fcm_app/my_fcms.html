@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+        <link href="{% static 'fcm_app/css/fcm_browse.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-sm-offset-1 col-sm-10">
+        <h1 class="col-sm-12" style="text-align: center">My FCMs</h1>
+    </div>
+    <div class="col-sm-offset-1 col-sm-10 panel panel-default">
+        <div class="panel-body">
+            {% for fcm in my_fcms %}
+                <div class="col-sm-4 card-container">
+                    <a href="{% url 'fcm_app:view_fcm' fcm.id %}" class="card">
+                        <div class="card-header text-center" title="{{ fcm.title }}">
+                           {{ fcm.title }}
+                        </div>
+                        <div class="card-content text-center">
+                            <img src="{{ fcm.map_image.url }}" alt="{{ fcm.description }}" class="img-responsive">
+                        </div>
+                        <div class="card-footer text-center"> Created at {{ fcm.creation_date|date:"d M Y" }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

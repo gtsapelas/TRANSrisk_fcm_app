@@ -3,15 +3,33 @@
 {% load static %}
 
 {% block css %}
-    <link href="{% static 'fcm_app/css/fcm_browse.css' %}" rel="stylesheet" />
+    <link href="{% static 'fcm_app/css/view_fcm_concepts.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
 
-{% for concept in concepts %}
+     <div class="col-sm-11 col-sm-offset-1">
+         <h1 class="col-sm-12" style="text-align: center">Available concepts</h1>
+         <p class="col-sm-12" style="text-align: center"><small>Select one to edit</small></p>
 
-{{ concept.title }}
+        {% for concept in concepts %}
+            <div class="col-sm-3  panel panel-default concept-div">
+                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ concept.id }}/">
+                    {{ concept.title }}
+                </a>
+            </div>
+        {% endfor %}
+     </div>
 
-{% endfor %}
+{% endblock %}
+
+{% block js %}
+
+{#    <script type="text/javascript">#}
+{#        $('.panel').click(function(){#}
+{#            var concept_id = $(this).attr("data-id");#}
+{#            window.location.href='the_link_to_go_to.html';#}
+{#        });#}
+{#    </script>#}
 
 {% endblock %}

@@ -46,6 +46,9 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
 
+    # WYSIWYG editor
+    'tinymce',
+
     # apps
     'fcm_app',
 ]

@@ -439,3 +439,14 @@ label.section-label {
     box-shadow: 0 0 10px 2px #aaa;
     padding: 40px 80px;
 }
+
+.dropdown-menu li{
+    /*height: 30px;*/
+    padding: 0;
+}
+.dropdown-menu{
+    /*height: 150px;*/
+    padding: 10 10px;
+    /*width: 300px;*/
+}
+
