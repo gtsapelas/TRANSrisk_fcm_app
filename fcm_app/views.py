@@ -50,7 +50,7 @@ def import_fcm(request):
                 soup = BeautifulSoup(fcm.map_html, "html.parser")  # vazo i lxml  i html.parser
                 x = soup.findAll("div", class_="tooltip")
                 for div in x:
-                    fcm_concept = FCM_CONCEPT(fcmname=fcm, title=div.text)
+                    fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
                 messages.success(request, 'FCM imported successfully! '
                                           'You can edit the concepts <a href="/fcm/view-fcm-concept/' + str(fcm.pk) + '"><u>here</u></a>')
@@ -68,24 +68,40 @@ def view_fcm(request, fcm_id):
     soup = BeautifulSoup(html, 'html.parser')
     body = soup.find('body').prettify().replace('<body>', '').replace('</body>', '')
     src = [x['src'] for x in soup.findAll('img')][0]
-    body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" width="100%" class="img-responsive"')
-    body = body.replace('showTooltip', 'showTooltip2')
+    # body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" width="100%" class="img-responsive"') #<--ayto xalaei to area highlight
+    body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" ')
+    body = body.replace('onmouseover="showTooltip(', 'onclick="showTooltip2(event, ')
+    body = body.replace('document.onmousemove = updateTooltip;', '')
+    # body = body.replace('shape="rect"', 'shape="rect" data-toggle="popover" data-content="Some content"')
     script = soup.find('script').prettify()
+
+    concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
+    print concepts
+    info_dict = dict()
+    for concepts_item in concepts:
+        try:
+            concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concepts_item)
+            info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
+        except FCM_CONCEPT_INFO.DoesNotExist:
+            info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
+    print info_dict
+
     return render(request, 'fcm_app/view_fcm.html', {
         'map_body': body,
         'map_image': fcm.map_image,
         'script': script,
         'fcm': fcm,
+        'info_dict': info_dict
     })
 
 
 def view_fcm_concept(request, fcm_id):
-    concepts = FCM_CONCEPT.objects.filter(fcmname=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
+    concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
     return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
 
 
 def view_fcm_concept_info(request, fcm_id, concept_id):
-    concept = FCM_CONCEPT.objects.get(fcmname=fcm_id, pk=concept_id)
+    concept = FCM_CONCEPT.objects.get(fcm=fcm_id, pk=concept_id)
     concept_info = FCM_CONCEPT_INFO()
     try:
         concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concept_id)

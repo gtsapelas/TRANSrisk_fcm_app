@@ -19,8 +19,9 @@ class FCM(models.Model):
 
 
 class FCM_CONCEPT(models.Model):
-    fcmname = models.ForeignKey(FCM)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
+    fcm = models.ForeignKey(FCM)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
     title = models.CharField(max_length=200)
+    id_in_fcm = models.CharField(max_length=10)
 
     def __str__(self):
         return self.title

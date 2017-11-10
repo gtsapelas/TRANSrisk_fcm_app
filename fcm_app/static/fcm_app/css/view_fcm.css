@@ -35,3 +35,7 @@
 .panel-body #demo{
     font-size: 85%;
 }
+
+#map-panel{
+    overflow: scroll;
+}
