@@ -11,3 +11,22 @@ class FCMForm(forms.Form):
 
 class FCMCONCEPTForm(forms.Form):
     concept_info = forms.CharField(widget=CKEditorWidget)
+
+
+MONTHS_CHOICES= [
+    ('1', 'January'),
+    ('2', 'February'),
+    ('3', 'March'),
+    ('4', 'April'),
+    ('5', 'May'),
+    ('6', 'June'),
+    ('7', 'July'),
+    ('8', 'August'),
+    ('9', 'September'),
+    ('10', 'October'),
+    ('11', 'November'),
+    ('12', 'December'),
+    ]
+
+class MonthsForm(forms.Form):
+    filtered_month= forms.CharField(label='Filter fcms on month created!', widget=forms.Select(choices=MONTHS_CHOICES))

@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
-from .forms import FCMForm,FCMCONCEPTForm
+from .forms import FCMForm,FCMCONCEPTForm, MonthsForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
@@ -19,7 +19,18 @@ def index(request):
 
 
 def browse(request):
+
+    if request.method == 'POST':
+        month_form = MonthsForm(request.POST)
+        if month_form.is_valid():
+            my_month = month_form.cleaned_data['filtered_month']
+            all_fcms = FCM.objects.filter(creation_date__month=my_month)
+            month_form = MonthsForm()
+            return render(request, 'fcm_app/browse.html',
+                          {"all_fcms": all_fcms, "month_form": month_form})
+
     all_fcms = FCM.objects.all()
+    month_form = MonthsForm()
     paginator = Paginator(all_fcms, 6)
     page = request.GET.get('page')
     try:
@@ -30,7 +41,7 @@ def browse(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         all_fcms = paginator.page(paginator.num_pages)
-    return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms})
+    return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "month_form": month_form})
 
 
 def import_fcm(request):

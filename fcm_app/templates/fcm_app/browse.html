@@ -17,6 +17,11 @@
                     <input class="searchbox-input form-control" type="text">
                 </div>
             </form>
+            <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{month_form.as_p}}
+                <input type="Submit" value="Submit"/>
+            </form>
         </div>
         <div class="col-sm-7">
             {% for fcm in all_fcms %}
