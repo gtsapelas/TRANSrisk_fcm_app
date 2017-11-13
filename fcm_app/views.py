@@ -37,7 +37,7 @@ def import_fcm(request):
     if request.method == 'POST':
         form = FCMForm(request.POST, request.FILES)
         if form.is_valid():
-            print request.user
+            print(request.user)
             user = request.user
             if user.is_authenticated():
                 fcm = FCM(user=user,
@@ -76,7 +76,7 @@ def view_fcm(request, fcm_id):
     script = soup.find('script').prettify()
 
     concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
-    print concepts
+    print(concepts)
     info_dict = dict()
     for concepts_item in concepts:
         try:
@@ -84,7 +84,7 @@ def view_fcm(request, fcm_id):
             info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
         except FCM_CONCEPT_INFO.DoesNotExist:
             info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
-    print info_dict
+    print(info_dict)
 
     return render(request, 'fcm_app/view_fcm.html', {
         'map_body': body,
@@ -145,7 +145,7 @@ def edit_fcm(request, fcm_id):
         data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
         form = FCMForm(request.POST, data)
         if form.is_valid():
-            print request.user
+            print(request.user)
             user = request.user
             if user.is_authenticated():
                 fcm.title=form.cleaned_data['title']
