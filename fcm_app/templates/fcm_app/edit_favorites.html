@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+<form id="test" class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    <input type="hidden" value="video34" />
+    <input type='submit' value='Test button'/>
+    <div id = 'message'>Initial text</div>
+</form>
+
+
+
+{% block scripts %}
+    <script type="text/javascript">
+   $(document).ready(function() {
+       $("#test").submit(function(event){
+       event.preventDefault();
+            $.ajax({
+                 type:"POST",
+                 url:"/edit_favorites/",
+                 data: {
+                        'video': $('#test').val() // from form
+                        },
+                 success: function(){
+                     $('#message').html("<h2>Contact Form Submitted!</h2>")
+                    }
+            });
+            return false;
+       });
+
+    });
+    </script>
+{% endblock %}

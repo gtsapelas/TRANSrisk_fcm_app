@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^my-fcms/$', views.my_fcms, name='my_fcms'),
     url(r'^edit-fcm/(?P<fcm_id>[\d-]+)/$', views.edit_fcm, name='edit_fcm'),
 
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

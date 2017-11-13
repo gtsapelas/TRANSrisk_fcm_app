@@ -24,11 +24,14 @@ def browse(request):
         month_form = MonthsForm(request.POST)
         if month_form.is_valid():
             my_month = month_form.cleaned_data['filtered_month']
-            all_fcms = FCM.objects.filter(creation_date__month=my_month)
+            title = month_form.cleaned_data['filtered_title']
+            if my_month == "-":
+                all_fcms = FCM.objects.filter(title__icontains=title)
+            else:
+                all_fcms = FCM.objects.filter(creation_date__month=my_month, title__icontains = title)
             month_form = MonthsForm()
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "month_form": month_form})
-
     all_fcms = FCM.objects.all()
     month_form = MonthsForm()
     paginator = Paginator(all_fcms, 6)

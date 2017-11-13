@@ -14,6 +14,7 @@ class FCMCONCEPTForm(forms.Form):
 
 
 MONTHS_CHOICES= [
+    ('-', '---'),
     ('1', 'January'),
     ('2', 'February'),
     ('3', 'March'),
@@ -30,3 +31,6 @@ MONTHS_CHOICES= [
 
 class MonthsForm(forms.Form):
     filtered_month= forms.CharField(label='Filter fcms on month created!', widget=forms.Select(choices=MONTHS_CHOICES))
+    filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False)
+
+
