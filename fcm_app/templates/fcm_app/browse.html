@@ -12,15 +12,22 @@
         <h1>Fuzzy Cognitive Maps</h1>
         <div class="col-sm-3 col-sm-offset-1" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
             <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 <div class="form-group is-empty" style="display: inline-block">
                     <label>Title:</label>
-                    <input class="searchbox-input form-control" type="text">
+                    <!--input class="searchbox-input form-control" type="text"-->
+                    {{month_form.filtered_title}}
+                    <label>Month:</label><br><br>
+                    {{month_form.filtered_month}}
+                    <br><br>
+                    <input type="Submit" value="Submit"/>
                 </div>
             </form>
             <form id class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{month_form.as_p}}
-                <input type="Submit" value="Submit"/>
+                <!--{{month_form.as_p}}
+                {{month_form.filtered_title}}
+                <input type="Submit" value="Submit"/-->
             </form>
         </div>
         <div class="col-sm-7">

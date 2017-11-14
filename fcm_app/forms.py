@@ -33,7 +33,7 @@ MONTHS_CHOICES= [
 
 class MonthsForm(forms.Form):
     filtered_month= forms.CharField(label='Filter fcms on month created!', widget=forms.Select(choices=MONTHS_CHOICES))
-    filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False)
+    filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
 
 
 
