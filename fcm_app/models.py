@@ -3,11 +3,14 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User
 from django.db import models
 from ckeditor.fields import RichTextField
+from django_countries.fields import CountryField
+
 
 
 # Create your models here.
 class FCM(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+    country = CountryField()
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=2000)
     creation_date = models.DateTimeField('date created')
@@ -33,3 +36,5 @@ class FCM_CONCEPT_INFO(models.Model):
 
     def __str__(self):
         return self.info
+
+

@@ -56,6 +56,7 @@ def import_fcm(request):
             if user.is_authenticated():
                 fcm = FCM(user=user,
                           title=form.cleaned_data['title'],
+                          country = form.cleaned_data['country'],
                           description=form.cleaned_data['description'],
                           creation_date=datetime.now(),
                           map_image=form.cleaned_data['map_image'],

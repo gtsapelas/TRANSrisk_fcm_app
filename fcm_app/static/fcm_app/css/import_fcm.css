@@ -21,3 +21,11 @@
     border-width: 1px 1px 0px 1px;
     border-color: lightgrey;
 }
+
+select{
+    color: black;
+}
+
+#flag_id_country{
+    display: none;
+}

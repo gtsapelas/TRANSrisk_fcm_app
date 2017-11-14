@@ -52,6 +52,9 @@ INSTALLED_APPS = [
 
     # apps
     'fcm_app',
+
+    # countries
+    'django_countries',
 ]
 
 

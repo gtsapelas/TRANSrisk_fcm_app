@@ -1,13 +1,15 @@
 from django import forms
 from ckeditor.widgets import CKEditorWidget
+from django_countries.widgets import CountrySelectWidget
+from django_countries import countries
 
 
 class FCMForm(forms.Form):
     title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control'}))
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
+    country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     map_image = forms.FileField(label='Image', widget=forms.FileInput())
     map_html = forms.FileField(label='HTML', widget=forms.FileInput)
-
 
 class FCMCONCEPTForm(forms.Form):
     concept_info = forms.CharField(widget=CKEditorWidget)
@@ -32,5 +34,7 @@ MONTHS_CHOICES= [
 class MonthsForm(forms.Form):
     filtered_month= forms.CharField(label='Filter fcms on month created!', widget=forms.Select(choices=MONTHS_CHOICES))
     filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False)
+
+
 
 
