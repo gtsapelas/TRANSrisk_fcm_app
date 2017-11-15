@@ -188,6 +188,8 @@ def edit_fcm(request, fcm_id):
             if user.is_authenticated():
                 fcm.title=form.cleaned_data['title']
                 fcm.description=form.cleaned_data['description']
+                fcm.country=form.cleaned_data['country']
+                fcm.status=form.cleaned_data['status']
                 fcm.save()
 
                 messages.success(request, 'edited successfully')
@@ -195,7 +197,7 @@ def edit_fcm(request, fcm_id):
                 messages.error(request, "You must login to edit a map")
         else:
             messages.error(request, "form invalid")
-    data = {'title': fcm.title, 'description': fcm.description}
+    data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
     form = FCMForm(initial=data)
     form.fields['map_image'].widget = forms.HiddenInput()
     form.fields['map_html'].widget = forms.HiddenInput()
