@@ -29,3 +29,8 @@ select{
 #flag_id_country{
     display: none;
 }
+
+ul#id_status {
+    padding-left: 0px;
+}
+
