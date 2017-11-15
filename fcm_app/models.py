@@ -11,6 +11,7 @@ from django_countries.fields import CountryField
 class FCM(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     country = CountryField()
+    status = models.IntegerField(default=1)
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=2000)
     creation_date = models.DateTimeField('date created')

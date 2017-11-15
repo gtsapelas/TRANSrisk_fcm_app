@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
-from .forms import FCMForm,FCMCONCEPTForm, MonthsForm
+from .forms import FCMForm,FCMCONCEPTForm, FiltersForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
@@ -21,19 +21,41 @@ def index(request):
 def browse(request):
 
     if request.method == 'POST':
-        month_form = MonthsForm(request.POST)
-        if month_form.is_valid():
-            my_month = month_form.cleaned_data['filtered_month']
-            title = month_form.cleaned_data['filtered_title']
-            if my_month == "-":
-                all_fcms = FCM.objects.filter(title__icontains=title)
+        filter_form = FiltersForm(request.POST)
+        if filter_form.is_valid():
+            filtered_month = filter_form.cleaned_data['filtered_month']
+            filtered_title = filter_form.cleaned_data['filtered_title']
+            filtered_year = filter_form.cleaned_data['filtered_year']
+            all_fcms = FCM.objects.filter(status='1')
+            if filtered_year == "-":
+                if filtered_month == "-":
+                    all_fcms = all_fcms.filter(title__icontains=filtered_title)
+                else:
+                    all_fcms = all_fcms.filter(creation_date__month=filtered_month, title__icontains = filtered_title)
             else:
-                all_fcms = FCM.objects.filter(creation_date__month=my_month, title__icontains = title)
-            month_form = MonthsForm()
+                all_fcms = all_fcms.filter(creation_date__year=filtered_year)
+
+                if filtered_month == "-":
+                    all_fcms = all_fcms.filter(title__icontains=filtered_title)
+                else:
+                    all_fcms = all_fcms.filter(creation_date__month=filtered_month, title__icontains = filtered_title)
+
+            filter_form = FiltersForm()
+            paginator = Paginator(all_fcms, 6)
+            page = request.GET.get('page')
+            try:
+                all_fcms = paginator.page(page)
+            except PageNotAnInteger:
+                # If page is not an integer, deliver first page.
+                all_fcms = paginator.page(1)
+            except EmptyPage:
+                # If page is out of range (e.g. 9999), deliver last page of results.
+                all_fcms = paginator.page(paginator.num_pages)
             return render(request, 'fcm_app/browse.html',
-                          {"all_fcms": all_fcms, "month_form": month_form})
-    all_fcms = FCM.objects.all()
-    month_form = MonthsForm()
+                          {"all_fcms": all_fcms, "filter_form": filter_form})
+    #all_fcms = FCM.objects.all()
+    all_fcms = FCM.objects.filter(status='1')
+    filter_form = FiltersForm()
     paginator = Paginator(all_fcms, 6)
     page = request.GET.get('page')
     try:
@@ -44,7 +66,7 @@ def browse(request):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         all_fcms = paginator.page(paginator.num_pages)
-    return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "month_form": month_form})
+    return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "filter_form": filter_form})
 
 
 def import_fcm(request):
@@ -57,6 +79,7 @@ def import_fcm(request):
                 fcm = FCM(user=user,
                           title=form.cleaned_data['title'],
                           country = form.cleaned_data['country'],
+                          status = form.cleaned_data['status'],
                           description=form.cleaned_data['description'],
                           creation_date=datetime.now(),
                           map_image=form.cleaned_data['map_image'],
