@@ -31,6 +31,7 @@
 
     {% for key,value in info_dict.items %}
         <div class="popover" id="popover-{{ key }}">
+            <button type="button" onclick='$(this).parent().hide()'>&times</button>
             <div style="max-width: none; padding: 10px; border-width: 1px; border: solid">
                 {% autoescape off %}
                     {{ value }}
@@ -60,6 +61,34 @@
             $('#popover-'+id).show();
             $('#popover-'+id).css('left', (left-theWidth/2) + 'px');
             $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            var pWidth = $(this).innerWidth();
+            var pHeight= $(this).innerHeight();
+            var status_orizontia = 1; //1 means left, 2 means right
+            var status_katheta = 1;  //1 means up, 2 means down
+            if (pWidth/2 < left){
+                status_katheta = 2;
+            }
+            if (pHeight/2 < top){
+                status_orizontia = 2;
+            }
+            if (status_orizontia == 1 &&  status_katheta == 1){
+                $('#popover-'+id).css('left', (left) + 'px');
+                $('#popover-'+id).css('top', (scroll+top+10) + 'px');
+            }
+            else if (status_orizontia == 1 &&  status_katheta == 2) {
+                $('#popover-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-'+id).css('top', (scroll+top+10) + 'px');
+            }
+
+            else if (status_orizontia == 2 &&  status_katheta == 1) {
+                $('#popover-'+id).css('left', (left) + 'px');
+                $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
+
+            else if (status_orizontia == 2 &&  status_katheta == 2) {
+                $('#popover-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
         }
 
 {#        $('area').click(function (e) { //Relative ( to its parent) mouse position#}

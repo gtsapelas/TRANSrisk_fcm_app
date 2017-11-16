@@ -39,3 +39,9 @@
 #map-panel{
     overflow: scroll;
 }
+
+.popover {
+    overflow: scroll;
+    max-width:60%;
+    max-height:30%;
+}

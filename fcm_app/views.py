@@ -10,6 +10,8 @@ from django.contrib import messages
 from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
+from django.http import HttpResponseForbidden
+
 
 
 # Create your views here.
@@ -134,37 +136,42 @@ def view_fcm(request, fcm_id):
 
 
 def view_fcm_concept(request, fcm_id):
-    concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
-    return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
-
+    fcm = FCM.objects.get(pk=fcm_id)
+    if request.user == fcm.user:
+        concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
+        return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
+    return HttpResponseForbidden()
 
 def view_fcm_concept_info(request, fcm_id, concept_id):
-    concept = FCM_CONCEPT.objects.get(fcm=fcm_id, pk=concept_id)
-    concept_info = FCM_CONCEPT_INFO()
-    try:
-        concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concept_id)
-        data = {'concept_info': concept_info.info}
-    except concept_info.DoesNotExist:
-        data = {}
+    fcm = FCM.objects.get(pk=fcm_id)
+    if request.user == fcm.user:
+        concept = FCM_CONCEPT.objects.get(fcm=fcm_id, pk=concept_id)
+        concept_info = FCM_CONCEPT_INFO()
+        try:
+            concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concept_id)
+            data = {'concept_info': concept_info.info}
+        except concept_info.DoesNotExist:
+            data = {}
 
-    form = FCMCONCEPTForm(initial=data)
-    if request.method == 'POST':
-        form = FCMCONCEPTForm(request.POST)
-        if form.is_valid():
-            my_concept = get_object_or_404(FCM_CONCEPT, pk=concept_id)
-            fcm_concept_info = FCM_CONCEPT_INFO()
-            try:
-                fcm_concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=my_concept)
-                fcm_concept_info.info = form.cleaned_data['concept_info']
-            except fcm_concept_info.DoesNotExist:
-                fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=my_concept, info=form.cleaned_data['concept_info'])
-            fcm_concept_info.save()
-            messages.success(request, 'edited successfully')
-        else:
-            messages.error(request, "an error occured")
-    return render(request, 'fcm_app/view_fcm_concept_info.html/', {
-        'form': form, 'concept': concept,
-    })
+        form = FCMCONCEPTForm(initial=data)
+        if request.method == 'POST':
+            form = FCMCONCEPTForm(request.POST)
+            if form.is_valid():
+                my_concept = get_object_or_404(FCM_CONCEPT, pk=concept_id)
+                fcm_concept_info = FCM_CONCEPT_INFO()
+                try:
+                    fcm_concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=my_concept)
+                    fcm_concept_info.info = form.cleaned_data['concept_info']
+                except fcm_concept_info.DoesNotExist:
+                    fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=my_concept, info=form.cleaned_data['concept_info'])
+                fcm_concept_info.save()
+                messages.success(request, 'edited successfully')
+            else:
+                messages.error(request, "an error occured")
+        return render(request, 'fcm_app/view_fcm_concept_info.html/', {
+            'form': form, 'concept': concept,
+        })
+    return HttpResponseForbidden()
 
 
 def my_fcms(request):
@@ -179,30 +186,33 @@ def my_fcms(request):
 
 def edit_fcm(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
-    if request.method == 'POST':
-        data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
-        form = FCMForm(request.POST, data)
-        if form.is_valid():
-            print(request.user)
-            user = request.user
-            if user.is_authenticated():
-                fcm.title=form.cleaned_data['title']
-                fcm.description=form.cleaned_data['description']
-                fcm.country=form.cleaned_data['country']
-                fcm.status=form.cleaned_data['status']
-                fcm.save()
+    if request.user == fcm.user:
+        if request.method == 'POST':
+            data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
+            form = FCMForm(request.POST, data)
+            if form.is_valid():
+                print(request.user)
+                user = request.user
+                if user.is_authenticated():
+                    fcm.title=form.cleaned_data['title']
+                    fcm.description=form.cleaned_data['description']
+                    fcm.country=form.cleaned_data['country']
+                    fcm.status=form.cleaned_data['status']
+                    fcm.save()
 
-                messages.success(request, 'edited successfully')
+                    messages.success(request, 'edited successfully')
+                else:
+                    messages.error(request, "You must login to edit a map")
             else:
-                messages.error(request, "You must login to edit a map")
-        else:
-            messages.error(request, "form invalid")
-    data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
-    form = FCMForm(initial=data)
-    form.fields['map_image'].widget = forms.HiddenInput()
-    form.fields['map_html'].widget = forms.HiddenInput()
+                messages.error(request, "form invalid")
+        data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
+        form = FCMForm(initial=data)
+        form.fields['map_image'].widget = forms.HiddenInput()
+        form.fields['map_html'].widget = forms.HiddenInput()
 
-    return render(request, 'fcm_app/edit_fcm.html', {
-        'form': form,
-        'fcm': fcm,
-    })
+        return render(request, 'fcm_app/edit_fcm.html', {
+            'form': form,
+            'fcm': fcm,
+        })
+    return HttpResponseForbidden()
+
