@@ -32,9 +32,12 @@ MONTHS_CHOICES.insert(0,('-','---'))
 YEAR_CHOICES = [(str(i), i) for i in range(2015,int(first_year())+1)]
 YEAR_CHOICES.insert(0,('-','---'))
 
+COUNTRIES_CHOICES = [(countries[i][0], countries[i][1]) for i in range(0,len(countries))]
+COUNTRIES_CHOICES.insert(0,('-','---'))
+
 class FiltersForm(forms.Form):
-    filtered_month= forms.CharField(label='Filter fcms on month created!', widget=forms.Select(choices=MONTHS_CHOICES))
     filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
     filtered_year  = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
+    filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
 
 

@@ -25,24 +25,23 @@ def browse(request):
     if request.method == 'POST':
         filter_form = FiltersForm(request.POST)
         if filter_form.is_valid():
-            filtered_month = filter_form.cleaned_data['filtered_month']
             filtered_title = filter_form.cleaned_data['filtered_title']
             filtered_year = filter_form.cleaned_data['filtered_year']
+            filtered_country = filter_form.cleaned_data['filtered_country']
             all_fcms = FCM.objects.filter(status='1')
             if filtered_year == "-":
-                if filtered_month == "-":
+                if filtered_country == "-":
                     all_fcms = all_fcms.filter(title__icontains=filtered_title)
                 else:
-                    all_fcms = all_fcms.filter(creation_date__month=filtered_month, title__icontains = filtered_title)
+                    all_fcms = all_fcms.filter(country=filtered_country, title__icontains = filtered_title)
             else:
                 all_fcms = all_fcms.filter(creation_date__year=filtered_year)
-
-                if filtered_month == "-":
+                if filtered_country == "-":
                     all_fcms = all_fcms.filter(title__icontains=filtered_title)
                 else:
-                    all_fcms = all_fcms.filter(creation_date__month=filtered_month, title__icontains = filtered_title)
-
-            filter_form = FiltersForm()
+                    all_fcms = all_fcms.filter(country=filtered_country, title__icontains = filtered_title)
+            data = {'filtered_title': filtered_title, 'filtered_year': filtered_year, 'filtered_country': filtered_country}
+            filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 6)
             page = request.GET.get('page')
             try:
