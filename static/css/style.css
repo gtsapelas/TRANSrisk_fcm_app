@@ -451,18 +451,13 @@ label.section-label {
 }
 
 
-#id_login{
-    margin-top: 11px;
-}
-
-
-#id_password{
-    margin-top: 11px;
-}
-
-#id_remember{
+#id_login, #id_password, #id_remember{
     margin-top: 11px;
 }
 
 ul {list-style:none}
+
+#id_username, #id_email, #id_password1, #id_password2{
+    margin-top: 11px;
+}
 
