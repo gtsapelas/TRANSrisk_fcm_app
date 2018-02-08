@@ -44,4 +44,6 @@
     overflow: scroll;
     max-width:60%;
     max-height:30%;
+    min-width:300px;
+    min-height:150px;
 }

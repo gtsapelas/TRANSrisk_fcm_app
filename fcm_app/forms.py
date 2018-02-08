@@ -24,12 +24,17 @@ class FCMCONCEPTForm(forms.Form):
 
 
 def first_year():
-    return FCM.objects.all()[0].creation_date.strftime('%Y')
+    return int(FCM.objects.all().order_by('creation_date')[0].creation_date.strftime('%Y'))
+
+def last_year():
+    import datetime
+    now = datetime.datetime.now()
+    return now.year
 
 MONTHS_CHOICES = [(str(i), calendar.month_name[i]) for i in range(1,13)]
 MONTHS_CHOICES.insert(0,('-','---'))
 
-YEAR_CHOICES = [(str(i), i) for i in range(2015,int(first_year())+1)]
+YEAR_CHOICES = [(str(i), i) for i in range(first_year(),last_year()+1)]
 YEAR_CHOICES.insert(0,('-','---'))
 
 COUNTRIES_CHOICES = [(countries[i][0], countries[i][1]) for i in range(0,len(countries))]

@@ -28,7 +28,7 @@ def browse(request):
             filtered_title = filter_form.cleaned_data['filtered_title']
             filtered_year = filter_form.cleaned_data['filtered_year']
             filtered_country = filter_form.cleaned_data['filtered_country']
-            all_fcms = FCM.objects.filter(status='1')
+            all_fcms = FCM.objects.filter(status='1').order_by('creation_date').reverse()
             if filtered_year == "-":
                 if filtered_country == "-":
                     all_fcms = all_fcms.filter(title__icontains=filtered_title)
@@ -55,7 +55,7 @@ def browse(request):
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "filter_form": filter_form})
     #all_fcms = FCM.objects.all()
-    all_fcms = FCM.objects.filter(status='1')
+    all_fcms = FCM.objects.filter(status='1').order_by('creation_date').reverse()
     filter_form = FiltersForm()
     paginator = Paginator(all_fcms, 6)
     page = request.GET.get('page')
