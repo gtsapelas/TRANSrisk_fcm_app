@@ -450,3 +450,16 @@ label.section-label {
     /*width: 300px;*/
 }
 
+
+#id_login{
+    margin-top: 11px;
+}
+
+
+#id_password{
+    margin-top: 11px;
+}
+
+#id_remember{
+    margin-top: 11px;
+}

@@ -62,7 +62,7 @@
                                     <ul class="dropdown-menu" style="text-align: right;">
                                         <li><a>Welcome <b>{{ request.user.username }}</b></a></li>
                                         <li><a href="{%  url 'fcm_app:my_fcms' %}">My FCMs</a></li>
-                                        <li><a href="/accounts/logout/">Logout</a></li>
+                                        <li><a href="/accounts/logout/?next=/fcm">Logout</a></li>
                                     </ul>
                                 {% else %}
                                     <a href="/accounts/login/">Login or Signup</a>
