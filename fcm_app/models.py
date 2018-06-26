@@ -10,6 +10,7 @@ class FCM(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # ITAN PROTECT
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=2000)
+    chartis = models.TextField(default = "")
     creation_date = models.DateTimeField('date created')
     map_image = models.ImageField(upload_to='media/images', default='media/images/Capture1.PNG')
     map_html = models.FileField(upload_to='media/html')

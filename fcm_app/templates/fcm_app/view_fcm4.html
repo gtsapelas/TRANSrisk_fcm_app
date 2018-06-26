@@ -5,14 +5,17 @@
 {% block css %}
     <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
+        /*
         body, select {
             font: 10pt sans;
         }
+        */
         #mynetwork {
           position:relative;
-          width: 800px;
+          width: auto;
           height: 600px;
           border: 1px solid lightgray;
+          clear:both;
         }
         table.legend_table {
           font-size: 11px;
@@ -93,6 +96,7 @@
     {% endif %}
 
 
+
 <script type="text/javascript">
     var numOfNodes = 1;
     var numOfEdges = 1;
@@ -137,6 +141,7 @@
         layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
         locale: document.getElementById('locale').value,
         manipulation: {
+          enabled:false,
           addNode: function (data, callback) {
             console.log(data);
             // filling in the popup DOM elements
@@ -220,11 +225,11 @@
       var lala7 = {"nodes":[{"id":1,"label":"vv","x":-339.97569465637207,"y":-212.6944580078125,"shape":"box","fixed":true},{"id":2,"label":"bb","x":237.02430534362793,"y":19.3055419921875,"shape":"box","fixed":true},{"id":3,"label":"cc","x":-313.97569465637207,"y":159.3055419921875,"shape":"box","fixed":true}],"edges":[{"id":1,"label":"cc","from":1,"to":2},{"id":2,"label":"cvbcv","from":3,"to":2}]}
       var lala8 = {"nodes":[{"id":1,"label":"ss","x":-301,"y":-210,"shape":"box"},{"id":2,"label":"cc","x":65,"y":-150,"shape":"box"}],"edges":[{"id":1,"label":"cc","from":1,"to":2}]}
       */
-      var data1 = {{ data1|safe }};
-      data = data1;
-      console.log(data1)
+      var data1 = {{ fcm.chartis|safe }};  // pernao ta dedomena apo piso
+      //data = data1;
+      //console.log(data1)
       //var data1 = "{{data1}}".replace(/&quot;/g,"\"");
-      network = new vis.Network(container, data1, options);
+      network = new vis.Network(container, data1, options);  // dimiourgia tou network
       /*
       network.on("click", function (params) {
 		var nodeID = params.nodes[0];
@@ -401,23 +406,36 @@
     var lastdata = "blabla"
     function kaneStringToData(){
       lastdata = JSON.stringify(data);   // metatrepei se string to data
-      //console.log(lastdata);
-      document.getElementById('timi_pou_thelo').value = lastdata;
-      document.getElementById('id_description').value = lastdata;
+      document.getElementById('id_chartis').value = lastdata;
       console.log(lastdata);
+      //console.log(lastdata);
+      //document.getElementById('timi_pou_thelo').value = lastdata;
+      //document.getElementById('id_description').value = lastdata;
     }
 
   window.onload = init;
 
   </script>
 
+
+    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+        <div class="panel-body">
+            <h1>{{ fcm.title}}</h1>
+            <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
+            <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Description</button>
+            <div id="demo" class="collapse">
+                {{ fcm.description }}
+            </div>
+        </div>
+    </div>
+
 <!--body onload="init();"-->
-<h2>Editing the nodes and edges-without-drag (localized)</h2>
+<!--h2>Editing the nodes and edges-without-drag (localized)</h2>
 <p style="width: 700px; font-size:14px; text-align: justify;">
   The localization is only relevant to the manipulation buttons.
-</p>
+</p-->
 
-<p>
+<p hidden>
   <label for="locale">Select a locale:</label>
   <select id="locale" onchange="draw();">
     <option value="en">en</option>
@@ -429,6 +447,7 @@
     <option value="ru">ru</option>
   </select>
 </p>
+<!--p><label for="locale" type="hidden">Select a locale:</label></p-->
 
 <div id="node-popUp">
   <span id="node-operation">node</span> <br>
@@ -439,9 +458,6 @@
     <tr>
       <td>label</td><td><input id="node-label" value="la" /></td>
     </tr>
-    <!--tr>
-      <td>title</td><td><input id="node-title" value="" /></td>
-    </tr-->
   </table>
   <input type="button" value="save" id="node-saveButton" />
   <input type="button" value="cancel" id="node-cancelButton" />
@@ -475,8 +491,9 @@
 </form-->
 
 <br />
-
-<div id="mynetwork"></div>
+<div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+    <div id="mynetwork"></div>
+</div>
 
 {% for key,value in info_dict.items %}
         <div class="popover" id="popover-{{ key }}">

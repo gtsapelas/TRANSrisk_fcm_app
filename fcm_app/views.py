@@ -99,16 +99,9 @@ def view_fcm(request, fcm_id):
             'info_dict': info_dict
         })
     else:
-        """x = fcm.description #tha exo to string, pou tha pernao sto html gia na to deihno
-        data = {'title': "fd", 'description': x}
-        form = jsForm(data)
-        return render(request, 'fcm_app/view_fcm2.html', {
-            'data1': x,
-            'form': form
-        })"""
-        x = fcm.description  # tha exo to string, pou tha pernao sto html gia na to deihno
-        data = {'title': "fd", 'description': x}
-        form = jsForm(data)
+        x = fcm.chartis  # tha exo to string, pou tha pernao sto html gia na to deihno
+        #data = {'title': "fd", 'description': x}
+        #form = jsForm(data)
         concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
         print(concepts)
         info_dict = dict()
@@ -120,13 +113,11 @@ def view_fcm(request, fcm_id):
                 info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
         print(info_dict)
         return render(request, 'fcm_app/view_fcm4.html', {
-            'data1': x,
-            'form': form,
+            'fcm': fcm,
+            #'data1': x,
+            #'form': form,
             'info_dict': info_dict
         })
-
-
-
 
 def view_fcm_concept(request, fcm_id):
     concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
@@ -212,14 +203,15 @@ def create_fcm(request):
                 fcm = FCM(user=user,
                           title=form.cleaned_data['title'],
                           description=form.cleaned_data['description'],
+                          chartis = form.cleaned_data['chartis'],
                           creation_date=datetime.now(),
                           manual = True)
                 fcm.save()
                 #searchTimi = request.POST.get('timi_pou_thelo', '')
                 #searchTimi2 = request.POST.get('description', '')   # thelei to name, oxi to id
                 #print("Some output")
-                print(form.cleaned_data['description'])
-                description_json = json.loads(form.cleaned_data['description'])
+                print(form.cleaned_data['chartis'])
+                description_json = json.loads(form.cleaned_data['chartis'])
                 #import pdb; pdb.set_trace()
                 print(description_json)
                 x = description_json
@@ -245,7 +237,7 @@ def create_fcm(request):
         else:
             messages.error(request, "form invalid")
         return redirect('/fcm/create_map')
-    data = {'title': "", 'description': "arxiko"}
+    #data = {'title': "", 'description': "arxiko"}
     form = jsForm()
 
     return render(request, 'fcm_app/create_fcm.html', {

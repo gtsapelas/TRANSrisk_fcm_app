@@ -5,9 +5,11 @@
 {% block css %}
     <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
+        /*
         body, select {
             font: 10pt sans;
         }
+        */
         #mynetwork {
           position:relative;
           width: 800px;
@@ -205,6 +207,7 @@
           }
         }
       };
+      /*
       var lala = {"nodes":[{"id":0,"label":"0"},{"id":1,"label":"1"},{"id":2,"label":"2"},{"id":3,"label":"3"},{"id":4,"label":"4"},{"id":5,"label":"5"}],"edges":[{"from":1,"to":0,"id":"31f2e17b-5e4a-4e60-bc79-aeb2dde3800f"},{"from":2,"to":0,"id":"57c796d6-b560-4a24-b037-b8b03d3cdbb5"},{"from":3,"to":2,"id":"da8c3f78-d5ea-4cc2-b97b-bd09116dd6ba"},{"from":4,"to":3,"id":"4601698a-234f-4a45-9233-77bd970d70cb"},{"from":5,"to":4,"id":"3d83d4a2-4cea-45ac-b34d-23ebda61f387"}]}
       var lala2 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
       var lala3 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"},{"id":7,"label":"sds","x":-310.05626649800604,"y":-149.29670101968725,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
@@ -213,7 +216,8 @@
       var lala6 = {"nodes":[{"id":1,"label":"aa","x":"0","y":"0","shape":"box"},{"id":2,"label":"bb","x":50,"y":0,"shape":"box"},{"id":3,"label":"cc","shape":"box"},{"id":4,"label":"dd","shape":"box"},{"id":5,"label":"ee","shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
       var sketos = {"nodes":[{"id":0,"label":"sketos", "fixed": true, "x":0,"y":0, "shape":"box"}, {"id":1,"label":"sketos1", "fixed": true, "x":0,"y":0, "shape":"box"}],"edges":[]}
       var lala7 = {"nodes":[{"id":1,"label":"vv","x":-339.97569465637207,"y":-212.6944580078125,"shape":"box","fixed":true},{"id":2,"label":"bb","x":237.02430534362793,"y":19.3055419921875,"shape":"box","fixed":true},{"id":3,"label":"cc","x":-313.97569465637207,"y":159.3055419921875,"shape":"box","fixed":true}],"edges":[{"id":1,"label":"cc","from":1,"to":2},{"id":2,"label":"cvbcv","from":3,"to":2}]}
-      //data = lala7;
+      data = lala7;
+      */
       network = new vis.Network(container, data, options);
     }
     function editNodeEdit(info, cancelAction, callback) {
@@ -329,19 +333,20 @@
     var lastdata = "blabla"
     function kaneStringToData(){
       lastdata = JSON.stringify(data);   // metatrepei se string to data
-      //console.log(lastdata);
-      document.getElementById('timi_pou_thelo').value = lastdata;
-      document.getElementById('id_description').value = lastdata;
+      document.getElementById('id_chartis').value = lastdata;
       console.log(lastdata);
+      //console.log(lastdata);
+      //document.getElementById('timi_pou_thelo').value = lastdata;
+      //document.getElementById('id_description').value = lastdata;
     }
 
 
   </script>
 
 <body onload="init();">
-<h2>Editing the nodes and edges-without-drag (localized)</h2>
+<h2>Create a new model (localized)</h2>
 <p style="width: 700px; font-size:14px; text-align: justify;">
-  The localization is only relevant to the manipulation buttons.
+  The localization is only relevant to the manipulation buttons on canvas.
 </p>
 
 <p>
