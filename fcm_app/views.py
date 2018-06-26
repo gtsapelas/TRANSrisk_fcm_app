@@ -1,15 +1,19 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
-from .forms import FCMForm,FCMCONCEPTForm
+from .forms import FCMForm,FCMCONCEPTForm, jsForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
+#from .models import mynew
+from .models import FCM_EDGES
 from django.http import HttpResponse
 from django.contrib import messages
 from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
+import json
+
 
 
 # Create your views here.
@@ -37,7 +41,7 @@ def import_fcm(request):
     if request.method == 'POST':
         form = FCMForm(request.POST, request.FILES)
         if form.is_valid():
-            print request.user
+            print(request.user)
             user = request.user
             if user.is_authenticated():
                 fcm = FCM(user=user,
@@ -64,35 +68,64 @@ def import_fcm(request):
 
 def view_fcm(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
-    html = fcm.map_html.read()
-    soup = BeautifulSoup(html, 'html.parser')
-    body = soup.find('body').prettify().replace('<body>', '').replace('</body>', '')
-    src = [x['src'] for x in soup.findAll('img')][0]
-    # body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" width="100%" class="img-responsive"') #<--ayto xalaei to area highlight
-    body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" ')
-    body = body.replace('onmouseover="showTooltip(', 'onclick="showTooltip2(event, ')
-    body = body.replace('document.onmousemove = updateTooltip;', '')
-    # body = body.replace('shape="rect"', 'shape="rect" data-toggle="popover" data-content="Some content"')
-    script = soup.find('script').prettify()
+    if fcm.manual == False:
+        html = fcm.map_html.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        body = soup.find('body').prettify().replace('<body>', '').replace('</body>', '')
+        src = [x['src'] for x in soup.findAll('img')][0]
+        # body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" width="100%" class="img-responsive"') #<--ayto xalaei to area highlight
+        body = body.replace('src="' + src + '"', 'src="' + fcm.map_image.url + '" ')
+        body = body.replace('onmouseover="showTooltip(', 'onclick="showTooltip2(event, ')
+        body = body.replace('document.onmousemove = updateTooltip;', '')
+        # body = body.replace('shape="rect"', 'shape="rect" data-toggle="popover" data-content="Some content"')
+        script = soup.find('script').prettify()
 
-    concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
-    print concepts
-    info_dict = dict()
-    for concepts_item in concepts:
-        try:
-            concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concepts_item)
-            info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
-        except FCM_CONCEPT_INFO.DoesNotExist:
-            info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
-    print info_dict
+        concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
+        print(concepts)
+        info_dict = dict()
+        for concepts_item in concepts:
+            try:
+                concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concepts_item)
+                info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
+            except FCM_CONCEPT_INFO.DoesNotExist:
+                info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
+        print(info_dict)
 
-    return render(request, 'fcm_app/view_fcm.html', {
-        'map_body': body,
-        'map_image': fcm.map_image,
-        'script': script,
-        'fcm': fcm,
-        'info_dict': info_dict
-    })
+        return render(request, 'fcm_app/view_fcm.html', {
+            'map_body': body,
+            'map_image': fcm.map_image,
+            'script': script,
+            'fcm': fcm,
+            'info_dict': info_dict
+        })
+    else:
+        """x = fcm.description #tha exo to string, pou tha pernao sto html gia na to deihno
+        data = {'title': "fd", 'description': x}
+        form = jsForm(data)
+        return render(request, 'fcm_app/view_fcm2.html', {
+            'data1': x,
+            'form': form
+        })"""
+        x = fcm.description  # tha exo to string, pou tha pernao sto html gia na to deihno
+        data = {'title': "fd", 'description': x}
+        form = jsForm(data)
+        concepts = FCM_CONCEPT.objects.filter(fcm=fcm)
+        print(concepts)
+        info_dict = dict()
+        for concepts_item in concepts:
+            try:
+                concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concepts_item)
+                info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
+            except FCM_CONCEPT_INFO.DoesNotExist:
+                info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
+        print(info_dict)
+        return render(request, 'fcm_app/view_fcm4.html', {
+            'data1': x,
+            'form': form,
+            'info_dict': info_dict
+        })
+
+
 
 
 def view_fcm_concept(request, fcm_id):
@@ -145,7 +178,7 @@ def edit_fcm(request, fcm_id):
         data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
         form = FCMForm(request.POST, data)
         if form.is_valid():
-            print request.user
+            print(request.user)
             user = request.user
             if user.is_authenticated():
                 fcm.title=form.cleaned_data['title']
@@ -165,4 +198,56 @@ def edit_fcm(request, fcm_id):
     return render(request, 'fcm_app/edit_fcm.html', {
         'form': form,
         'fcm': fcm,
+    })
+from django.shortcuts import redirect
+
+def create_fcm(request):
+    if request.method == 'POST':
+        form = jsForm(request.POST)
+        if form.is_valid():
+            print(request)
+            print(request.user)
+            user = request.user
+            if user.is_authenticated():
+                fcm = FCM(user=user,
+                          title=form.cleaned_data['title'],
+                          description=form.cleaned_data['description'],
+                          creation_date=datetime.now(),
+                          manual = True)
+                fcm.save()
+                #searchTimi = request.POST.get('timi_pou_thelo', '')
+                #searchTimi2 = request.POST.get('description', '')   # thelei to name, oxi to id
+                #print("Some output")
+                print(form.cleaned_data['description'])
+                description_json = json.loads(form.cleaned_data['description'])
+                #import pdb; pdb.set_trace()
+                print(description_json)
+                x = description_json
+                x1 = x['nodes']  #list pou exei dictionaries
+                x2 = x['edges']  #list
+                #PROSOHI AN EINAI MIDEN
+
+                for i in x1:
+                    fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
+                    fcm_concept.save()
+                for i in x2:
+                    fcm_edges = FCM_EDGES(fcm_concept=fcm_concept, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
+                    fcm_edges.save()
+                #print(searchTimi)
+                #print(searchTimi2)
+                #print("Some output")
+                #p1 = mynew(description=searchTimi)
+                #p1.save()
+                #p2 = mynew(description = form.cleaned_data['description'])
+                #p2.save()
+            else:
+                messages.error(request, "You must login to import a map")
+        else:
+            messages.error(request, "form invalid")
+        return redirect('/fcm/create_map')
+    data = {'title': "", 'description': "arxiko"}
+    form = jsForm()
+
+    return render(request, 'fcm_app/create_fcm.html', {
+        'form': form,
     })

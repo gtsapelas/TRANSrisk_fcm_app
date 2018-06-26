@@ -1,0 +1,409 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
+    <style type="text/css">
+        body, select {
+            font: 10pt sans;
+        }
+        #mynetwork {
+          position:relative;
+          width: 800px;
+          height: 600px;
+          border: 1px solid lightgray;
+        }
+        table.legend_table {
+          font-size: 11px;
+          border-width:1px;
+          border-color:#d3d3d3;
+          border-style:solid;
+        }
+        table.legend_table,td {
+          border-width:1px;
+          border-color:#d3d3d3;
+          border-style:solid;
+          padding: 2px;
+        }
+        div.table_content {
+          width:80px;
+          text-align:center;
+        }
+        div.table_description {
+          width:100px;
+        }
+        #operation {
+          font-size:28px;
+        }
+        #node-popUp {
+          display:none;
+          position:absolute;
+          top:350px;
+          left:170px;
+          z-index:299;
+          width:250px;
+          height:120px;
+          background-color: #f9f9f9;
+          border-style:solid;
+          border-width:3px;
+          border-color: #5394ed;
+          padding:10px;
+          text-align: center;
+        }
+        #edge-popUp {
+          display:none;
+          position:absolute;
+          top:350px;
+          left:170px;
+          z-index:299;
+          width:250px;
+          height:90px;
+          background-color: #f9f9f9;
+          border-style:solid;
+          border-width:3px;
+          border-color: #5394ed;
+          padding:10px;
+          text-align: center;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <script type="text/javascript" src="http://visjs.org/examples/network/exampleUtil.js"></script>
+	<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+    <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
+                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                </div><br><br><br><br>
+            {% else %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
+                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                </div><br><br><br><br>
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+
+
+<script type="text/javascript">
+    var numOfNodes = 0;
+    var numOfEdges = 0;
+    var nodes = null;
+    var edges = null;
+    var network = null;
+    // randomly create some nodes and edges
+    var data = getScaleFreeNetwork(0);
+    console.log(data);
+    var seed = 2;
+    function setDefaultLocale() {
+      var defaultLocal = navigator.language;
+      var select = document.getElementById('locale');
+      select.selectedIndex = 0; // set fallback value
+      for (var i = 0, j = select.options.length; i < j; ++i) {
+        if (select.options[i].getAttribute('value') === defaultLocal) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+    }
+    function destroy() {
+      if (network !== null) {
+        network.destroy();
+        network = null;
+      }
+    }
+    function draw() {
+      destroy();
+      nodes = [];
+      edges = [];
+      // create a network
+      var container = document.getElementById('mynetwork');
+      var options = {
+        physics: {
+          enabled: false
+        },
+        layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
+        locale: document.getElementById('locale').value,
+        manipulation: {
+          addNode: function (data, callback) {
+            console.log(data);
+            // filling in the popup DOM elements
+            document.getElementById('node-operation').innerHTML = "Add Node";
+            editNodeAdd(data, clearNodePopUp, callback);
+          },
+          editNode: function (data, callback) {
+            // filling in the popup DOM elements
+            document.getElementById('node-operation').innerHTML = "Edit Node";
+            editNodeEdit(data, cancelNodeEdit, callback);
+          },
+          addEdge: function (data, callback) {
+            if (data.from == data.to) {
+              var r = confirm("Do you want to connect the node to itself?");
+              if (r != true) {
+                callback(null);
+                return;
+              }
+            }
+            document.getElementById('edge-operation').innerHTML = "Add Edge";
+            editEdgeWithoutDragAdd(data, callback);
+          },
+          editEdge: {
+            editWithoutDrag: function(data, callback) {
+              document.getElementById('edge-operation').innerHTML = "Edit Edge";
+              editEdgeWithoutDragEdit(data,callback);
+            }
+          },
+          deleteNode: function (info, callback){
+            console.log("diagrafike komvos");
+            var akmes = info.edges.length;
+            if ( akmes!==0){
+              var y =0; // dinei to id tis protis akmis pou tha diagrafei
+              for (var i = akmes - 1; i >= 0; --i) {
+                y = info.edges[i]
+                for (var i = data.edges.length - 1; i >= 0; --i) {
+                if (data.edges[i].id == y) {
+                  console.log(i);
+                  data.edges.splice(i,1);
+                  break;
+                }
+              }
+            }
+            }
+            var x = info.nodes[0] // dinei to id tou komvou pou tha diagrafei
+            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+            for (var i = data.nodes.length - 1; i >= 0; --i) {
+              if (data.nodes[i].id == x) {
+                console.log(i);
+                data.nodes.splice(i,1);
+                break;
+              }
+            }
+            console.log(data);
+            callback(info);
+          },
+          deleteEdge: function (info, callback){
+            console.log("diagrafike akmi");
+            var x = info.edges[0] // dinei to id tis akmis pou tha diagrafei
+            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+            for (var i = data.edges.length - 1; i >= 0; --i) {
+              if (data.edges[i].id == x) {
+                console.log(i);
+                data.edges.splice(i,1);
+                break;
+              }
+            }
+            console.log(data);
+            callback(info);
+          }
+        }
+      };
+      var lala = {"nodes":[{"id":0,"label":"0"},{"id":1,"label":"1"},{"id":2,"label":"2"},{"id":3,"label":"3"},{"id":4,"label":"4"},{"id":5,"label":"5"}],"edges":[{"from":1,"to":0,"id":"31f2e17b-5e4a-4e60-bc79-aeb2dde3800f"},{"from":2,"to":0,"id":"57c796d6-b560-4a24-b037-b8b03d3cdbb5"},{"from":3,"to":2,"id":"da8c3f78-d5ea-4cc2-b97b-bd09116dd6ba"},{"from":4,"to":3,"id":"4601698a-234f-4a45-9233-77bd970d70cb"},{"from":5,"to":4,"id":"3d83d4a2-4cea-45ac-b34d-23ebda61f387"}]}
+      var lala2 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
+      var lala3 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"},{"id":7,"label":"sds","x":-310.05626649800604,"y":-149.29670101968725,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
+      var lala4 = {"nodes":[{"id":1,"label":"aa","x":-334,"y":-181,"shape":"box"},{"id":2,"label":"bb","x":257,"y":-165,"shape":"box"},{"id":3,"label":"cc","x":-296,"y":162,"shape":"box"},{"id":4,"label":"dd","x":283,"y":159,"shape":"box"},{"id":5,"label":"ee","x":-14,"y":4,"shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
+      var lala5 = {"nodes":[{"id":"1","label":"aa","x":-334,"y":-181,"shape":"box"},{"id":"2","label":"bb","x":257,"y":-165,"shape":"box"},{"id":"3","label":"cc","x":"-296","y":"162","shape":"box"},{"id":"4","label":"dd","x":"283","y":"159","shape":"box"},{"id":"5","label":"ee","x":"-14","y":"4","shape":"box"}],"edges":[{"id":"1","label":"aaee","from":"1","to":"5"},{"id":"2","label":"bbee","from":"5","to":"2"}]}
+      var lala6 = {"nodes":[{"id":1,"label":"aa","x":"0","y":"0","shape":"box"},{"id":2,"label":"bb","x":50,"y":0,"shape":"box"},{"id":3,"label":"cc","shape":"box"},{"id":4,"label":"dd","shape":"box"},{"id":5,"label":"ee","shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
+      var sketos = {"nodes":[{"id":0,"label":"sketos", "fixed": true, "x":0,"y":0, "shape":"box"}, {"id":1,"label":"sketos1", "fixed": true, "x":0,"y":0, "shape":"box"}],"edges":[]}
+      var lala7 = {"nodes":[{"id":1,"label":"vv","x":-339.97569465637207,"y":-212.6944580078125,"shape":"box","fixed":true},{"id":2,"label":"bb","x":237.02430534362793,"y":19.3055419921875,"shape":"box","fixed":true},{"id":3,"label":"cc","x":-313.97569465637207,"y":159.3055419921875,"shape":"box","fixed":true}],"edges":[{"id":1,"label":"cc","from":1,"to":2},{"id":2,"label":"cvbcv","from":3,"to":2}]}
+      //data = lala7;
+      network = new vis.Network(container, data, options);
+    }
+    function editNodeEdit(info, cancelAction, callback) {
+      console.log(data);
+      console.log(info.id);
+      console.log(info.label);
+      document.getElementById('node-label').value = info.label;
+      document.getElementById('node-saveButton').onclick = saveNodeDataEdit.bind(this, info, callback);
+      document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
+      document.getElementById('node-popUp').style.display = 'block';
+    }
+
+    function editNodeAdd(info, cancelAction, callback) {
+      console.log(data);
+      console.log(info.id);
+      console.log(info.label);
+      document.getElementById('node-label').value = info.label;
+      document.getElementById('node-saveButton').onclick = saveNodeDataAdd.bind(this, info, callback);
+      document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
+      document.getElementById('node-popUp').style.display = 'block';
+    }
+    // Callback passed as parameter is ignored
+    function clearNodePopUp() {
+      document.getElementById('node-saveButton').onclick = null;
+      document.getElementById('node-cancelButton').onclick = null;
+      document.getElementById('node-popUp').style.display = 'none';
+    }
+    function cancelNodeEdit(callback) {
+      clearNodePopUp();
+      callback(null);
+    }
+    function saveNodeDataAdd(info, callback) {
+      info.label = document.getElementById('node-label').value;
+      numOfNodes++;
+      info.id = numOfNodes;
+      info.shape = 'box';
+      //info.title = document.getElementById('node-title').value;
+      data.nodes.push({
+        id: info.id,
+        label: info.label,
+        x: info.x,
+        y: info.y,
+        shape: 'box',
+        fixed: true
+      });
+      clearNodePopUp();
+      callback(info);
+    }
+    function saveNodeDataEdit(info, callback) {
+      info.label = document.getElementById('node-label').value;
+      var x = data.nodes;
+      var y = x.filter(item => ((item.id === info.id) ))
+      y[0].label = info.label
+      clearNodePopUp();
+      callback(info);
+    }
+    function editEdgeWithoutDragAdd(data, callback) {
+      // filling in the popup DOM elements
+      document.getElementById('edge-label').value = data.label;
+      document.getElementById('edge-saveButton').onclick = saveEdgeDataAdd.bind(this, data, callback);
+      document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
+      document.getElementById('edge-popUp').style.display = 'block';
+    }
+    function editEdgeWithoutDragEdit(data, callback) {
+      // filling in the popup DOM elements
+      document.getElementById('edge-label').value = data.label;
+      document.getElementById('edge-saveButton').onclick = saveEdgeDataEdit.bind(this, data, callback);
+      document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
+      document.getElementById('edge-popUp').style.display = 'block';
+    }
+    function clearEdgePopUp() {
+      document.getElementById('edge-saveButton').onclick = null;
+      document.getElementById('edge-cancelButton').onclick = null;
+      document.getElementById('edge-popUp').style.display = 'none';
+    }
+    function cancelEdgeEdit(callback) {
+      clearEdgePopUp();
+      callback(null);
+    }
+    function saveEdgeDataAdd(info, callback) {
+      if (typeof info.to === 'object')
+        info.to = info.to.id
+      if (typeof info.from === 'object')
+        info.from = info.from.id
+      info.label = document.getElementById('edge-label').value;
+      numOfEdges++;
+      info.id = numOfEdges;
+      data.edges.push({
+        id: info.id,
+        label: info.label,
+        from: info.from,
+        to: info.to
+      });
+      clearEdgePopUp();
+      callback(info);
+    }
+    function saveEdgeDataEdit(info, callback) {
+      if (typeof info.to === 'object')
+        info.to = info.to.id
+      if (typeof info.from === 'object')
+        info.from = info.from.id
+      info.label = document.getElementById('edge-label').value;
+      var x = data.edges;
+      var y = x.filter(item => ((item.id === info.id) ))
+      y[0].label = info.label
+      clearEdgePopUp();
+      callback(info);
+    }
+    function init() {
+      setDefaultLocale();
+      draw();
+    }
+    var lastdata = "blabla"
+    function kaneStringToData(){
+      lastdata = JSON.stringify(data);   // metatrepei se string to data
+      //console.log(lastdata);
+      document.getElementById('timi_pou_thelo').value = lastdata;
+      document.getElementById('id_description').value = lastdata;
+      console.log(lastdata);
+    }
+
+
+  </script>
+
+<body onload="init();">
+<h2>Editing the nodes and edges-without-drag (localized)</h2>
+<p style="width: 700px; font-size:14px; text-align: justify;">
+  The localization is only relevant to the manipulation buttons.
+</p>
+
+<p>
+  <label for="locale">Select a locale:</label>
+  <select id="locale" onchange="draw();">
+    <option value="en">en</option>
+    <option value="de">de</option>
+    <option value="es">es</option>
+    <option value="it">it</option>
+    <option value="nl">nl</option>
+    <option value="pt-br">pt</option>
+    <option value="ru">ru</option>
+  </select>
+</p>
+
+<div id="node-popUp">
+  <span id="node-operation">node</span> <br>
+  <table style="margin:auto;">
+    <tr hidden>
+      <td>id</td><td><input id="node-id" value="la"/></td>
+    </tr>
+    <tr>
+      <td>label</td><td><input id="node-label" value="la" /></td>
+    </tr>
+    <!--tr>
+      <td>title</td><td><input id="node-title" value="" /></td>
+    </tr-->
+  </table>
+  <input type="button" value="save" id="node-saveButton" />
+  <input type="button" value="cancel" id="node-cancelButton" />
+</div>
+
+<div id="edge-popUp">
+  <span id="edge-operation">edge</span> <br>
+  <table style="margin:auto;">
+    <tr>
+      <td>weight</td><td><input id="edge-label" value="new value" /></td>
+    </tr></table>
+  <input type="button" value="save" id="edge-saveButton" />
+  <input type="button" value="cancel" id="edge-cancelButton" />
+</div>
+<!--div>
+<form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div>
+    <input id="search" name="search" type="text" class="query-search" placeholder="Search...">
+    <button type="submit" onclick="kaneStringToData()">Save</button>
+    <input class="btn btn-primary" type="submit" value="submit">
+
+  </div>
+</form>
+</div-->
+<form action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <div id = "timi_pou_thelo" name = "timi_pou_thelo"  value ="fdf" ></div>
+    <input type="submit" onclick="kaneStringToData()" value="Submit" />
+    <!--button type="submit" onclick="kaneStringToData()" class="btn btn-success btn-rose">Submit<div></div></button-->
+
+</form>
+
+<br />
+<div id="mynetwork"></div>
+
+{% endblock %}
