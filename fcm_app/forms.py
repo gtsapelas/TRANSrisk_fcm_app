@@ -47,3 +47,10 @@ class FiltersForm(forms.Form):
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
 
 
+
+
+class jsForm(forms.Form):
+    #description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
+    title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    description = forms.CharField(label='Description', max_length=10000)
+    chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())

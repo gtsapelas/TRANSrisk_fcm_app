@@ -7,6 +7,7 @@ app_name = 'fcm_app'
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^import_map$', views.import_fcm, name='import_map'),
+    url(r'^create_map$', views.create_fcm, name='create_map'),
     url(r'^browse$', views.browse, name='browse'),
     url(r'^view-fcm/(?P<fcm_id>[\d-]+)/$', views.view_fcm, name='view_fcm'),
     url(r'^view-fcm-concept/(?P<fcm_id>[\d-]+)/$', views.view_fcm_concept, name='view_fcm_concept'),

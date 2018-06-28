@@ -9,14 +9,16 @@ from django_countries.fields import CountryField
 
 # Create your models here.
 class FCM(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # ITAN PROTECT
     country = CountryField()
     status = models.IntegerField(default=1)
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=2000)
+    chartis = models.TextField(default = "")
     creation_date = models.DateTimeField('date created')
-    map_image = models.ImageField(upload_to='media/images')
+    map_image = models.ImageField(upload_to='media/images', default='media/images/Capture1.PNG')
     map_html = models.FileField(upload_to='media/html')
+    manual = models.BooleanField(default=False)   #  default = None  # allios null=True # false an einai etoimo kai to allazoume an einai manual
 
     def __str__(self):
         return self.title
@@ -25,7 +27,19 @@ class FCM(models.Model):
 class FCM_CONCEPT(models.Model):
     fcm = models.ForeignKey(FCM)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
     title = models.CharField(max_length=200)
-    id_in_fcm = models.CharField(max_length=10)
+    id_in_fcm = models.CharField(max_length=10) # den ksero gt to exoume afisei Charfield
+    x_position = models.IntegerField(default=0)
+    y_position = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+class FCM_EDGES(models.Model):
+    fcm_concept = models.ForeignKey(FCM_CONCEPT)
+    title = models.CharField(max_length=200)
+    id_in_fcm_edges= models.CharField(max_length=10)
+    from_node = models.IntegerField(default=0)
+    to_node = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

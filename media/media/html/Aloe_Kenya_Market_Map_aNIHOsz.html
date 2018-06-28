@@ -1,0 +1,181 @@
+<html>
+<head><title>Market Map: Aloe in Kenya (Albu & Griffith, 2006)</title>
+<style type="text/css">
+.tooltip {
+  font-size:10pt;
+  color:#FFFFFF;
+  text-align:justify;
+  background-color:#000000;
+  border:1px solid black;
+  padding:2px
+}
+</style>
+<style type="text/css">
+.tooltip {
+  position:absolute;
+  display:none;
+  width:auto;
+  max-width:250px;
+}
+</style>
+</head>
+<body>
+
+<script type="text/javascript">
+tooltip = null;
+document.onmousemove = updateTooltip;
+function updateTooltip(e) {
+try {
+if (document.all) {
+if (document.documentElement && document.documentElement.scrollTop) { // Explorer 6 Strict
+x = document.documentElement.scrollLeft + window.event.x;
+y = document.documentElement.scrollTop + window.event.y;
+}
+else { // all other Explorers
+x = document.body.scrollLeft + window.event.x;
+y = document.body.scrollTop + window.event.y;
+}
+}
+else {
+x = e.pageX;
+y = e.pageY;
+}
+if (tooltip != null) {
+o = 20;
+var sx, sy;
+if (self.pageYOffset) { // all except Explorer
+sx = self.pageXOffset;
+sy = self.pageYOffset;
+}
+else if (document.documentElement && document.documentElement.scrollTop) { // Explorer 6 Strict
+sx = document.documentElement.scrollLeft;
+sy = document.documentElement.scrollTop;
+}
+else if (document.body) { // all other Explorers
+sx = document.body.scrollLeft;
+sy = document.body.scrollTop;
+}
+t = y + o + tooltip.offsetHeight;
+w = sy + document.body.clientHeight;
+if (t > w) {
+y = y - o - tooltip.offsetHeight;
+}
+else {
+y = y + o;
+}
+t = x + o + tooltip.offsetWidth;
+w = sx + document.body.clientWidth;
+if (t > w) {
+x = x - o - tooltip.offsetWidth;
+}
+else {
+x = x + o;
+}
+if ((tooltip.style.top == '' || tooltip.style.top == 0) && (tooltip.style.left == '' || tooltip.style.left == 0))
+{
+tooltip.style.width = tooltip.offsetWidth + 'px';
+tooltip.style.height = tooltip.offsetHeight + 'px';
+}
+tooltip.style.left = x + "px";
+tooltip.style.top = y + "px";
+}
+} catch (error) { error = null; }
+}
+function showTooltip(id) {
+try {
+tooltip = document.getElementById(id);
+tooltip.style.display = "block";
+} catch (error) { error = null; }
+}
+function hideTooltip() {
+try {
+tooltip.style.display = "none";
+} catch (error) { error = null; }
+}
+</script>
+
+<div class="tooltip" id="n0">BUSINESS SERVICES</div>
+<div class="tooltip" id="n1">Packaging</div>
+<div class="tooltip" id="n2">Shipping</div>
+<div class="tooltip" id="n3">Road Transport</div>
+<div class="tooltip" id="n4">Harvesters harbour deep misconceptions about what happens to their product, its value and destination.</div>
+<div class="tooltip" id="n5">Storage and Bulking Up</div>
+<div class="tooltip" id="n6">Quality control in harvesting is a problem. Processors have devised a simple technique for testing sap and are well-placed to advise harvesters on extraction methods.</div>
+<div class="tooltip" id="n7">Harvesters would also benefit from knowledge about more fuel-efficient technologies for processing.</div>
+<div class="tooltip" id="n8">Harvesters are scattered and disorganized.</div>
+<div class="tooltip" id="n9">Technical Extension</div>
+<div class="tooltip" id="n10">MARKET CHAIN</div>
+<div class="tooltip" id="n11">Buyers in Europe, Middle East and South Asia <br /> P = $700 / kg</div>
+<div class="tooltip" id="n12">South African market <br /> P = $200 / kg</div>
+<div class="tooltip" id="n13">Exporters in Mombassa <br /> P = $? / kg</div>
+<div class="tooltip" id="n14">Urban traders from other regions</div>
+<div class="tooltip" id="n15">Brokerage Agents</div>
+<div class="tooltip" id="n16">Traders in market towns <br /> P = $75 / kg</div>
+<div class="tooltip" id="n17">The sap processors reduce the sap in vats to a stable concentrated form called aloe bitters. <br /> P = $50 / kg</div>
+<div class="tooltip" id="n18">The aloe market chain in Kenya begins with thousands of harvesters in semi-arid districts like West Pokot, who extract raw aloe sap from wild plants.</div>
+<div class="tooltip" id="n19">BUSINESS ENVIRONMENT</div>
+<div class="tooltip" id="n20">Since 1999, international rules (CITES) on aloe export have pushed the Kenyan aloe trade underground.</div>
+<div class="tooltip" id="n21">Forest Act</div>
+<div class="tooltip" id="n22">The un-ratified Presidential ban on aloe export has pushed the Kenyan aloe trade underground.</div>
+<div class="tooltip" id="n23">Corruption throughout the chain adds costs and creates distortions of power. For example, processors may bribe the local chiefs who negotiate prices on behalf of harvesters.</div>
+<div class="tooltip" id="n24">Mistrust is exacerbated by prejudices about the Somali ethnicity of processors.</div>
+<div class="tooltip" id="n25">Conflict - Insecurity</div>
+<div class="tooltip" id="n26">Drought and Famine Relief</div>
+<div class="tooltip" id="n27">Land Tenure</div>
+<div class="tooltip" id="e0"> Bitters in South Africa are re-exported to Europe, the Middle East and South Asia.</div>
+<div class="tooltip" id="e1"> Certain buyers from Europe, South Asia and the Middle East also find their way directly to Mombassa, bypassing the South African market. </div>
+<div class="tooltip" id="e2"> Kenyan aloe bitters are then exported at well below world market prices to South Africa.</div>
+<div class="tooltip" id="e5"> Mombassa imports aloe bitters from other regions as well.</div>
+<div class="tooltip" id="e7"> Traders in market towns in turn supply four export agents over 1000 km away in Mombassa.</div>
+<div class="tooltip" id="e8"> Brokering</div>
+<div class="tooltip" id="e11"> The bitters are sold to traders in market towns.</div>
+<div class="tooltip" id="e15"> Sap harvesters in districts like West Pokot supply a handful of itinerant processors.</div>
+
+<map name="image1_1">
+  <area shape="poly" coords="600,315,600,328,610,328,610,315,600,315,600,315" alt="" onmouseover="showTooltip('e15')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="835,989,835,265,830,260,666,260,666,270,830,270,830,265,825,265,825,989,835,989,835,989" alt="" onmouseover="showTooltip('e11')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="835,1214,835,1100,825,1100,825,1214,835,1214,835,1214" alt="" onmouseover="showTooltip('e8')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="755,1045,769,1045,769,1035,755,1035,755,1045,755,1045" alt="" onmouseover="showTooltip('e7')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="710,989,710,901,700,901,700,989,710,989,710,989" alt="" onmouseover="showTooltip('e5')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="710,1139,710,1101,700,1101,700,1139,710,1139,710,1139" alt="" onmouseover="showTooltip('e2')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="585,1139,585,1065,580,1065,580,1070,645,1070,645,1060,580,1060,575,1065,575,1139,585,1139,585,1139" alt="" onmouseover="showTooltip('e1')" onmouseout="hideTooltip()"/>
+  <area shape="poly" coords="630,1195,644,1195,644,1185,630,1185,630,1195,630,1195" alt="" onmouseover="showTooltip('e0')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="1154,952,1254,1052" alt="" onmouseover="showTooltip('n27')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="999,846,1099,946" alt="" onmouseover="showTooltip('n26')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="1154,748,1254,848" alt="" onmouseover="showTooltip('n25')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="999,642,1099,742" alt="" onmouseover="showTooltip('n24')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="1154,544,1254,644" alt="" onmouseover="showTooltip('n23')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="999,438,1099,538" alt="" onmouseover="showTooltip('n22')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="1154,340,1254,440" alt="" onmouseover="showTooltip('n21')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="999,234,1099,334" alt="" onmouseover="showTooltip('n20')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="984,115,1273,1140" alt="" onmouseover="showTooltip('n19')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="555,340,655,440" alt="" onmouseover="showTooltip('n18')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="555,215,655,315" alt="" onmouseover="showTooltip('n17')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="780,990,880,1090" alt="" onmouseover="showTooltip('n16')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="780,1215,880,1315" alt="" onmouseover="showTooltip('n15')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="655,790,755,890" alt="" onmouseover="showTooltip('n14')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="655,990,755,1090" alt="" onmouseover="showTooltip('n13')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="655,1140,755,1240" alt="" onmouseover="showTooltip('n12')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="530,1140,630,1240" alt="" onmouseover="showTooltip('n11')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="515,15,895,1365" alt="" onmouseover="showTooltip('n10')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="280,340,380,440" alt="" onmouseover="showTooltip('n9')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="280,465,380,565" alt="" onmouseover="showTooltip('n8')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="155,465,255,565" alt="" onmouseover="showTooltip('n7')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="30,465,130,565" alt="" onmouseover="showTooltip('n6')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="30,590,130,690" alt="" onmouseover="showTooltip('n5')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="30,715,130,815" alt="" onmouseover="showTooltip('n4')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="30,865,130,965" alt="" onmouseover="showTooltip('n3')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="280,865,380,965" alt="" onmouseover="showTooltip('n2')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="280,990,380,1090" alt="" onmouseover="showTooltip('n1')" onmouseout="hideTooltip()"/>
+  <area shape="rect" coords="15,115,395,1140" alt="" onmouseover="showTooltip('n0')" onmouseout="hideTooltip()"/>
+</map>
+
+
+    <table class="yimagetable" cellspacing="0" cellpadding="0" border="0">
+      <tr>
+        <td><img class="yimage" src="Aloe%20Kenya%20Market%20Map1_1.png" usemap="#image1_1" border="0" alt=""/></td>
+      </tr>
+    </table>
+
+</body>
+</html>

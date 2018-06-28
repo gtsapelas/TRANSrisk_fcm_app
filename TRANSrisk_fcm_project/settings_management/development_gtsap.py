@@ -5,8 +5,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'transrisk_fcm_db',
-        'USER': 'postgres', #Giannis
-        'PASSWORD': '1234', #13131313
+        'USER': 'postgres',
+        'PASSWORD': '13131313',
         'HOST': 'localhost',
         'PORT': '5432',
     }
