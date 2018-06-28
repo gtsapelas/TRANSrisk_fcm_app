@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fcm_app', '0015_fcm_manual'),
+        ('fcm_app', '0018_fcm_manual'),
     ]
 
     operations = [

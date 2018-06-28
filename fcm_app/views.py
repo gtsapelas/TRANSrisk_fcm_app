@@ -1,13 +1,12 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.shortcuts import render
-from .forms import FCMForm,FCMCONCEPTForm, FiltersForm
-from .forms import jsForm
-from .models import FCM
-from .models import FCM_CONCEPT
-from .models import FCM_CONCEPT_INFO
+from django.shortcuts import render, redirect
+from forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm
+from models import FCM
+from models import FCM_CONCEPT
+from models import FCM_CONCEPT_INFO
 #from .models import mynew
-from .models import FCM_EDGES
+from models import FCM_EDGES
 from django.http import HttpResponse
 from django.contrib import messages
 from bs4 import BeautifulSoup

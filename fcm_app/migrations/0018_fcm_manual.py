@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('fcm_app', '0014_mynew'),
+        ('fcm_app', '0017_mynew'),
     ]
 
     operations = [

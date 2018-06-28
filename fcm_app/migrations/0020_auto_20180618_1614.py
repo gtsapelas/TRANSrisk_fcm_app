@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fcm_app', '0016_fcm_manual_concept_fcm_manual_edges'),
+        ('fcm_app', '0019_fcm_manual_concept_fcm_manual_edges'),
     ]
 
     operations = [

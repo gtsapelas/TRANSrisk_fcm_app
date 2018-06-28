@@ -51,5 +51,3 @@ class FCM_CONCEPT_INFO(models.Model):
 
     def __str__(self):
         return self.info
-
-
