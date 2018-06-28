@@ -4,7 +4,7 @@ from TRANSrisk_fcm_project.settings_management.development import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'transrisk_fcm_db_2',
+        'NAME': 'transrisk_fcm_db',
         'USER': 'postgres', #Giannis
         'PASSWORD': '1234', #13131313
         'HOST': 'localhost',

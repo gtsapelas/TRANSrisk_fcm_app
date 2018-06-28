@@ -3,6 +3,100 @@ body {
     overflow-y: hidden;
 }
 
+.main-panel > .navbar {
+    margin-bottom: 0;
+    padding: 0 100px;
+    box-shadow: 0px 0px 2px 0px #3e3e3e;
+}
+
+.django-ckeditor-widget{
+    width: 100% !important;
+}
+
+.django-ckeditor-widget #cke_id_concept_info{
+    width: 100% !important;
+}
+
+.navbar .navbar-right .is-active, .navbar .navbar-right li:hover{
+    background-color: transparent !important;
+    box-shadow: inset 0px -6px 0px #b0b0b0 !important;
+}
+
+.navbar .navbar-right .is-active, .navbar .navbar-right li .dropdown-menu li:hover{
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+.navbar .navbar-nav > li > a {
+    font-size: 14px;
+}
+
+.navbar {
+    height: 110px !important;
+    min-height: 100px !important;
+}
+
+.navbar-right li:hover{
+    background-color: #e9e9e9;
+}
+
+.navbar .navbar-brand{
+    padding: 5px 0px !important;
+}
+
+.main-panel > .content {
+    margin: 110px 100px 10px 100px!important;
+}
+
+
+.container {
+    width: 100%;
+}
+
+.form-group input[type=file] {
+    opacity: 1;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    padding: 6px 12px !important;
+}
+
+.form-file-group .form-group{
+    margin: 15px 0 0 0;
+}
+
+.fcm-import-card .card .card-header {
+    text-align: center;
+    background-color: #0a7431;
+}
+
+.select2{
+    min-width: 100% !important;
+}
+
+a:hover, a:focus {
+    color: #d2d2d2;
+    text-decoration: none;
+}
+
+.browse-container h1, .concept-info-container h1, .available-concepts-container h1, .edit-fcm-container h1{
+    box-shadow: inset 0px -1px 0px 0px #cfcfcf;
+    margin-bottom: 25px;
+}
+
+.browse-container .hover-block {
+    display: none;
+}
+
+.browse-container .card-content:hover .hover-block {
+    display: block !important;
+}
+
+.btn-success{
+    background-color: #0a7431 !important;
+}
+
 /* Paddings */
 .padding-1 {
     padding: 5px;
@@ -333,7 +427,7 @@ body {
 .main-panel > .footer {
     background: #333;
     color: #eee;
-    margin-top: 100px;
+    /*margin-top: 100px;*/
     /* position: relative; */
     /* bottom: 0px; */
 }
@@ -446,7 +540,7 @@ label.section-label {
 }
 .dropdown-menu{
     /*height: 150px;*/
-    padding: 10 10px;
+    padding: 10px 10px;
     /*width: 300px;*/
 }
 

@@ -8,23 +8,23 @@
 
 {% block content %}
 
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                </div>
-            {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                </div>
-            {% endif %}
-        {% endfor %}
+{#    {% if messages %}#}
+{#        {% for message in messages %}#}
+{#            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}#}
+{#                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">#}
+{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <div class="col-sm-8 col-sm-offset-2 alert alert-success">#}
+{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{##}
+{#    {% endif %}#}
 
-    {% endif %}
-
-    <div class="col-sm-offset-1 col-sm-10">
-        <h1 class="col-sm-12" style="text-align: center">Edit the FCM</h1>
+    <div class="col-sm-offset-1 col-sm-10 edit-fcm-container">
+        <h1 class="col-sm-12" style="text-align: center">Edit the FCM ??</h1>
     </div>
     <div class="col-sm-offset-1 col-sm-10 panel panel-default">
         <div class="panel-body">
@@ -37,11 +37,18 @@
     </div>
 
     <div class="col-sm-offset-1 col-sm-10">
-        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}"> Edit the concepts </a></btn>
+        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}"> Edit the concepts ?? </a></btn>
     </div>
 
 {% endblock %}
 
 {% block js %}
+
+    <script>
+        $(document).ready(function () {
+            $('select').select2();
+        })
+    </script>
+
 
 {% endblock %}

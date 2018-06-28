@@ -5,16 +5,20 @@
 }
 
 
-.card-container .card-header{
-    height: 50px;
-    line-height: 50px;
+.browse-container .card-container .card-header{
+    height: 40px;
+    line-height: 40px;
     overflow: hidden;
     vertical-align: middle;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 12pt;
     padding: 0% 2%;
+    background-color: #20412e;
+    color: white;
 }
+
+
 
 .card-container .card-content{
     height: 220px;
@@ -33,7 +37,7 @@
     font-style: italic;
     height: 20px;
     margin: 0;
-    padding: 1%;
+    padding: 2%;
     line-height: 10px;
     color: black;
 }

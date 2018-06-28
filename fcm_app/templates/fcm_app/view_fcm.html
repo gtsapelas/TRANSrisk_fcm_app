@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+    <div class="col-sm-12 panel panel-default" style="padding: 0; margin-top: 0;">
         <div class="panel-body">
             <h1>{{ fcm.title}}</h1>
             <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+    <div class="col-sm-12 panel panel-default" style="padding: 0; margin-top: 0;">
         <div id = 'map-panel' class="panel-body" style="margin: 0; padding: 0">
             {% autoescape off %}
                 {{ map_body }}
@@ -31,8 +31,10 @@
 
     {% for key,value in info_dict.items %}
         <div class="popover" id="popover-{{ key }}">
-            <button type="button" onclick='$(this).parent().hide()'>&times</button>
-            <div style="max-width: none; padding: 10px; border-width: 1px; border: solid">
+            <row>
+                <button type="button" onclick='$(this).parent().hide()' style="border: none; float: right;">&times</button>
+            </row>
+            <div style="max-width: none; padding: 20px 10px;">
                 {% autoescape off %}
                     {{ value }}
                 {% endautoescape %}

@@ -5,3 +5,9 @@
 ul#id_status {
     padding-left: 0px;
 }
+
+textarea{
+    border-style: solid !important;
+    border-width: 1px 1px 0px 1px !important;
+    border-color: lightgrey !important;
+}

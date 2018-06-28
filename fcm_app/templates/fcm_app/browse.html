@@ -7,14 +7,14 @@
 {% endblock %}
 
 {% block content %}
-    <div>
+    <div class="container text-center browse-container">
 
-        <h1>Fuzzy Cognitive Maps</h1>
-        <div class="col-sm-3 col-sm-offset-1" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
+        <h1>Fuzzy Cognitive Maps ???</h1>
+        <div class="col-sm-3" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
             <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group is-empty" style="display: inline-block">
-                    <label><dt>Filters</dt></label><br>
+                    <label><dt>Filter by:</dt></label><br>
                     <label>Title:</label>
                     <!--input class="searchbox-input form-control" type="text"-->
                     {{filter_form.filtered_title}}
@@ -23,19 +23,22 @@
                     <label>Country:</label><br>
                     {{filter_form.filtered_country}}
                     <br><br>
-                    <input type="Submit" value="Submit"/>
+                    <input class="btn btn-sm btn-success" type="Submit" value="Submit"/>
                 </div>
             </form>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-9">
             {% for fcm in all_fcms %}
-                <div class="col-sm-6 card-container">
+                <div class="col-sm-4 card-container">
                     <a href="{% url 'fcm_app:view_fcm' fcm.id %}" class="card">
                         <div class="card-header text-center" title="{{ fcm.title }}">
                            {{ fcm.title }}
                         </div>
-                        <div class="card-content text-center">
-                            <img src="{{ fcm.map_image.url }}" alt="{{ fcm.description }}" class="img-responsive">
+                        <div class="card-content text-center" style="position: relative">
+                            <img src="{{ fcm.map_image.url }}" alt="{{ fcm.description }}" class="img-responsive" >
+                            <div class="hover-block text-center" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(98, 98, 98, 0.49);">
+                                <h3 style="margin-top: 70px; color: #fff6f6;">Explore</h3>
+                            </div>
                         </div>
                         <div class="card-footer text-center"> Created at {{ fcm.creation_date|date:"d M Y" }}</div>
                     </a>
@@ -68,5 +71,18 @@
             {% endif %}
         </div>
     </div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        $(document).ready(function () {
+            $('select').addClass("full-width");
+            $('select').select2();
+            $(".select2").css('width', '100%;');
+        })
+
+    </script>
+
 {% endblock %}
 

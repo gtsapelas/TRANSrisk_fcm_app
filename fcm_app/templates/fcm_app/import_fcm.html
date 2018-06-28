@@ -8,22 +8,22 @@
 
 {% block content %}
 
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                </div>
-            {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
-                </div>
-            {% endif %}
-        {% endfor %}
+{#    {% if messages %}#}
+{#        {% for message in messages %}#}
+{#            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}#}
+{#                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">#}
+{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <div class="col-sm-8 col-sm-offset-2 alert alert-success">#}
+{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{##}
+{#    {% endif %}#}
 
-    {% endif %}
-
-    <div class="col-sm-offset-2 col-sm-8 fcm-import-card">
+    <div class="col-sm-offset-1 col-sm-10 fcm-import-card">
         <div class="card">
             <form class="form-horizontal" action="{% url 'fcm_app:import_map' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -42,7 +42,7 @@
                                 </div>
                             {% else %}
                                 <div class="col-sm-offset-1 col-sm-10" id="img-html">
-                                    <div class="form-file-group is-empty">
+                                    <div class="form-file-group">
                                         <label>{{ field.label }}</label>
                                         {{ field }}
                                     </div>
@@ -61,4 +61,15 @@
         </div>
 
     </div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        $(document).ready(function () {
+            $('select').select2();
+        })
+    </script>
+
+
 {% endblock %}

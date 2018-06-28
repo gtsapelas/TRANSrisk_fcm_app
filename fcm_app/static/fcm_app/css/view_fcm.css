@@ -1,5 +1,6 @@
 .panel-body {
     padding: 0px 15px;
+    background-color: #f2f2f2;
 }
 
 .panel-body h1{
@@ -41,9 +42,9 @@
 }
 
 .popover {
-    overflow: scroll;
-    max-width:60%;
-    max-height:30%;
-    min-width:300px;
-    min-height:150px;
+    overflow: auto;
+    max-width: 800px;
+    max-height: 600px;
+    min-width: 600px;
+    min-height: 400px;
 }

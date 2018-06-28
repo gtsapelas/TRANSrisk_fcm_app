@@ -24,6 +24,7 @@ class FCMCONCEPTForm(forms.Form):
 
 
 def first_year():
+    # return 2017
     return int(FCM.objects.all().order_by('creation_date')[0].creation_date.strftime('%Y'))
 
 def last_year():
@@ -42,7 +43,7 @@ COUNTRIES_CHOICES.insert(0,('-','---'))
 
 class FiltersForm(forms.Form):
     filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
-    filtered_year  = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
+    filtered_year = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
 
 

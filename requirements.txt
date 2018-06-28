@@ -14,3 +14,5 @@ pillow==4.2.1
 bs4
 django-ckeditor
 django-countries
+
+django-countries

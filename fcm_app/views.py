@@ -122,7 +122,7 @@ def view_fcm(request, fcm_id):
             concept_info = FCM_CONCEPT_INFO.objects.get(fcm_concept=concepts_item)
             info_dict[str(concepts_item.id_in_fcm)] = concept_info.info
         except FCM_CONCEPT_INFO.DoesNotExist:
-            info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
+            info_dict[str(concepts_item.id_in_fcm)] = '<p style="text-align: center;"> No information available </p>'
     print(info_dict)
 
     return render(request, 'fcm_app/view_fcm.html', {
