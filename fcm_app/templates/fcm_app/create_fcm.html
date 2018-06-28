@@ -10,11 +10,18 @@
             font: 10pt sans;
         }
         */
+        #node-popUp{
+            font-size: 14px;
+        }
+        #edge-popUp{
+            font-size: 12px;
+        }
         #mynetwork {
           position:relative;
-          width: 800px;
+          width: auto;
           height: 600px;
           border: 1px solid lightgray;
+          clear:both;
         }
         table.legend_table {
           font-size: 11px;
@@ -83,11 +90,11 @@
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                 <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
-                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                 </div><br><br><br><br>
             {% else %}
                 <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
                 </div><br><br><br><br>
             {% endif %}
         {% endfor %}
@@ -219,6 +226,11 @@
       data = lala7;
       */
       network = new vis.Network(container, data, options);
+
+        network.on("click", function (ctx) {
+            var dataURL = ctx.canvas.toDataURL();
+            document.getElementById('canvasImg').src = dataURL;
+        });
     }
     function editNodeEdit(info, cancelAction, callback) {
       console.log(data);
@@ -340,7 +352,6 @@
       //document.getElementById('id_description').value = lastdata;
     }
 
-
   </script>
 
 <body onload="init();">
@@ -409,6 +420,9 @@
 </form>
 
 <br />
-<div id="mynetwork"></div>
+<div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+    <div id="mynetwork"></div>
+</div>
+
 
 {% endblock %}

@@ -3,13 +3,17 @@
 {% load static %}
 
 {% block css %}
-    <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
+    <link href="{% static 'fcm_app/css/view_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
         /*
         body, select {
             font: 10pt sans;
         }
         */
+        <!--.myClass{-->
+        <!--top: 300px !important;-->
+        <!--left: 300px !important;}-->
+
         #mynetwork {
           position:relative;
           width: auto;
@@ -80,20 +84,20 @@
     <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
-                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                </div><br><br><br><br>
-            {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
-                </div><br><br><br><br>
-            {% endif %}
-        {% endfor %}
+    <!--{% if messages %}-->
+        <!--{% for message in messages %}-->
+            <!--{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}-->
+                <!--<div class="col-sm-8 col-sm-offset-2 alert alert-danger">-->
+                    <!--<p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>-->
+                <!--</div><br><br><br><br>-->
+            <!--{% else %}-->
+                <!--<div class="col-sm-8 col-sm-offset-2 alert alert-success">-->
+                    <!--<p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>-->
+                <!--</div><br><br><br><br>-->
+            <!--{% endif %}-->
+        <!--{% endfor %}-->
 
-    {% endif %}
+    <!--{% endif %}-->
 
 
 
@@ -124,6 +128,10 @@
         network = null;
       }
     }
+
+    var thesix = 50;
+    var thesiy = 50;
+    var grafos;
     function draw() {
       destroy();
       nodes = [];
@@ -131,6 +139,9 @@
       // create a network
       var container = document.getElementById('mynetwork');
       var options = {
+        //interaction:{
+        //  tooltipDelay: 3600000      // Set a really big delay - one hour
+        //},
         interaction:{hover:false},
 		//	manipulation: {
 		//		enabled: true
@@ -226,72 +237,107 @@
       var lala8 = {"nodes":[{"id":1,"label":"ss","x":-301,"y":-210,"shape":"box"},{"id":2,"label":"cc","x":65,"y":-150,"shape":"box"}],"edges":[{"id":1,"label":"cc","from":1,"to":2}]}
       */
       var data1 = {{ fcm.chartis|safe }};  // pernao ta dedomena apo piso
+      grafos = data1;
       //data = data1;
       //console.log(data1)
       //var data1 = "{{data1}}".replace(/&quot;/g,"\"");
       network = new vis.Network(container, data1, options);  // dimiourgia tou network
+
       /*
-      network.on("click", function (params) {
-		var nodeID = params.nodes[0];
-		console.log(nodeID);
-		var ids = params.nodes;
-		console.log(ids);
-		--nodeID
-		showTooltip2(params, nodeID);
-		//var clickedNodes = nodes.get(ids);
-		//console.log('clicked nodes:', clickedNodes);
-        //params.event = "[original event]";
-		//console.log("sadfsdsdsdfsdfssdfsdfsdfdsfffffff");
+      var image = new Image();
+      image.src = "/static/img/logo.png";
+      network.on("beforeDrawing", function(ctx) {
+        console.log('beforeDrawing');
+        ctx.drawImage(image, 0, 0);
       });
-      //network.on("hoverNode", function (params) {
-      //  console.log('hoverNode Event:', params);
-      //});
-        */
+      */
+
+      <!--network.on("click", function (params) {-->
+		<!--var nodeID = params.nodes[0];-->
+		<!--console.log(nodeID);-->
+		<!--var ids = params.nodes;-->
+		<!--console.log(ids);-->
+		<!--&#45;&#45;nodeID-->
+		<!--showTooltip2(params, nodeID);-->
+		<!--//var clickedNodes = nodes.get(ids);-->
+		<!--//console.log('clicked nodes:', clickedNodes);-->
+        <!--//params.event = "[original event]";-->
+      <!--});-->
+
+      network.on("click", function (params) {
+        console.log(params.pointer.DOM)
+      });
+
       network.on("selectNode", function (params) {
         console.log(params);
         var nodeID = params.nodes[0];  // to id tou komvou pou patithike
+        //--nodeID
+        console.log(nodeID);
+        <!--showTooltip2(params, nodeID);-->
+        var content = document.getElementById('popover-'+nodeID).innerHTML;
+        var properties = params;
         --nodeID
-        showTooltip2(params, nodeID);
-      });
-      network.on("deselectNode", function (params) {
-        console.log(params);
-        $('.popover').hide();
-      });
+        title = grafos.nodes[nodeID].label;
+        showJQueryDialog(properties, nodes, title);
 
+        function showJQueryDialog(properties, nodes, title) {
+          document.getElementById('dlg_text').innerHTML = content;
+          var theHeight = $('#popover-'+(4)).height();
+          var theWidth = $('#popover-'+(4)).width();
+          $('#dialog').dialog({
+              title: title,
+              autoOpen: true,
+              modal: true,
+              resizable: true,
+              closeOnEscapeType: true,
+              width: theWidth,
+              height: theHeight,
+              dialogClass:"myClass"
+            <!--position: {-->
+                <!--my: 'left',-->
+                <!--at: 'left',-->
+                <!--of: $('#mynetwork')-->
+            <!--}-->
+          });
+          $('.myClass').css({'top': properties.pointer.DOM.y + 'px', left:properties.pointer.DOM.x + 'px'})
 
-    }
-    function showTooltip2(params, id) {
-            var offset = $(this).offset();
-            console.log(offset);
-            var scroll = $('.main-panel').scrollTop();
-            console.log(scroll);
-            //var left = data.nodes[id].x;
-           // var top = data.nodes[id].y;
-            var left = params.pointer.canvas.x;
-            var top = params.pointer.canvas.y;
-            var theHeight = $('#popover-'+(id+1)).height();
-            var theWidth = $('#popover-'+(id+1)).width();
-            $('.popover').hide();
-            $('#popover-'+(id+1)).show();
-            //$('#popover-'+(id+1)).css(20, (20) + 'px');
-            //$('#popover-'+(id+1)).css(20, (20) + 'px');
-            $('#popover-'+id+1).css('left', (left-theWidth/2) + 'px');
-            $('#popover-'+id+1).css('top', (scroll+top-(theHeight)-10) + 'px');
-    }
-    function showTooltip3(e, id) {
-            var offset = $(this).offset();
-            var scroll = $('.main-panel').scrollTop();
-            var left = e.pageX;
-            var top = e.pageY;
-            var theHeight = $('#popover-'+id).height();
-            var theWidth = $('#popover-'+id).width();
-            $('.popover').hide();
-            $('#popover-'+id).show();
-            $('#popover-'+id).css('left', (left-theWidth/2) + 'px');
-            $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+          <!--$( "#dialog" ).dialog({-->
+            <!--position: { my: "right top", at: "right bottom" }-->
+          <!--});-->
+          <!--$( "#dialog" ).dialog( "option", "position", { my: "left+100", at: "left+100"} );-->
+
+          <!--$('#dialog').dialog( "option", "position", { my: "left top", at: "left bottom" } );-->
+          <!--$('#dialog').css('position', 'fixed');-->
+          <!--$('#dialog').css('left', (properties.pointer.DOM.x) + 'px');-->
+          <!--$('#dialog').css('top', (properties.pointer.DOM.y) + 'px');-->
         }
+        });
+      <!--network.on("deselectNode", function (params) {-->
+        <!--console.log(params);-->
+        <!--$('.popover').hide();-->
+      <!--});-->
 
 
+    }
+
+    <!--function showTooltip2(params, id) {-->
+            <!--//var offset = $(this).offset();-->
+            <!--//console.log(offset);-->
+            <!--//var scroll = $('.main-panel').scrollTop();-->
+            <!--//console.log(scroll);-->
+            <!--//var left = data.nodes[id].x;-->
+            <!--// var top = data.nodes[id].y;-->
+            <!--var left = params.pointer.canvas.x;-->
+            <!--var top = params.pointer.canvas.y;-->
+            <!--var theHeight = $('#popover-'+(id+1)).height();-->
+            <!--var theWidth = $('#popover-'+(id+1)).width();-->
+            <!--$('.popover').hide();-->
+            <!--$('#popover-'+(id+1)).show();-->
+            <!--//$('#popover-'+(id+1)).css(20, (20) + 'px');-->
+            <!--//$('#popover-'+(id+1)).css(20, (20) + 'px');-->
+            <!--$('#popover-'+id+1).css('left', (left-theWidth/2) + 'px');-->
+            <!--$('#popover-'+id+1).css('top', (scroll+top-(theHeight)-10) + 'px');-->
+    <!--}-->
 
     function editNodeEdit(info, cancelAction, callback) {
       console.log(data);
@@ -472,6 +518,12 @@
   <input type="button" value="save" id="edge-saveButton" />
   <input type="button" value="cancel" id="edge-cancelButton" />
 </div>
+
+    <div id="dialog" title="Basic dialog">
+        <div id="dlg_text">
+            <p></p>
+        </div>
+    </div>
 <!--div>
 <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
   {% csrf_token %}
