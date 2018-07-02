@@ -50,7 +50,9 @@ class FiltersForm(forms.Form):
 
 
 class jsForm(forms.Form):
-    #description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
-    title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    description = forms.CharField(label='Description', max_length=10000)
+    title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}))
+    # description = forms.CharField(label='Description', max_length=10000)
+    description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
+    status = forms.IntegerField(label='Status', initial=1, widget=forms.RadioSelect(choices=STATUS_CHOICES))
+    country = forms.ChoiceField(label = 'Country', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())

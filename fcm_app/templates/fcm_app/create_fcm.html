@@ -139,6 +139,18 @@
         physics: {
           enabled: false
         },
+        nodes: {
+            shape: 'box',
+            margin: 10,
+            widthConstraint: {
+                maximum: 400,
+                minimum: 150
+            },
+            color: {
+              border: '#dedede',
+              background: '#dedede'
+            }
+        },
         layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
         locale: document.getElementById('locale').value,
         manipulation: {
@@ -226,11 +238,11 @@
       data = lala7;
       */
       network = new vis.Network(container, data, options);
-
-        network.on("click", function (ctx) {
-            var dataURL = ctx.canvas.toDataURL();
-            document.getElementById('canvasImg').src = dataURL;
-        });
+      network.enableEditMode();
+{#        network.on("click", function (ctx) {#}
+{#            var dataURL = ctx.canvas.toDataURL();#}
+{#            document.getElementById('canvasImg').src = dataURL;#}
+{#        });#}
     }
     function editNodeEdit(info, cancelAction, callback) {
       console.log(data);
@@ -273,6 +285,7 @@
         x: info.x,
         y: info.y,
         shape: 'box',
+
         fixed: true
       });
       clearNodePopUp();
@@ -328,13 +341,13 @@
     }
     function saveEdgeDataEdit(info, callback) {
       if (typeof info.to === 'object')
-        info.to = info.to.id
+        info.to = info.to.id;
       if (typeof info.from === 'object')
-        info.from = info.from.id
+        info.from = info.from.id;
       info.label = document.getElementById('edge-label').value;
       var x = data.edges;
       var y = x.filter(item => ((item.id === info.id) ))
-      y[0].label = info.label
+      y[0].label = info.label;
       clearEdgePopUp();
       callback(info);
     }
@@ -342,7 +355,7 @@
       setDefaultLocale();
       draw();
     }
-    var lastdata = "blabla"
+    var lastdata = "blabla";
     function kaneStringToData(){
       lastdata = JSON.stringify(data);   // metatrepei se string to data
       document.getElementById('id_chartis').value = lastdata;
@@ -354,75 +367,113 @@
 
   </script>
 
-<body onload="init();">
-<h2>Create a new model (localized)</h2>
-<p style="width: 700px; font-size:14px; text-align: justify;">
-  The localization is only relevant to the manipulation buttons on canvas.
-</p>
+<body onload="init(); ">
+<div class="container text-center create-fcm-container">
+    <h1>Create a new...</h1>
 
-<p>
-  <label for="locale">Select a locale:</label>
-  <select id="locale" onchange="draw();">
-    <option value="en">en</option>
-    <option value="de">de</option>
-    <option value="es">es</option>
-    <option value="it">it</option>
-    <option value="nl">nl</option>
-    <option value="pt-br">pt</option>
-    <option value="ru">ru</option>
-  </select>
-</p>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            In the editor below you can create your own causal model or edit and save under another name an existing one. <br/>
+            The model consists of nodes representing concepts (“income”, “unemployment”, etc.) and cause-effect relationships between them.
+        </div>
+    </div>
 
-<div id="node-popUp">
-  <span id="node-operation">node</span> <br>
-  <table style="margin:auto;">
-    <tr hidden>
-      <td>id</td><td><input id="node-id" value="la"/></td>
-    </tr>
-    <tr>
-      <td>label</td><td><input id="node-label" value="la" /></td>
-    </tr>
-    <!--tr>
-      <td>title</td><td><input id="node-title" value="" /></td>
-    </tr-->
-  </table>
-  <input type="button" value="save" id="node-saveButton" />
-  <input type="button" value="cancel" id="node-cancelButton" />
+    <a id="publish-link-btn" href="#publish_form" class="btn btn-default">Publish</a>
+
+    <p style="display: none;">
+      <label for="locale">Select a locale:</label>
+      <select id="locale" onchange="draw();">
+        <option value="en">en</option>
+      </select>
+    </p>
+
+
+    <div id="node-popUp">
+      <span id="node-operation">node</span> <br>
+      <table style="margin:auto;">
+        <tr hidden>
+          <td>id</td><td><input id="node-id" value="la"/></td>
+        </tr>
+        <tr>
+          <td>label</td><td><input id="node-label" value="la" /></td>
+        </tr>
+        <!--tr>
+          <td>title</td><td><input id="node-title" value="" /></td>
+        </tr-->
+      </table>
+      <input type="button" value="save" id="node-saveButton" />
+      <input type="button" value="cancel" id="node-cancelButton" />
+    </div>
+
+    <div id="edge-popUp">
+      <span id="edge-operation">edge</span> <br>
+      <table style="margin:auto;">
+        <tr>
+          <td>weight</td><td><input id="edge-label" value="new value" /></td>
+        </tr></table>
+      <input type="button" value="save" id="edge-saveButton" />
+      <input type="button" value="cancel" id="edge-cancelButton" />
+    </div>
+    <!--div>
+    <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
+    {#  {% csrf_token %}#}
+      <div>
+        <input id="search" name="search" type="text" class="query-search" placeholder="Search...">
+        <button type="submit" onclick="kaneStringToData()">Save</button>
+        <input class="btn btn-primary" type="submit" value="submit">
+
+      </div>
+    </form>
+    </div-->
+
+    <br/>
+    <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
+        <div id="mynetwork"></div>
+    </div>
+</div>
+<br/>
+
+<div class="col-sm-offset-1 col-sm-10 fcm-import-card" id="publish_form">
+    <div class="card">
+        <div class="card-header card-header-text" data-background-color="rose">
+            <h4 class="card-title">Publish a new ...</h4>
+        </div>
+        <div class="card-content">
+            <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row">
+                        <div class="col-sm-offset-1 col-sm-10">
+                            <div class="form-group is-empty">
+                                {% if field.label != 'Chartis' %}
+                                    <label>{{ field.label }}</label>
+                                 {% endif %}
+                                {{ field }}
+                            </div>
+                        </div>
+                     </div>
+                {% endfor %}
+                <div id = "timi_pou_thelo" name = "timi_pou_thelo"  value ="fdf" ></div>
+                <div class="row">
+                     <div class="col-sm-offset-1 col-sm-8" style="padding: 0;">
+                         <input type="submit" class="btn btn-success btn-rose" onclick="kaneStringToData()" value="Submit" ><div class="ripple-container"></div></input>
+                     </div>
+                </div>
+{#                <input type="submit" onclick="kaneStringToData()" value="Submit" />#}
+                <!--button type="submit" onclick="kaneStringToData()" class="btn btn-success btn-rose">Submit<div></div></button-->
+            </form>
+        </div>
+    </div>
 </div>
 
-<div id="edge-popUp">
-  <span id="edge-operation">edge</span> <br>
-  <table style="margin:auto;">
-    <tr>
-      <td>weight</td><td><input id="edge-label" value="new value" /></td>
-    </tr></table>
-  <input type="button" value="save" id="edge-saveButton" />
-  <input type="button" value="cancel" id="edge-cancelButton" />
-</div>
-<!--div>
-<form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div>
-    <input id="search" name="search" type="text" class="query-search" placeholder="Search...">
-    <button type="submit" onclick="kaneStringToData()">Save</button>
-    <input class="btn btn-primary" type="submit" value="submit">
 
-  </div>
-</form>
-</div-->
-<form action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <div id = "timi_pou_thelo" name = "timi_pou_thelo"  value ="fdf" ></div>
-    <input type="submit" onclick="kaneStringToData()" value="Submit" />
-    <!--button type="submit" onclick="kaneStringToData()" class="btn btn-success btn-rose">Submit<div></div></button-->
-
-</form>
-
-<br />
-<div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
-    <div id="mynetwork"></div>
-</div>
+{% endblock %}
 
 
+{% block js %}
+    <script>
+        $(document).ready(function () {
+            $('select').select2();
+        })
+    </script>
 {% endblock %}

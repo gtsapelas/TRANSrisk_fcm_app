@@ -273,6 +273,7 @@ def create_fcm(request):
                 for i in x2:
                     fcm_edges = FCM_EDGES(fcm_concept=fcm_concept, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
+                messages.success(request, "Created successfully!")
                 #print(searchTimi)
                 #print(searchTimi2)
                 #print("Some output")

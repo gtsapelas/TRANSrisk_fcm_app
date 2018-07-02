@@ -80,7 +80,7 @@ a:hover, a:focus {
     text-decoration: none;
 }
 
-.browse-container h1, .concept-info-container h1, .available-concepts-container h1, .edit-fcm-container h1{
+.browse-container h1, .concept-info-container h1, .available-concepts-container h1, .edit-fcm-container h1, .create-fcm-container h1{
     box-shadow: inset 0px -1px 0px 0px #cfcfcf;
     margin-bottom: 25px;
 }
