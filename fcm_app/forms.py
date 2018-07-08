@@ -22,9 +22,7 @@ class FCMForm(forms.Form):
 class FCMCONCEPTForm(forms.Form):
     concept_info = forms.CharField(widget=CKEditorWidget)
 
-
 def first_year():
-    # return 2017
     return int(FCM.objects.all().order_by('creation_date')[0].creation_date.strftime('%Y'))
 
 def last_year():
@@ -46,13 +44,12 @@ class FiltersForm(forms.Form):
     filtered_year = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
 
-
-
-
 class jsForm(forms.Form):
     title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}))
-    # description = forms.CharField(label='Description', max_length=10000)
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
     status = forms.IntegerField(label='Status', initial=1, widget=forms.RadioSelect(choices=STATUS_CHOICES))
-    country = forms.ChoiceField(label = 'Country', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
+    country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())
+
+class chartisForm(forms.Form):
+    arxikos_chartis = forms.CharField(label='Arxikos_chartis', widget=forms.HiddenInput())

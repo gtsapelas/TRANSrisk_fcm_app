@@ -143,9 +143,6 @@
         network = null;
       }
     }
-
-    var thesix = 50;
-    var thesiy = 50;
     var grafos;
     function draw() {
       destroy();
@@ -164,7 +161,7 @@
         physics: {
           enabled: false
         },
-        fixed: true,
+        <!--fixed: true,-->
         nodes: {
             shape: 'box',
             margin: 10,
@@ -180,7 +177,7 @@
         layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
         locale: document.getElementById('locale').value,
         manipulation: {
-          enabled:false,
+          enabled:false, //eksafanizei ti mpara
           addNode: function (data, callback) {
             console.log(data);
             // filling in the popup DOM elements
@@ -305,7 +302,7 @@
         var content = document.getElementById('popover-'+nodeID).innerHTML;
         var properties = params;
 
-        title = grafos.nodes[nodeID-1].label;
+        title = grafos.nodes.filter(item => ((item.id === nodeID) ))[0].label; //vrisko poios komvos exei auto ti id kai vazo ston titlo to label
         showJQueryDialog(properties, nodes, title);
 
         function showJQueryDialog(properties, nodes, title) {

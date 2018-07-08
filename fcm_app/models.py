@@ -35,7 +35,8 @@ class FCM_CONCEPT(models.Model):
         return self.title
 
 class FCM_EDGES(models.Model):
-    fcm_concept = models.ForeignKey(FCM_CONCEPT)
+    #fcm_concept = models.ForeignKey(FCM_CONCEPT)
+    fcm = models.ForeignKey(FCM,null=True)   # check to null=True
     title = models.CharField(max_length=200)
     id_in_fcm_edges= models.CharField(max_length=10)
     from_node = models.IntegerField(default=0)

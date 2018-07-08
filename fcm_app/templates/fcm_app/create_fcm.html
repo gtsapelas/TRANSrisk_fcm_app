@@ -51,14 +51,15 @@
           top:350px;
           left:170px;
           z-index:299;
-          width:250px;
-          height:120px;
+          width:275px; //250px
+          height:110px; //120px
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
           border-color: #5394ed;
           padding:10px;
           text-align: center;
+          background-color: white;
         }
         #edge-popUp {
           display:none;
@@ -66,14 +67,15 @@
           top:350px;
           left:170px;
           z-index:299;
-          width:250px;
-          height:90px;
+          width:275px; //250px
+          height:100px; //90px
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
           border-color: #5394ed;
           padding:10px;
           text-align: center;
+          background-color: white;
         }
     </style>
 
@@ -90,11 +92,11 @@
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                 <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
-                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                     <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                 </div><br><br><br><br>
             {% else %}
                 <div class="col-sm-8 col-sm-offset-2 alert alert-success">
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
                 </div><br><br><br><br>
             {% endif %}
         {% endfor %}
@@ -103,6 +105,20 @@
 
 
 <script type="text/javascript">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     var numOfNodes = 0;
     var numOfEdges = 0;
     var nodes = null;
@@ -129,6 +145,15 @@
         network = null;
       }
     }
+
+
+
+
+
+
+
+
+
     function draw() {
       destroy();
       nodes = [];
@@ -189,10 +214,10 @@
               var y =0; // dinei to id tis protis akmis pou tha diagrafei
               for (var i = akmes - 1; i >= 0; --i) {
                 y = info.edges[i]
-                for (var i = data.edges.length - 1; i >= 0; --i) {
-                if (data.edges[i].id == y) {
-                  console.log(i);
-                  data.edges.splice(i,1);
+                for (var j = data.edges.length - 1; j >= 0; --j) {
+                if (data.edges[j].id == y) {
+                  console.log(j);
+                  data.edges.splice(j,1);
                   break;
                 }
               }
@@ -285,7 +310,6 @@
         x: info.x,
         y: info.y,
         shape: 'box',
-
         fixed: true
       });
       clearNodePopUp();
@@ -357,6 +381,10 @@
     }
     var lastdata = "blabla";
     function kaneStringToData(){
+      for (var i = data.nodes.length - 1; i >= 0; --i) {
+        data.nodes[i].x = network.canvas.body.nodes[data.nodes[i].id].x;
+        data.nodes[i].y = network.canvas.body.nodes[data.nodes[i].id].y;
+      }
       lastdata = JSON.stringify(data);   // metatrepei se string to data
       document.getElementById('id_chartis').value = lastdata;
       console.log(lastdata);

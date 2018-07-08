@@ -1,18 +1,18 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
-from forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm
-from models import FCM
-from models import FCM_CONCEPT
-from models import FCM_CONCEPT_INFO
+from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm
+from .models import FCM
+from .models import FCM_CONCEPT
+from .models import FCM_CONCEPT_INFO
 #from .models import mynew
-from models import FCM_EDGES
+from .models import FCM_EDGES
 from django.http import HttpResponse
 from django.contrib import messages
 from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
-import json
+import json, pdb
 
 from django.http import HttpResponseForbidden
 
@@ -58,6 +58,7 @@ def browse(request):
                 all_fcms = paginator.page(paginator.num_pages)
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "filter_form": filter_form})
+
     #all_fcms = FCM.objects.all()
     all_fcms = FCM.objects.filter(status='1').order_by('creation_date').reverse()
     filter_form = FiltersForm()
@@ -209,35 +210,150 @@ def my_fcms(request):
 
 def edit_fcm(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
-    if request.user == fcm.user:
-        if request.method == 'POST':
-            data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
-            form = FCMForm(request.POST, data)
-            if form.is_valid():
-                print(request.user)
-                user = request.user
-                if user.is_authenticated():
-                    fcm.title=form.cleaned_data['title']
-                    fcm.description=form.cleaned_data['description']
-                    fcm.country=form.cleaned_data['country']
-                    fcm.status=form.cleaned_data['status']
-                    fcm.save()
+    if fcm.manual == False:
+        if request.user == fcm.user:
+            if request.method == 'POST':
+                data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
+                form = FCMForm(request.POST, data)
+                if form.is_valid():
+                    print(request.user)
+                    user = request.user
+                    if user.is_authenticated():
+                        fcm.title=form.cleaned_data['title']
+                        fcm.description=form.cleaned_data['description']
+                        fcm.country=form.cleaned_data['country']
+                        fcm.status=form.cleaned_data['status']
+                        fcm.save()
 
-                    messages.success(request, 'edited successfully')
+                        messages.success(request, 'edited successfully')
+                    else:
+                        messages.error(request, "You must login to edit a map")
                 else:
-                    messages.error(request, "You must login to edit a map")
-            else:
-                messages.error(request, "form invalid")
-        data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
-        form = FCMForm(initial=data)
-        form.fields['map_image'].widget = forms.HiddenInput()
-        form.fields['map_html'].widget = forms.HiddenInput()
+                    messages.error(request, "form invalid")
+            data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
+            form = FCMForm(initial=data)
+            form.fields['map_image'].widget = forms.HiddenInput()
+            form.fields['map_html'].widget = forms.HiddenInput()
 
-        return render(request, 'fcm_app/edit_fcm.html', {
-            'form': form,
-            'fcm': fcm,
-        })
-    return HttpResponseForbidden()
+            return render(request, 'fcm_app/edit_fcm.html', {
+                'form': form,
+                'fcm': fcm,
+            })
+        return HttpResponseForbidden()
+    else:
+        if request.user == fcm.user:
+            if request.method == 'POST':
+                #data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
+                #data = {'chartis': fcm.chartis}
+                #print(data)
+                form = jsForm(request.POST)
+                form1 = chartisForm(request.POST)
+                if form.is_valid():
+                    print(request.user)
+                    user = request.user
+                    if user.is_authenticated():
+                        fcm.title=form.cleaned_data['title']
+                        fcm.description=form.cleaned_data['description']
+                        fcm.country=form.cleaned_data['country']
+                        fcm.status=form.cleaned_data['status']
+                        fcm.chartis = form.cleaned_data['chartis']
+                        fcm.save()
+                        if form1.is_valid():
+                            arxikos_chartis = json.loads(form1.cleaned_data['arxikos_chartis'])
+                        #print(arxikos_chartis)
+                        telikos_chartis = json.loads(form.cleaned_data['chartis'])
+
+                        #print(telikos_chartis)
+
+                        x1 = arxikos_chartis['nodes']  # list pou exei dictionaries
+                        x2 = telikos_chartis['nodes']
+                        arr1 = []
+                        arr2 = []
+
+                        for i in x1:
+                            arr1.append(i['id'])
+                        for i in x2:
+                            arr2.append(i['id'])
+
+                        for val in arr1:   # edo pairno tous komvous pou prepei na diagrapso
+                            if val not in arr2:
+                                b = FCM_CONCEPT.objects.filter(fcm_id=fcm.id, id_in_fcm=val)
+                                b.delete()
+
+                        komvoi = []
+                        for i in arr2:  # vazo ston pinaka komvoi tous komvous pou prosthethikan
+                            if i not in arr1:
+                                komvoi.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
+
+                        for i in komvoi:  # edo tous prostheto sti vasi
+                            fcm_concept = FCM_CONCEPT(fcm=fcm, title=i['label'], id_in_fcm=i['id'], x_position=i['x'],y_position=i['y'])
+                            fcm_concept.save()
+
+                        b = FCM_CONCEPT.objects.filter(fcm_id=fcm.id) # pairno edo olous tous komvous pou yparhoun pleon
+                        j=0
+                        for i in b:  # edo kano update se kathe fcm_concept pou einai sti vasi ta parakato stoixeia
+                            i.title = x2[j]['label']
+                            i.x_position = x2[j]['x']
+                            i.y_position = x2[j]['y']
+                            j += 1
+                            i.save()
+
+                        # antistoixa gia tis akmes
+                        x1 = arxikos_chartis['edges']
+                        print(x1)
+                        x2 = telikos_chartis['edges']
+                        print(x2)
+                        arr1 = []
+                        arr2 = []
+
+                        for i in x1:
+                            arr1.append(i['id'])
+                        for i in x2:
+                            arr2.append(i['id'])
+
+                        b=[]
+                        for val in arr1:   # edo pairno tis akmes pou prepei na diagrapso
+                            if val not in arr2:
+                                b = FCM_EDGES.objects.filter(fcm_id=fcm.id, id_in_fcm_edges=val)
+                                b.delete()
+
+                        akmes = []
+                        for i in arr2:  # vazo ston pinaka akmes tis akmes pou prosthethikan
+                            if i not in arr1:
+                                akmes.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
+
+                        for i in akmes:  # edo tis prostheto sti vasi
+                            fcm_edge = FCM_EDGES(fcm=fcm, title=i['label'], id_in_fcm_edges=i['id'], from_node=i['from'], to_node=i['to'])
+                            fcm_edge.save()
+
+                        c = FCM_EDGES.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
+                        j = 0
+                        for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
+                            i.title = x2[j]['label']
+                            i.from_node = x2[j]['from']
+                            i.to_node = x2[j]['to']
+                            j += 1
+                            i.save()
+
+                        messages.success(request, 'edited successfully')
+                    else:
+                        messages.error(request, "You must login to edit a map")
+                else:
+                    messages.error(request, "form invalid")
+            data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status, 'chartis': fcm.chartis}
+            form = jsForm(initial=data)
+            form1 = chartisForm()
+            #form.fields['chartis'].widget = forms.HiddenInput()
+            #form.fields['map_image'].widget = forms.HiddenInput()
+            #form.fields['map_html'].widget = forms.HiddenInput()
+
+            return render(request, 'fcm_app/edit_fcm2.html', {
+                'form': form,
+                'fcm': fcm,
+                'form1': form1,
+            })
+        return HttpResponseForbidden()
+
 
 
 def create_fcm(request):
@@ -251,6 +367,7 @@ def create_fcm(request):
                 fcm = FCM(user=user,
                           title=form.cleaned_data['title'],
                           description=form.cleaned_data['description'],
+                          country = form.cleaned_data['country'],
                           chartis = form.cleaned_data['chartis'],
                           creation_date=datetime.now(),
                           manual = True)
@@ -271,7 +388,7 @@ def create_fcm(request):
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
                     fcm_concept.save()
                 for i in x2:
-                    fcm_edges = FCM_EDGES(fcm_concept=fcm_concept, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
+                    fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
                 messages.success(request, "Created successfully!")
                 #print(searchTimi)
