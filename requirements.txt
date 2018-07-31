@@ -16,3 +16,5 @@ django-ckeditor
 django-countries
 
 django-countries
+
+psycopg2
