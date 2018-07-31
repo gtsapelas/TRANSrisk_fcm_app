@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+
 from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm
 from .models import FCM
 from .models import FCM_CONCEPT
@@ -15,7 +17,8 @@ from django import forms
 import json, pdb
 
 from django.http import HttpResponseForbidden
-
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 # Create your views here.
@@ -32,7 +35,10 @@ def browse(request):
             filtered_title = filter_form.cleaned_data['filtered_title']
             filtered_year = filter_form.cleaned_data['filtered_year']
             filtered_country = filter_form.cleaned_data['filtered_country']
-            all_fcms = FCM.objects.filter(status='1').order_by('creation_date').reverse()
+            if request.user.is_authenticated:
+                all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
+            else:
+                all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
             if filtered_year == "-":
                 if filtered_country == "-":
                     all_fcms = all_fcms.filter(title__icontains=filtered_title)
@@ -59,8 +65,12 @@ def browse(request):
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "filter_form": filter_form})
 
+
     #all_fcms = FCM.objects.all()
-    all_fcms = FCM.objects.filter(status='1').order_by('creation_date').reverse()
+    if request.user.is_authenticated:
+        all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
+    else:
+        all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
     filter_form = FiltersForm()
     paginator = Paginator(all_fcms, 6)
     page = request.GET.get('page')
@@ -75,7 +85,10 @@ def browse(request):
     return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "filter_form": filter_form})
 
 
+@login_required
 def import_fcm(request):
+    storage = messages.get_messages(request)
+    storage.used = True
     if request.method == 'POST':
         form = FCMForm(request.POST, request.FILES)
         if form.is_valid():
@@ -96,8 +109,7 @@ def import_fcm(request):
                 for div in x:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
-                messages.success(request, 'FCM imported successfully! '
-                                          'You can edit the concepts <a href="/fcm/view-fcm-concept/' + str(fcm.pk) + '"><u>here</u></a>')
+                messages.success(request, 'FCM imported successfully!')
             else:
                 messages.error(request, "You must login to import a map")
     form = FCMForm()
@@ -159,6 +171,14 @@ def view_fcm(request, fcm_id):
             'info_dict': info_dict
         })
 
+
+
+def delete_fcm(request, fcm_id):
+    FCM.objects.get(pk=fcm_id).delete()
+    return render(request, 'fcm_app/index.html', {})
+
+
+@login_required
 def view_fcm_concept(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
     if request.user == fcm.user:
@@ -166,7 +186,10 @@ def view_fcm_concept(request, fcm_id):
         return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
     return HttpResponseForbidden()
 
+@login_required
 def view_fcm_concept_info(request, fcm_id, concept_id):
+    storage = messages.get_messages(request)
+    storage.used = True
     fcm = FCM.objects.get(pk=fcm_id)
     if request.user == fcm.user:
         concept = FCM_CONCEPT.objects.get(fcm=fcm_id, pk=concept_id)
@@ -197,7 +220,7 @@ def view_fcm_concept_info(request, fcm_id, concept_id):
         })
     return HttpResponseForbidden()
 
-
+@login_required
 def my_fcms(request):
     my_fcms = []
     user = request.user
@@ -207,8 +230,11 @@ def my_fcms(request):
         'my_fcms': my_fcms,
     })
 
-
+@login_required
 def edit_fcm(request, fcm_id):
+    storage = messages.get_messages(request)
+    storage.used = True
+
     fcm = FCM.objects.get(pk=fcm_id)
     if fcm.manual == False:
         if request.user == fcm.user:
@@ -355,8 +381,9 @@ def edit_fcm(request, fcm_id):
         return HttpResponseForbidden()
 
 
-
+@login_required
 def create_fcm(request):
+    # s = render_to_string('fcm_app/remove_messages.html', {}, request)
     if request.method == 'POST':
         form = jsForm(request.POST)
         if form.is_valid():

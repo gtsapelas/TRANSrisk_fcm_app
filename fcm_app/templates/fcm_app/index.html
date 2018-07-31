@@ -7,6 +7,24 @@
 {% endblock %}
 
 {% block content %}
+
+    <div style="display: none">
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
+                       <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    </div>
+                {% else %}
+                    <div class="col-sm-8 col-sm-offset-2 alert alert-success">
+                        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+        {% endif %}
+    </div>
+
     <div class="container text-center">
         <h1>Welcome to TransRisk App for..?</h1>
         <p>

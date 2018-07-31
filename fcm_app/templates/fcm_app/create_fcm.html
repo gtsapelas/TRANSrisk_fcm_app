@@ -5,6 +5,36 @@
 {% block css %}
     <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
         /*
         body, select {
             font: 10pt sans;
@@ -16,6 +46,15 @@
         #edge-popUp{
             font-size: 12px;
         }
+
+        table input {
+            width: 100%;
+        }
+        table textarea {
+            width: 100%;
+        }
+
+
         #mynetwork {
           position:relative;
           width: auto;
@@ -32,7 +71,7 @@
         table.legend_table,td {
           border-width:1px;
           border-color:#d3d3d3;
-          border-style:solid;
+          border-style: none;
           padding: 2px;
         }
         div.table_content {
@@ -49,10 +88,10 @@
           display:none;
           position:absolute;
           top:350px;
-          left:170px;
+          left:30vw;
           z-index:299;
-          width:275px; //250px
-          height:110px; //120px
+          width:450px;
+          height:250px;
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
@@ -60,15 +99,16 @@
           padding:10px;
           text-align: center;
           background-color: white;
+          overflow: auto;
         }
         #edge-popUp {
           display:none;
           position:absolute;
           top:350px;
-          left:170px;
+          left:30vw;
           z-index:299;
-          width:275px; //250px
-          height:100px; //90px
+          width:450px;
+          height:150px;
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
@@ -76,6 +116,7 @@
           padding:10px;
           text-align: center;
           background-color: white;
+          overflow: auto;
         }
     </style>
 
@@ -91,12 +132,18 @@
     {% if messages %}
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
+                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-danger">
                      <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div><br><br><br><br>
             {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
+                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-success">
                     <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div><br><br><br><br>
             {% endif %}
         {% endfor %}
@@ -104,21 +151,7 @@
     {% endif %}
 
 
-<script type="text/javascript">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <script type="text/javascript">
     var numOfNodes = 0;
     var numOfEdges = 0;
     var nodes = null;
@@ -149,6 +182,21 @@
 
 
 
+    var slider = document.getElementById("myRange");
+    var output = document.getElementById("demo");
+    output.innerHTML = slider.value; // Display the default slider value
+
+    // Update the current slider value (each time you drag the slider handle)
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+
+        data.nodes[0].color.background = "green";
+    };
+
+
+
+
+
 
 
 
@@ -164,6 +212,12 @@
         physics: {
           enabled: false
         },
+        edges:{
+            scaling:{
+                  min:1,
+                  max:10
+            }
+        },
         nodes: {
             shape: 'box',
             margin: 10,
@@ -174,6 +228,12 @@
             color: {
               border: '#dedede',
               background: '#dedede'
+            },
+            scaling:{
+                label: {
+                  min:1,
+                  max:10
+                }
             }
         },
         layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
@@ -303,10 +363,14 @@
       numOfNodes++;
       info.id = numOfNodes;
       info.shape = 'box';
+
+      info.color = document.getElementById('node-color').value;
+      console.log(info);
       //info.title = document.getElementById('node-title').value;
       data.nodes.push({
         id: info.id,
         label: info.label,
+        color: info.color,
         x: info.x,
         y: info.y,
         shape: 'box',
@@ -317,9 +381,13 @@
     }
     function saveNodeDataEdit(info, callback) {
       info.label = document.getElementById('node-label').value;
+
+      info.color = document.getElementById('node-color').value;
+
       var x = data.nodes;
-      var y = x.filter(item => ((item.id === info.id) ))
-      y[0].label = info.label
+      var y = x.filter(item => ((item.id === info.id) ));
+      y[0].label = info.label;
+      y[0].color = info.color;
       clearNodePopUp();
       callback(info);
     }
@@ -348,17 +416,36 @@
     }
     function saveEdgeDataAdd(info, callback) {
       if (typeof info.to === 'object')
-        info.to = info.to.id
+        info.to = info.to.id;
       if (typeof info.from === 'object')
-        info.from = info.from.id
-      info.label = document.getElementById('edge-label').value;
+        info.from = info.from.id;
+      var label = document.getElementById('edge-label').value;
+      var color = "grey";
+      var w = 0;
+      if (label !== "") {
+          w = parseFloat(label);
+          if (w > 0)
+              color = "#86d286";
+          else {
+              color = "#ff8383";
+              w = w * (-1)
+          }
+      }
+
+      info.label = label;
+      info.width = (w * 10) + 1;
+      info.color = { color: color };
       numOfEdges++;
       info.id = numOfEdges;
       data.edges.push({
         id: info.id,
         label: info.label,
         from: info.from,
-        to: info.to
+        to: info.to,
+        label: label,
+        width: (w * 10) + 1,
+        color: { color: color }
+
       });
       clearEdgePopUp();
       callback(info);
@@ -368,10 +455,29 @@
         info.to = info.to.id;
       if (typeof info.from === 'object')
         info.from = info.from.id;
-      info.label = document.getElementById('edge-label').value;
+
+      var label = document.getElementById('edge-label').value;
+      var color = "grey";
+      var w = 0;
+      if (label !== "") {
+          w = parseFloat(label);
+          if (w > 0)
+              color = "#86d286";
+          else {
+              color = "#ff8383";
+              w = w * (-1)
+          }
+      }
+
+      info.label = label;
+      info.width = (w * 10) + 1;
+      info.color = { color: color };
+
       var x = data.edges;
       var y = x.filter(item => ((item.id === info.id) ))
       y[0].label = info.label;
+      y[0].width = (w * 10) + 1;
+      y[0].color = { color: color };
       clearEdgePopUp();
       callback(info);
     }
@@ -406,7 +512,8 @@
         </div>
     </div>
 
-    <a id="publish-link-btn" href="#publish_form" class="btn btn-default">Publish</a>
+    <a id="publish-link-btn" href="#publish_form" class="btn btn-default" style="background-color: #327666;">Publish</a>
+    <a id="cancel-link-btn" href="/fcm/browse" class="btn btn-default">Cancel</a>
 
     <p style="display: none;">
       <label for="locale">Select a locale:</label>
@@ -418,13 +525,28 @@
 
     <div id="node-popUp">
       <span id="node-operation">node</span> <br>
-      <table style="margin:auto;">
+      <table style="margin: 0;width: 100%;">
         <tr hidden>
           <td>id</td><td><input id="node-id" value="la"/></td>
         </tr>
         <tr>
-          <td>label</td><td><input id="node-label" value="la" /></td>
+            <td>Label</td><td><textarea cols="40" rows="5" id="node-label" value="la" ></textarea></td>
         </tr>
+        <tr>
+          <td>Color</td>
+            <td>
+                <select id="node-color">
+                    <option value="#dedede" selected>Grey</option>
+                    <option value="#ff8383" >Red</option>
+                    <option value="#86d286" >Green</option>
+                    <option value="#89bbff" >Blue</option>
+                    <option value="#d6b680" >Brown</option>
+                </select>
+            </td>
+        </tr>
+{#        <tr>#}
+{#            <td>Width</td><td  class="slidecontainer"><span id="demo"></span><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></td>#}
+{#        </tr>#}
         <!--tr>
           <td>title</td><td><input id="node-title" value="" /></td>
         </tr-->
@@ -435,10 +557,11 @@
 
     <div id="edge-popUp">
       <span id="edge-operation">edge</span> <br>
-      <table style="margin:auto;">
+      <table style="margin: 0;width: 100%;">
         <tr>
-          <td>weight</td><td><input id="edge-label" value="new value" /></td>
-        </tr></table>
+          <td style="width: 75px;">weight</td><td><input id="edge-label" type="number" min="-1" max="1" step="0.1" value="new value" onkeyup="this.value = minmax(this.value, -1, 1)"/></td>
+        </tr>
+      </table>
       <input type="button" value="save" id="edge-saveButton" />
       <input type="button" value="cancel" id="edge-cancelButton" />
     </div>
@@ -502,6 +625,17 @@
     <script>
         $(document).ready(function () {
             $('select').select2();
-        })
+        });
+
+
+        function minmax(value, min, max)
+        {
+            if(parseFloat(value) < min || isNaN(parseFloat(value)))
+                return min;
+            else if(parseFloat(value) > max)
+                return max;
+            else return value;
+        }
+
     </script>
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--Eprepe na vgaloume ta sxolia edo sta messages gt deihnei to message se alli selida-->
+   {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">
+                   <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                </div>
+            {% else %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-success">
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+
+{% endblock %}

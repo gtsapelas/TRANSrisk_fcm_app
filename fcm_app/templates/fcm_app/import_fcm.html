@@ -8,27 +8,33 @@
 
 {% block content %}
 
-{#    {% if messages %}#}
-{#        {% for message in messages %}#}
-{#            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}#}
-{#                <div class="col-sm-8 col-sm-offset-2 alert alert-danger">#}
-{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>#}
-{#                </div>#}
-{#            {% else %}#}
-{#                <div class="col-sm-8 col-sm-offset-2 alert alert-success">#}
-{#                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>#}
-{#                </div>#}
-{#            {% endif %}#}
-{#        {% endfor %}#}
-{##}
-{#    {% endif %}#}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-danger">
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% else %}
+                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-success">
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
 
     <div class="col-sm-offset-1 col-sm-10 fcm-import-card">
         <div class="card">
             <form class="form-horizontal" action="{% url 'fcm_app:import_map' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-header card-header-text" data-background-color="rose">
-                    <h4 class="card-title">Import a new FCM</h4>
+                    <h4 class="card-title">Import a new ...?? <small style="color: white;">(from YYY tool)</small></h4>
                 </div>
                 <div class="card-content">
                     {% for field in form %}

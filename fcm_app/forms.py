@@ -23,6 +23,7 @@ class FCMCONCEPTForm(forms.Form):
     concept_info = forms.CharField(widget=CKEditorWidget)
 
 def first_year():
+    return 2017
     return int(FCM.objects.all().order_by('creation_date')[0].creation_date.strftime('%Y'))
 
 def last_year():

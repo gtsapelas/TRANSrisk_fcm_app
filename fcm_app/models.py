@@ -25,7 +25,7 @@ class FCM(models.Model):
 
 
 class FCM_CONCEPT(models.Model):
-    fcm = models.ForeignKey(FCM)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
+    fcm = models.ForeignKey(FCM, on_delete=models.CASCADE)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
     title = models.CharField(max_length=200)
     id_in_fcm = models.CharField(max_length=10) # den ksero gt to exoume afisei Charfield
     x_position = models.IntegerField(default=0)
@@ -36,7 +36,7 @@ class FCM_CONCEPT(models.Model):
 
 class FCM_EDGES(models.Model):
     #fcm_concept = models.ForeignKey(FCM_CONCEPT)
-    fcm = models.ForeignKey(FCM,null=True)   # check to null=True
+    fcm = models.ForeignKey(FCM,null=True, on_delete=models.CASCADE)   # check to null=True
     title = models.CharField(max_length=200)
     id_in_fcm_edges= models.CharField(max_length=10)
     from_node = models.IntegerField(default=0)
@@ -47,7 +47,7 @@ class FCM_EDGES(models.Model):
 
 
 class FCM_CONCEPT_INFO(models.Model):
-    fcm_concept = models.ForeignKey(FCM_CONCEPT)
+    fcm_concept = models.ForeignKey(FCM_CONCEPT, on_delete=models.CASCADE)
     info = RichTextField()
 
     def __str__(self):

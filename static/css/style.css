@@ -3,6 +3,14 @@ body {
     overflow-y: hidden;
 }
 
+
+
+.alert-dismissable .close, .alert-dismissible .close {
+    position: relative;
+    top: -30px !important;
+    right: 0px !important;
+}
+
 .main-panel > .navbar {
     margin-bottom: 0;
     padding: 0 100px;

@@ -24,7 +24,7 @@
     {% endif %}
 
     <div class="col-sm-offset-1 col-sm-10 edit-fcm-container">
-        <h1 class="col-sm-12" style="text-align: center">Edit the FCM ??</h1>
+        <h1 class="col-sm-12" style="text-align: center">Edit the ... ??</h1>
     </div>
     <div class="col-sm-offset-1 col-sm-10 panel panel-default">
         <div class="panel-body">
@@ -36,8 +36,20 @@
         </div>
     </div>
 
-    <div class="col-sm-offset-1 col-sm-10">
+    <div class="col-sm-offset-1 col-sm-8">
         <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}"> Edit the concepts ?? </a></btn>
+    </div>
+
+    <div class="col-sm-2">
+        <btn id="delete-fcm" class="btn btn-danger" style="float: right;">Delete</btn>
+    </div>
+
+    <div style="display: none;">
+        <div id="dialog" style="text-align: center">
+            <p>Are you sure you want to delete the ...?</p>
+            <btn id="cancel-delete" class="btn btn-default">Cancel</btn>
+            <btn id="confirm-delete" class="btn btn-danger"><a href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a></btn>
+        </div>
     </div>
 
 {% endblock %}
@@ -45,9 +57,19 @@
 {% block js %}
 
     <script>
+
         $(document).ready(function () {
             $('select').select2();
-        })
+        });
+
+        $("#delete-fcm").click(function () {
+           $( "#dialog" ).dialog();
+        });
+
+        $("#cancel-delete").click(function () {
+            $(this).closest('.ui-dialog-content').dialog('close');
+        });
+
     </script>
 
 
