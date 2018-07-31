@@ -1,0 +1,1 @@
+web: gunicorn TRANSrisk_fcm_project.wsgi --log-file -
