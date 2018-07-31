@@ -6,6 +6,7 @@ django-allauth
 
 # deployment
 dj-config-url==0.1.1
+gunicorn
 
 #upload images
 pillow==4.2.1
