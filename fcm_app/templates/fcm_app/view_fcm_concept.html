@@ -9,7 +9,7 @@
 {% block content %}
 
      <div class="col-sm-12 available-concepts-container">
-         <h1 class="col-sm-12" style="text-align: center">Available concepts ??</h1>
+         <h1 class="col-sm-12" style="text-align: center">Available Concepts and Nodes</h1>
          <p class="col-sm-12" style="text-align: center"><small>Select one to edit</small> </p>
          <p class="col-sm-12" style="text-align: center"><btn class="btn btn-default btn-sm"><a href="{% url 'fcm_app:view_fcm' fcm_id=fcm_id  %}">Back</a></btn></p>
 
@@ -20,7 +20,7 @@
                 </a>
             </div>
         {% empty %}
-            <p style="text-align: center">No concepts ?? available</p>
+            <p style="text-align: center">No Concepts and Nodes available</p>
         {% endfor %}
      </div>
 

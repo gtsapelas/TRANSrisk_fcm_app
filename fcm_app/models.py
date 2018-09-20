@@ -25,7 +25,7 @@ class FCM(models.Model):
 
 
 class FCM_CONCEPT(models.Model):
-    fcm = models.ForeignKey(FCM, on_delete=models.CASCADE)  # MIPOS PREPEI NA TO AFISOUME fcm  ???
+    fcm = models.ForeignKey(FCM, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     id_in_fcm = models.CharField(max_length=10) # den ksero gt to exoume afisei Charfield
     x_position = models.IntegerField(default=0)

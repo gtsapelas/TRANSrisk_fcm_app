@@ -55,8 +55,8 @@
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="{% url 'fcm_app:index' %}">Home</a></li>
                             <li><a href="{%  url 'fcm_app:browse' %}">Browse</a></li>
-							<li><a href="{%  url 'fcm_app:create_map' %}">Create ...</a></li>
-                            <li><a href="{%  url 'fcm_app:import_map' %}">Import ...</a></li>
+							<li><a href="{%  url 'fcm_app:create_map' %}">Create</a></li>
+                            <li><a href="{%  url 'fcm_app:import_map' %}">Import</a></li>
                             <li>
                                 {% if request.user.is_authenticated %}
                                     <a href="/" class="dropdown-toggle" data-toggle="dropdown">
@@ -65,7 +65,7 @@
                                     </a>
                                     <ul class="dropdown-menu" style="text-align: right;">
                                         <li><a>Welcome <b>{{ request.user.username }}</b></a></li>
-                                        <li><a href="{%  url 'fcm_app:my_fcms' %}">My ...</a></li>
+                                        <li><a href="{%  url 'fcm_app:my_fcms' %}">My System Maps</a></li>
                                         <li><a href="/accounts/logout/?next=/fcm">Logout</a></li>
                                     </ul>
                                 {% else %}

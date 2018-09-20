@@ -109,7 +109,7 @@ def import_fcm(request):
                 for div in x:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
-                messages.success(request, 'FCM imported successfully!')
+                messages.success(request, 'Successfully imported the System Map')
             else:
                 messages.error(request, "You must login to import a map")
     form = FCMForm()

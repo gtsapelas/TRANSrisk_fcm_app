@@ -503,12 +503,12 @@
 
 <body onload="init(); ">
 <div class="container text-center create-fcm-container">
-    <h1>Create a new...</h1>
+    <h1>Create a new System Map</h1>
 
     <div class="panel panel-default">
         <div class="panel-body">
-            In the editor below you can create your own causal model or edit and save under another name an existing one. <br/>
-            The model consists of nodes representing concepts (“income”, “unemployment”, etc.) and cause-effect relationships between them.
+            In the editor below you can create your own System Map or edit and save under another name an existing one.<br/>
+            The map consists of nodes representing concepts (“income”, “unemployment”, etc.) and links representing cause-effect relationships between them.
         </div>
     </div>
 
@@ -587,7 +587,7 @@
 <div class="col-sm-offset-1 col-sm-10 fcm-import-card" id="publish_form">
     <div class="card">
         <div class="card-header card-header-text" data-background-color="rose">
-            <h4 class="card-title">Publish a new ...</h4>
+            <h4 class="card-title">Publish a new System Map</h4>
         </div>
         <div class="card-content">
             <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">

@@ -505,7 +505,7 @@
 <!--<body onload="init(); ">-->
 <div class="container text-center create-fcm-container">
     <div class="col-sm-offset-1 col-sm-10 edit-fcm-container">
-        <h1 class="col-sm-12" style="text-align: center">Edit the ... ??</h1>
+        <h1 class="col-sm-12" style="text-align: center">Edit the {{ fcm.title }}</h1>
     </div>
 
 
@@ -646,7 +646,7 @@
 
 
     <div class="col-sm-offset-1 col-sm-8">
-        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}"> Edit the concepts ?? </a></btn>
+        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Available Concepts and Nodes</a></btn>
     </div>
 
     <div class="col-sm-2">
@@ -655,7 +655,7 @@
 
     <div style="display: none;">
         <div id="dialog" style="text-align: center">
-            <p>Are you sure you want to delete the ...?</p>
+            <p>Are you sure you want to delete the System Map?</p>
             <btn id="cancel-delete" class="btn btn-default">Cancel</btn>
             <btn id="confirm-delete" class="btn btn-danger"><a href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a></btn>
         </div>
