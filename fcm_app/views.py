@@ -16,6 +16,8 @@ from django.shortcuts import get_object_or_404
 from django import forms
 import json, pdb
 
+
+
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -33,8 +35,10 @@ def browse(request):
         filter_form = FiltersForm(request.POST)
         if filter_form.is_valid():
             filtered_title = filter_form.cleaned_data['filtered_title']
+            filtered_description = filter_form.cleaned_data['filtered_description']
             filtered_year = filter_form.cleaned_data['filtered_year']
             filtered_country = filter_form.cleaned_data['filtered_country']
+            filtered_getmine = filter_form.cleaned_data['filtered_getmine']
             if request.user.is_authenticated:
                 all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
             else:
@@ -50,7 +54,14 @@ def browse(request):
                     all_fcms = all_fcms.filter(title__icontains=filtered_title)
                 else:
                     all_fcms = all_fcms.filter(country=filtered_country, title__icontains = filtered_title)
-            data = {'filtered_title': filtered_title, 'filtered_year': filtered_year, 'filtered_country': filtered_country}
+            all_fcms = all_fcms.filter(description__icontains=filtered_description)
+            if 'filtered_getmine' in request.POST:  #check if the checkbox is checked or not
+                filtered_getmine = request.POST['filtered_getmine']
+            else:
+                filtered_getmine = False
+            if filtered_getmine:
+                all_fcms = all_fcms.filter(manual='1')
+            data = {'filtered_title': filtered_title, 'filtered_description': filtered_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine}
             filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 6)
             page = request.GET.get('page')
@@ -109,7 +120,7 @@ def import_fcm(request):
                 for div in x:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
-                messages.success(request, 'Successfully imported the System Map')
+                messages.success(request, 'Successfully imported the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse/"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to import a map")
     form = FCMForm()
@@ -417,7 +428,7 @@ def create_fcm(request):
                 for i in x2:
                     fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
-                messages.success(request, "Created successfully!")
+                messages.success(request, 'Successfully created the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse/"><u>here</u></a>. ')
                 #print(searchTimi)
                 #print(searchTimi2)
                 #print("Some output")

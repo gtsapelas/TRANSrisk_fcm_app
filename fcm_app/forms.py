@@ -42,8 +42,10 @@ COUNTRIES_CHOICES.insert(0,('-','---'))
 
 class FiltersForm(forms.Form):
     filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
+    filtered_description = forms.CharField(label='Filter those fcms whose description contains the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
     filtered_year = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
+    filtered_getmine = forms.BooleanField(required=False)
 
 class jsForm(forms.Form):
     title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}))
