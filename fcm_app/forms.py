@@ -41,8 +41,7 @@ COUNTRIES_CHOICES = [(countries[i][0], countries[i][1]) for i in range(0,len(cou
 COUNTRIES_CHOICES.insert(0,('-','---'))
 
 class FiltersForm(forms.Form):
-    filtered_title = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
-    filtered_description = forms.CharField(label='Filter those fcms whose description contains the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
+    filtered_title_and_or_description = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
     filtered_year = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
     filtered_getmine = forms.BooleanField(required=False)

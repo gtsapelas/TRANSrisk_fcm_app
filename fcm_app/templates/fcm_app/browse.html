@@ -15,11 +15,8 @@
                 {% csrf_token %}
                 <div class="form-group is-empty" style="display: inline-block">
                     <label><dt>Filter by:</dt></label><br>
-                    <label>Title:</label>
-                    <!--input class="searchbox-input form-control" type="text"-->
-                    {{filter_form.filtered_title}}
-                    <label>Description:</label><br>
-                    {{filter_form.filtered_description}}<br><br>
+                    <label>Title and/or description:</label>
+                    {{filter_form.filtered_title_and_or_description}}
                     <label>Year created:</label><br>
                     {{filter_form.filtered_year}}<br><br>
                     <label>Country:</label><br>
