@@ -46,14 +46,14 @@ def browse(request):
                 if filtered_country == "-":
                     all_fcms = all_fcms.filter(Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
                 else:
-                    all_fcms = all_fcms.filter(Q(country=filtered_country) & Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
+                    all_fcms = all_fcms.filter((Q(country=filtered_country)) & (Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description)))
 
             else:
                 all_fcms = all_fcms.filter(creation_date__year=filtered_year)
                 if filtered_country == "-":
                     all_fcms = all_fcms.filter(Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
                 else:
-                    all_fcms = all_fcms.filter(Q(country=filtered_country) & Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
+                    all_fcms = all_fcms.filter((Q(country=filtered_country)) & (Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description)))
             if 'filtered_getmine' in request.POST:  #check if the checkbox is checked or not
                 filtered_getmine = request.POST['filtered_getmine']
             else:
