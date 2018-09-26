@@ -7,6 +7,7 @@ from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
+from . models import Tags
 #from .models import mynew
 from .models import FCM_EDGES
 from django.http import HttpResponse
@@ -16,12 +17,11 @@ from django.shortcuts import get_object_or_404
 from django import forms
 import json, pdb
 
-
-
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-
+from django.db import DatabaseError
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 def index(request):
@@ -38,29 +38,41 @@ def browse(request):
             filtered_year = filter_form.cleaned_data['filtered_year']
             filtered_country = filter_form.cleaned_data['filtered_country']
             filtered_getmine = filter_form.cleaned_data['filtered_getmine']
+            filtered_tags = filter_form.cleaned_data['filtered_tags']
             if request.user.is_authenticated:
                 all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
             else:
                 all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
-            if filtered_year == "-":
-                if filtered_country == "-":
-                    all_fcms = all_fcms.filter(Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
-                else:
-                    all_fcms = all_fcms.filter((Q(country=filtered_country)) & (Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description)))
-
-            else:
+            if filtered_year != "-":
                 all_fcms = all_fcms.filter(creation_date__year=filtered_year)
-                if filtered_country == "-":
-                    all_fcms = all_fcms.filter(Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description))
-                else:
-                    all_fcms = all_fcms.filter((Q(country=filtered_country)) & (Q(title__icontains=filtered_title_and_or_description) | Q(description__icontains=filtered_title_and_or_description)))
+            if filtered_country != "-":
+                all_fcms = all_fcms.filter(country=filtered_country)
+            all_fcms = all_fcms.filter(Q(title__icontains=filtered_title_and_or_description) | Q(
+                description__icontains=filtered_title_and_or_description)).distinct()
+
+            if filtered_tags:
+                queryset_list = []
+                for element in filtered_tags:
+                    try:
+                        queryset_list.append(Tags.objects.get(pk=str(element)).fcm_set.all())
+                    except DatabaseError:
+                        pass
+                    except ObjectDoesNotExist:
+                        pass
+
+                results_union = FCM.objects.none()
+                for q in queryset_list:
+                    results_union = (results_union | q )
+                results_union = results_union.distinct()
+                all_fcms = results_union & all_fcms
+
             if 'filtered_getmine' in request.POST:  #check if the checkbox is checked or not
                 filtered_getmine = request.POST['filtered_getmine']
             else:
                 filtered_getmine = False
             if filtered_getmine:
                 all_fcms = all_fcms.filter(manual='1')
-            data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine}
+            data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags}
             filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 6)
             page = request.GET.get('page')
@@ -73,7 +85,7 @@ def browse(request):
                 # If page is out of range (e.g. 9999), deliver last page of results.
                 all_fcms = paginator.page(paginator.num_pages)
             return render(request, 'fcm_app/browse.html',
-                          {"all_fcms": all_fcms, "filter_form": filter_form})
+                          {"all_fcms": all_fcms, "filter_form": filter_form, "filter_tags":filtered_tags})
 
 
     #all_fcms = FCM.objects.all()
@@ -114,12 +126,20 @@ def import_fcm(request):
                           map_image=form.cleaned_data['map_image'],
                           map_html=form.cleaned_data['map_html'])
                 fcm.save()
+                tags = form.cleaned_data['tags']
+                for tag_element in tags:
+                    try:
+                        new_tag = Tags(name=str(tag_element))
+                        new_tag.save()
+                    except DatabaseError:
+                        pass
+                    fcm.tags.add(str(tag_element))
                 soup = BeautifulSoup(fcm.map_html, "html.parser")  # vazo i lxml  i html.parser
                 x = soup.findAll("div", class_="tooltip")
                 for div in x:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
-                messages.success(request, 'Successfully imported the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse/"><u>here</u></a>. ')
+                messages.success(request, 'Successfully imported the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to import a map")
     form = FCMForm()
@@ -260,6 +280,16 @@ def edit_fcm(request, fcm_id):
                         fcm.country=form.cleaned_data['country']
                         fcm.status=form.cleaned_data['status']
                         fcm.save()
+                        tags = form.cleaned_data['tags']
+                        fcm.tags.clear()
+
+                        for tag_element in tags:
+                            try:
+                                new_tag = Tags(name=str(tag_element))
+                                new_tag.save()
+                            except DatabaseError:
+                                pass
+                            fcm.tags.add(str(tag_element))
 
                         messages.success(request, 'edited successfully')
                     else:
@@ -294,6 +324,15 @@ def edit_fcm(request, fcm_id):
                         fcm.status=form.cleaned_data['status']
                         fcm.chartis = form.cleaned_data['chartis']
                         fcm.save()
+                        tags = form.cleaned_data['tags']
+                        fcm.tags.clear()
+                        for tag_element in tags:
+                            try:
+                                new_tag = Tags(name=str(tag_element))
+                                new_tag.save()
+                            except DatabaseError:
+                                pass
+                            fcm.tags.add(str(tag_element))
                         if form1.is_valid():
                             arxikos_chartis = json.loads(form1.cleaned_data['arxikos_chartis'])
                         #print(arxikos_chartis)
@@ -409,6 +448,14 @@ def create_fcm(request):
                           creation_date=datetime.now(),
                           manual = True)
                 fcm.save()
+                tags = form.cleaned_data['tags']
+                for tag_element in tags:
+                    try:
+                        new_tag = Tags(name=str(tag_element))
+                        new_tag.save()
+                    except DatabaseError:
+                        pass
+                    fcm.tags.add(str(tag_element))
                 #searchTimi = request.POST.get('timi_pou_thelo', '')
                 #searchTimi2 = request.POST.get('description', '')   # thelei to name, oxi to id
                 #print("Some output")
@@ -427,7 +474,7 @@ def create_fcm(request):
                 for i in x2:
                     fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
-                messages.success(request, 'Successfully created the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse/"><u>here</u></a>. ')
+                messages.success(request, 'Successfully created the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
                 #print(searchTimi)
                 #print(searchTimi2)
                 #print("Some output")

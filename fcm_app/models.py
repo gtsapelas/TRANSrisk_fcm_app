@@ -6,6 +6,8 @@ from ckeditor.fields import RichTextField
 from django_countries.fields import CountryField
 
 
+class Tags(models.Model):
+    name = models.CharField(default="",max_length=100,primary_key=True)
 
 # Create your models here.
 class FCM(models.Model):
@@ -19,6 +21,7 @@ class FCM(models.Model):
     map_image = models.ImageField(upload_to='media/images', default='media/images/Capture1.PNG')
     map_html = models.FileField(upload_to='media/html')
     manual = models.BooleanField(default=False)   #  default = None  # allios null=True # false an einai etoimo kai to allazoume an einai manual
+    tags = models.ManyToManyField(Tags, related_name='fcm_set')
 
     def __str__(self):
         return self.title

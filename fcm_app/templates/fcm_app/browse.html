@@ -17,6 +17,8 @@
                     <label><dt>Filter by:</dt></label><br>
                     <label>Title and/or description:</label>
                     {{filter_form.filtered_title_and_or_description}}
+                    <label>Tags:</label>
+                    {{ filter_form.filtered_tags }}
                     <label>Year created:</label><br>
                     {{filter_form.filtered_year}}<br><br>
                     <label>Country:</label><br>
@@ -71,6 +73,12 @@
             {% endif %}
         </div>
     </div>
+    <select id= "multiselect_options"  style="display: none">
+        {% for el in filter_tags %}
+            <option selected="true" value={{ el }}>{{ el }}</option>
+        {% endfor %}
+    </select>
+
 {% endblock %}
 
 {% block js %}
@@ -78,7 +86,15 @@
     <script>
         $(document).ready(function () {
             $('select').addClass("full-width");
-            $('select').select2();
+
+            $('#id_filtered_tags').append($("#multiselect_options").html());
+            $('#id_filtered_tags').select2({
+                tags:true,
+                tokenSeparators: [',', ' ']
+            });
+
+            $('#id_filtered_year').select2();
+            $('#id_filtered_country').select2();
             $(".select2").css('width', '100%;');
         })
 

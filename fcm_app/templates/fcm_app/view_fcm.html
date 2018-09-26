@@ -12,9 +12,9 @@
             <h1>{{ fcm.title}}</h1>
             <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Description</button>
-            <!-- {% if fcm.user == request.user %} -->
+            {% if fcm.user == request.user %}
                 <button type="button" class="btn btn-default" ><a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button">Edit</a></button>
-            <!-- {% endif %} -->
+            {% endif %}
             <div id="demo" class="collapse">
                 {{ fcm.description }}
             </div>
@@ -51,6 +51,14 @@
 {#    {% autoescape off %}#}
 {#        {{ script }}#}
 {#    {% endautoescape %}#}
+    <script>
+        $(document).click(function(event) {
+            if(!$(event.target).closest('area').length) {
+                    $('.popover').hide();
+            }
+        });
+
+    </script>
     <script type="text/javascript">
         function showTooltip2(e, id) {
             var offset = $(this).offset();
@@ -93,44 +101,15 @@
             }
         }
 
-{#        $('area').click(function (e) { //Relative ( to its parent) mouse position#}
-{#            var id = $(this).get('id');#}
-{#            alert(id);#}
-{#            var offset = $(this).offset();#}
-{#            var left = e.pageX;#}
-{#            var top = e.pageY;#}
-{#            var theHeight = $('#popover-'+id).height();#}
-{#            $('#popover-'+id).show();#}
-{#            $('#popover-'+id).css('left', (left+10) + 'px');#}
-{#            $('#popover-'+id).css('top', (top-(theHeight/2)-10) + 'px');#}
-{#        });#}
+
 
     </script>
 
-    <script>
-{#        $('map').click(function (e) {#}
-{#            var offset = $(this).offset();#}
-{#            var left = e.pageX;#}
-{#            var top = e.pageY;#}
-{#            var theHeight = $('.popover').height();#}
-{#            $('.popover').show();#}
-{#            $('.popover').css('left', (left+10) + 'px');#}
-{#            $('.popover').css('top', (top-(theHeight/2)-10) + 'px');#}
-{#        });#}
-
-{#        $(document).ready(function(){#}
-{#            $('[data-toggle="popover"]').popover();#}
-{#        });#}
-    </script>
 
     <script type="text/javascript">
         $(function() {
             $('.yimage').maphilight();
-{#            $('#squidheadlink').mouseover(function(e) {#}
-{#                $('#squidhead').mouseover();#}
-{#            }).mouseout(function(e) {#}
-{#                $('#squidhead').mouseout();#}
-{#            }).click(function(e) { e.preventDefault(); });#}
+
         });
     </script>
 

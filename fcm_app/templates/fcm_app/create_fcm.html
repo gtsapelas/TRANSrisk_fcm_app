@@ -362,7 +362,7 @@
       info.label = document.getElementById('node-label').value;
       numOfNodes++;
       info.id = numOfNodes;
-      info.shape = 'box';
+      info.shape = document.getElementById('node-shape').value;
 
       info.color = document.getElementById('node-color').value;
       console.log(info);
@@ -373,7 +373,7 @@
         color: info.color,
         x: info.x,
         y: info.y,
-        shape: 'box',
+        shape: info.shape,
         fixed: true
       });
       clearNodePopUp();
@@ -384,10 +384,13 @@
 
       info.color = document.getElementById('node-color').value;
 
+      info.shape = document.getElementById('node-shape').value;
+
       var x = data.nodes;
       var y = x.filter(item => ((item.id === info.id) ));
       y[0].label = info.label;
       y[0].color = info.color;
+      y[0].shape = info.shape;
       clearNodePopUp();
       callback(info);
     }
@@ -544,12 +547,16 @@
                 </select>
             </td>
         </tr>
-{#        <tr>#}
-{#            <td>Width</td><td  class="slidecontainer"><span id="demo"></span><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></td>#}
-{#        </tr>#}
-        <!--tr>
-          <td>title</td><td><input id="node-title" value="" /></td>
-        </tr-->
+          <tr>
+               <td>Shape</td>
+              <td>
+                  <select id="node-shape">
+                    <option value="box" selected>Box</option>
+                    <option value="ellipse" >Ellipse</option>
+                </select>
+              </td>
+          </tr>
+
       </table>
       <input type="button" value="save" id="node-saveButton" />
       <input type="button" value="cancel" id="node-cancelButton" />
@@ -565,17 +572,6 @@
       <input type="button" value="save" id="edge-saveButton" />
       <input type="button" value="cancel" id="edge-cancelButton" />
     </div>
-    <!--div>
-    <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
-    {#  {% csrf_token %}#}
-      <div>
-        <input id="search" name="search" type="text" class="query-search" placeholder="Search...">
-        <button type="submit" onclick="kaneStringToData()">Save</button>
-        <input class="btn btn-primary" type="submit" value="submit">
-
-      </div>
-    </form>
-    </div-->
 
     <br/>
     <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
@@ -610,8 +606,7 @@
                          <input type="submit" class="btn btn-success btn-rose" onclick="kaneStringToData()" value="Submit" ><div class="ripple-container"></div></input>
                      </div>
                 </div>
-{#                <input type="submit" onclick="kaneStringToData()" value="Submit" />#}
-                <!--button type="submit" onclick="kaneStringToData()" class="btn btn-success btn-rose">Submit<div></div></button-->
+
             </form>
         </div>
     </div>
@@ -624,7 +619,11 @@
 {% block js %}
     <script>
         $(document).ready(function () {
-            $('select').select2();
+             $('#id_tags').select2({
+                tags:true,
+                tokenSeparators: [',', ' ']
+            });
+            $('#id_country').select2();
         });
 
 

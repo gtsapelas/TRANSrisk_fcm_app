@@ -99,365 +99,352 @@
     <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!--{% if messages %}-->
-        <!--{% for message in messages %}-->
-            <!--{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}-->
-                <!--<div class="col-sm-8 col-sm-offset-2 alert alert-danger">-->
-                    <!--<p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>-->
-                <!--</div><br><br><br><br>-->
-            <!--{% else %}-->
-                <!--<div class="col-sm-8 col-sm-offset-2 alert alert-success">-->
-                    <!--<p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>-->
-                <!--</div><br><br><br><br>-->
-            <!--{% endif %}-->
-        <!--{% endfor %}-->
 
-    <!--{% endif %}-->
+    <script>
+        $(document).click(function(event) {
+            if(!$(event.target).closest('canvas').length) {
+                    $('.popover').hide();
+            }
+        });
 
+    </script>
 
-
-<script type="text/javascript">
-    var numOfNodes = 1;
-    var numOfEdges = 1;
-    var nodes = null;
-    var edges = null;
-    var network = null;
-    // randomly create some nodes and edges
-    var data = getScaleFreeNetwork(0);
-    console.log(data);
-    var seed = 2;
-    function setDefaultLocale() {
-      var defaultLocal = navigator.language;
-      var select = document.getElementById('locale');
-      select.selectedIndex = 0; // set fallback value
-      for (var i = 0, j = select.options.length; i < j; ++i) {
-        if (select.options[i].getAttribute('value') === defaultLocal) {
-          select.selectedIndex = i;
-          break;
-        }
-      }
-    }
-    function destroy() {
-      if (network !== null) {
-        network.destroy();
-        network = null;
-      }
-    }
-    var grafos;
-    function draw() {
-      destroy();
-      nodes = [];
-      edges = [];
-      // create a network
-      var container = document.getElementById('mynetwork');
-      var options = {
-        //interaction:{
-        //  tooltipDelay: 3600000      // Set a really big delay - one hour
-        //},
-        interaction:{hover:false},
-		//	manipulation: {
-		//		enabled: true
-		//	},
-        physics: {
-          enabled: false
-        },
-        <!--fixed: true,-->
-        nodes: {
-            shape: 'box',
-            margin: 10,
-            widthConstraint: {
-                maximum: 400,
-                minimum: 150
-            },
-            color: {
-              border: '#dedede',
-              background: '#dedede'
+    <script type="text/javascript">
+        var numOfNodes = 1;
+        var numOfEdges = 1;
+        var nodes = null;
+        var edges = null;
+        var network = null;
+        // randomly create some nodes and edges
+        var data = getScaleFreeNetwork(0);
+        console.log(data);
+        var seed = 2;
+        function setDefaultLocale() {
+          var defaultLocal = navigator.language;
+          var select = document.getElementById('locale');
+          select.selectedIndex = 0; // set fallback value
+          for (var i = 0, j = select.options.length; i < j; ++i) {
+            if (select.options[i].getAttribute('value') === defaultLocal) {
+              select.selectedIndex = i;
+              break;
             }
-        },
-        layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
-        locale: document.getElementById('locale').value,
-        manipulation: {
-          enabled:false, //eksafanizei ti mpara
-          addNode: function (data, callback) {
-            console.log(data);
-            // filling in the popup DOM elements
-            document.getElementById('node-operation').innerHTML = "Add Node";
-            editNodeAdd(data, clearNodePopUp, callback);
-          },
-          editNode: function (data, callback) {
-            // filling in the popup DOM elements
-            document.getElementById('node-operation').innerHTML = "Edit Node";
-            editNodeEdit(data, cancelNodeEdit, callback);
-          },
-          addEdge: function (data, callback) {
-            if (data.from == data.to) {
-              var r = confirm("Do you want to connect the node to itself?");
-              if (r != true) {
-                callback(null);
-                return;
-              }
-            }
-            document.getElementById('edge-operation').innerHTML = "Add Edge";
-            editEdgeWithoutDragAdd(data, callback);
-          },
-          editEdge: {
-            editWithoutDrag: function(data, callback) {
-              document.getElementById('edge-operation').innerHTML = "Edit Edge";
-              editEdgeWithoutDragEdit(data,callback);
-            }
-          },
-          deleteNode: function (info, callback){
-            console.log("diagrafike komvos");
-            var akmes = info.edges.length;
-            if ( akmes!==0){
-              var y =0; // dinei to id tis protis akmis pou tha diagrafei
-              for (var i = akmes - 1; i >= 0; --i) {
-                y = info.edges[i]
-                for (var i = data.edges.length - 1; i >= 0; --i) {
-                if (data.edges[i].id == y) {
-                  console.log(i);
-                  data.edges.splice(i,1);
-                  break;
-                }
-              }
-            }
-            }
-            var x = info.nodes[0] // dinei to id tou komvou pou tha diagrafei
-            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
-            for (var i = data.nodes.length - 1; i >= 0; --i) {
-              if (data.nodes[i].id == x) {
-                console.log(i);
-                data.nodes.splice(i,1);
-                break;
-              }
-            }
-            console.log(data);
-            callback(info);
-          },
-          deleteEdge: function (info, callback){
-            console.log("diagrafike akmi");
-            var x = info.edges[0] // dinei to id tis akmis pou tha diagrafei
-            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
-            for (var i = data.edges.length - 1; i >= 0; --i) {
-              if (data.edges[i].id == x) {
-                console.log(i);
-                data.edges.splice(i,1);
-                break;
-              }
-            }
-            console.log(data);
-            callback(info);
           }
         }
-      };
-      /*
-      var lala = {"nodes":[{"id":0,"label":"0"},{"id":1,"label":"1"},{"id":2,"label":"2"},{"id":3,"label":"3"},{"id":4,"label":"4"},{"id":5,"label":"5"}],"edges":[{"from":1,"to":0,"id":"31f2e17b-5e4a-4e60-bc79-aeb2dde3800f"},{"from":2,"to":0,"id":"57c796d6-b560-4a24-b037-b8b03d3cdbb5"},{"from":3,"to":2,"id":"da8c3f78-d5ea-4cc2-b97b-bd09116dd6ba"},{"from":4,"to":3,"id":"4601698a-234f-4a45-9233-77bd970d70cb"},{"from":5,"to":4,"id":"3d83d4a2-4cea-45ac-b34d-23ebda61f387"}]}
-      var lala2 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
-      var lala3 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"},{"id":7,"label":"sds","x":-310.05626649800604,"y":-149.29670101968725,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
-      var lala4 = {"nodes":[{"id":1,"label":"aa","x":-334,"y":-181,"shape":"box"},{"id":2,"label":"bb","x":257,"y":-165,"shape":"box"},{"id":3,"label":"cc","x":-296,"y":162,"shape":"box"},{"id":4,"label":"dd","x":283,"y":159,"shape":"box"},{"id":5,"label":"ee","x":-14,"y":4,"shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
-      var lala5 = {"nodes":[{"id":"1","label":"aa","x":-334,"y":-181,"shape":"box"},{"id":"2","label":"bb","x":257,"y":-165,"shape":"box"},{"id":"3","label":"cc","x":"-296","y":"162","shape":"box"},{"id":"4","label":"dd","x":"283","y":"159","shape":"box"},{"id":"5","label":"ee","x":"-14","y":"4","shape":"box"}],"edges":[{"id":"1","label":"aaee","from":"1","to":"5"},{"id":"2","label":"bbee","from":"5","to":"2"}]}
-      var lala6 = {"nodes":[{"id":1,"label":"aa","x":"0","y":"0","shape":"box"},{"id":2,"label":"bb","x":50,"y":0,"shape":"box"},{"id":3,"label":"cc","shape":"box"},{"id":4,"label":"dd","shape":"box"},{"id":5,"label":"ee","shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
-      var sketos = {"nodes":[{"id":0,"label":"sketos", "fixed": true, "x":0,"y":0, "shape":"box"}, {"id":1,"label":"sketos1", "fixed": true, "x":0,"y":0, "shape":"box"}],"edges":[]}
-      var lala7 = {"nodes":[{"id":1,"label":"vv","x":-339.97569465637207,"y":-212.6944580078125,"shape":"box","fixed":true},{"id":2,"label":"bb","x":237.02430534362793,"y":19.3055419921875,"shape":"box","fixed":true},{"id":3,"label":"cc","x":-313.97569465637207,"y":159.3055419921875,"shape":"box","fixed":true}],"edges":[{"id":1,"label":"cc","from":1,"to":2},{"id":2,"label":"cvbcv","from":3,"to":2}]}
-      var lala8 = {"nodes":[{"id":1,"label":"ss","x":-301,"y":-210,"shape":"box"},{"id":2,"label":"cc","x":65,"y":-150,"shape":"box"}],"edges":[{"id":1,"label":"cc","from":1,"to":2}]}
-      */
-      var data1 = {{ fcm.chartis|safe }};  // pernao ta dedomena apo piso
-      grafos = data1;
-      //data = data1;
-      //console.log(data1)
-      //var data1 = "{{data1}}".replace(/&quot;/g,"\"");
-      network = new vis.Network(container, data1, options);  // dimiourgia tou network
+        function destroy() {
+          if (network !== null) {
+            network.destroy();
+            network = null;
+          }
+        }
+        var grafos;
+        function draw() {
+          destroy();
+          nodes = [];
+          edges = [];
+          // create a network
+          var container = document.getElementById('mynetwork');
+          var options = {
+            //interaction:{
+            //  tooltipDelay: 3600000      // Set a really big delay - one hour
+            //},
+            interaction:{hover:false},
+            //	manipulation: {
+            //		enabled: true
+            //	},
+            physics: {
+              enabled: false
+            },
+            <!--fixed: true,-->
+            nodes: {
+                shape: 'box',
+                margin: 10,
+                widthConstraint: {
+                    maximum: 400,
+                    minimum: 150
+                },
+                color: {
+                  border: '#dedede',
+                  background: '#dedede'
+                }
+            },
+            layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
+            locale: document.getElementById('locale').value,
+            manipulation: {
+              enabled:false, //eksafanizei ti mpara
+              addNode: function (data, callback) {
+                console.log(data);
+                // filling in the popup DOM elements
+                document.getElementById('node-operation').innerHTML = "Add Node";
+                editNodeAdd(data, clearNodePopUp, callback);
+              },
+              editNode: function (data, callback) {
+                // filling in the popup DOM elements
+                document.getElementById('node-operation').innerHTML = "Edit Node";
+                editNodeEdit(data, cancelNodeEdit, callback);
+              },
+              addEdge: function (data, callback) {
+                if (data.from == data.to) {
+                  var r = confirm("Do you want to connect the node to itself?");
+                  if (r != true) {
+                    callback(null);
+                    return;
+                  }
+                }
+                document.getElementById('edge-operation').innerHTML = "Add Edge";
+                editEdgeWithoutDragAdd(data, callback);
+              },
+              editEdge: {
+                editWithoutDrag: function(data, callback) {
+                  document.getElementById('edge-operation').innerHTML = "Edit Edge";
+                  editEdgeWithoutDragEdit(data,callback);
+                }
+              },
+              deleteNode: function (info, callback){
+                console.log("diagrafike komvos");
+                var akmes = info.edges.length;
+                if ( akmes!==0){
+                  var y =0; // dinei to id tis protis akmis pou tha diagrafei
+                  for (var i = akmes - 1; i >= 0; --i) {
+                    y = info.edges[i]
+                    for (var i = data.edges.length - 1; i >= 0; --i) {
+                    if (data.edges[i].id == y) {
+                      console.log(i);
+                      data.edges.splice(i,1);
+                      break;
+                    }
+                  }
+                }
+                }
+                var x = info.nodes[0] // dinei to id tou komvou pou tha diagrafei
+                //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+                for (var i = data.nodes.length - 1; i >= 0; --i) {
+                  if (data.nodes[i].id == x) {
+                    console.log(i);
+                    data.nodes.splice(i,1);
+                    break;
+                  }
+                }
+                console.log(data);
+                callback(info);
+              },
+              deleteEdge: function (info, callback){
+                console.log("diagrafike akmi");
+                var x = info.edges[0] // dinei to id tis akmis pou tha diagrafei
+                //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+                for (var i = data.edges.length - 1; i >= 0; --i) {
+                  if (data.edges[i].id == x) {
+                    console.log(i);
+                    data.edges.splice(i,1);
+                    break;
+                  }
+                }
+                console.log(data);
+                callback(info);
+              }
+            }
+          };
 
-      /*
-      var image = new Image();
-      image.src = "/static/img/logo.png";
-      network.on("beforeDrawing", function(ctx) {
-        console.log('beforeDrawing');
-        ctx.drawImage(image, 0, 0);
-      });
-      */
-
-      <!--network.on("click", function (params) {-->
-		<!--var nodeID = params.nodes[0];-->
-		<!--console.log(nodeID);-->
-		<!--var ids = params.nodes;-->
-		<!--console.log(ids);-->
-		<!--&#45;&#45;nodeID-->
-		<!--showTooltip2(params, nodeID);-->
-		<!-- var clickedNodes = nodes.get(ids);-->
-		<!--console.log('clicked nodes:', clickedNodes);-->
-        <!--params.event = "[original event]";-->
-      <!--});-->
+          var data1 = {{ fcm.chartis|safe }};  // pernao ta dedomena apo piso
+          grafos = data1;
+          //data = data1;
+          //console.log(data1)
+          //var data1 = "{{data1}}".replace(/&quot;/g,"\"");
+          network = new vis.Network(container, data1, options);  // dimiourgia tou network
 
       network.on("click", function (params) {
         console.log(params.pointer.DOM)
       });
 
-      network.on("selectNode", function (params) {
-        console.log(params);
-        var nodeID = params.nodes[0];  // to id tou komvou pou patithike
-        //--nodeID
-        console.log(nodeID);
-        <!--showTooltip2(params, nodeID);-->
-        var content = document.getElementById('popover-'+nodeID).innerHTML;
-        var properties = params;
-
-        title = grafos.nodes.filter(item => ((item.id === nodeID) ))[0].label; //vrisko poios komvos exei auto ti id kai vazo ston titlo to label
-        showJQueryDialog(properties, nodes, title);
-
-        function showJQueryDialog(properties, nodes, title) {
-          document.getElementById('dlg_text').innerHTML = content;
-          var theHeight = $('#popover-'+(nodeID)).height();
-          var theWidth = $('#popover-'+(nodeID)).width();
-          $('#dialog').dialog({
-              title: title,
-              autoOpen: true,
-              modal: true,
-              resizable: true,
-              closeOnEscapeType: true,
-              width: theWidth,
-              height: theHeight,
-              dialogClass:"myClass",
-              open: addX
+          network.on("deselectNode", function () {
+              $('.popover').hide();
           });
-          $('.myClass').css({'top': properties.pointer.DOM.y + 'px', left:properties.pointer.DOM.x + 'px'})
+
+          network.on("selectNode", function (params) {
+            console.log(params);
+            var nodeID = params.nodes[0];  // to id tou komvou pou patithike
+            //--nodeID
+            console.log(nodeID);
+            <!--showTooltip2(params, nodeID);-->
+            var content = document.getElementById('popover-'+nodeID).innerHTML;
+            var properties = params;
+            title = grafos.nodes.filter(item => ((item.id === nodeID) ))[0].label; //vrisko poios komvos exei auto ti id kai vazo ston titlo to label
+{#          showJQueryDialog(properties, nodes, title);#}
+              showTooltip2(event,nodeID);
+
+            });
+          <!--network.on("deselectNode", function (params) {-->
+            <!--console.log(params);-->
+            <!--$('.popover').hide();-->
+          <!--});-->
 
 
         }
-        });
-      <!--network.on("deselectNode", function (params) {-->
-        <!--console.log(params);-->
-        <!--$('.popover').hide();-->
-      <!--});-->
 
 
-    }
+        function editNodeEdit(info, cancelAction, callback) {
+          console.log(data);
+          console.log(info.id);
+          console.log(info.label);
+          document.getElementById('node-label').value = info.label;
+          document.getElementById('node-saveButton').onclick = saveNodeDataEdit.bind(this, info, callback);
+          document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
+          document.getElementById('node-popUp').style.display = 'block';
+        }
 
+        function editNodeAdd(info, cancelAction, callback) {
+          console.log(data);
+          console.log(info.id);
+          console.log(info.label);
+          document.getElementById('node-label').value = info.label;
+          document.getElementById('node-saveButton').onclick = saveNodeDataAdd.bind(this, info, callback);
+          document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
+          document.getElementById('node-popUp').style.display = 'block';
+        }
+        // Callback passed as parameter is ignored
+        function clearNodePopUp() {
+          document.getElementById('node-saveButton').onclick = null;
+          document.getElementById('node-cancelButton').onclick = null;
+          document.getElementById('node-popUp').style.display = 'none';
+        }
+        function cancelNodeEdit(callback) {
+          clearNodePopUp();
+          callback(null);
+        }
+        function saveNodeDataAdd(info, callback) {
+          info.label = document.getElementById('node-label').value;
+          numOfNodes++;
+          info.id = numOfNodes;
+          info.shape = 'box';
+          //info.title = document.getElementById('node-title').value;
+          data.nodes.push({
+            id: info.id,
+            label: info.label,
+            x: info.x,
+            y: info.y,
+            shape: 'box',
+            fixed: true
+          });
+          clearNodePopUp();
+          callback(info);
+        }
+        function saveNodeDataEdit(info, callback) {
+          info.label = document.getElementById('node-label').value;
+          var x = data.nodes;
+          var y = x.filter(item => ((item.id === info.id) ))
+          y[0].label = info.label
+          clearNodePopUp();
+          callback(info);
+        }
+        function editEdgeWithoutDragAdd(data, callback) {
+          // filling in the popup DOM elements
+          document.getElementById('edge-label').value = data.label;
+          document.getElementById('edge-saveButton').onclick = saveEdgeDataAdd.bind(this, data, callback);
+          document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
+          document.getElementById('edge-popUp').style.display = 'block';
+        }
+        function editEdgeWithoutDragEdit(data, callback) {
+          // filling in the popup DOM elements
+          document.getElementById('edge-label').value = data.label;
+          document.getElementById('edge-saveButton').onclick = saveEdgeDataEdit.bind(this, data, callback);
+          document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
+          document.getElementById('edge-popUp').style.display = 'block';
+        }
+        function clearEdgePopUp() {
+          document.getElementById('edge-saveButton').onclick = null;
+          document.getElementById('edge-cancelButton').onclick = null;
+          document.getElementById('edge-popUp').style.display = 'none';
+        }
+        function cancelEdgeEdit(callback) {
+          clearEdgePopUp();
+          callback(null);
+        }
+        function saveEdgeDataAdd(info, callback) {
+          if (typeof info.to === 'object')
+            info.to = info.to.id
+          if (typeof info.from === 'object')
+            info.from = info.from.id
+          info.label = document.getElementById('edge-label').value;
+          numOfEdges++;
+          info.id = numOfEdges;
+          data.edges.push({
+            id: info.id,
+            label: info.label,
+            from: info.from,
+            to: info.to
+          });
+          clearEdgePopUp();
+          callback(info);
+        }
+        function saveEdgeDataEdit(info, callback) {
+          if (typeof info.to === 'object')
+            info.to = info.to.id
+          if (typeof info.from === 'object')
+            info.from = info.from.id
+          info.label = document.getElementById('edge-label').value;
+          var x = data.edges;
+          var y = x.filter(item => ((item.id === info.id) ))
+          y[0].label = info.label
+          clearEdgePopUp();
+          callback(info);
+        }
+        function init() {
+          setDefaultLocale();
+          draw();
+        }
+        var lastdata = "blabla"
+        function kaneStringToData(){
+          lastdata = JSON.stringify(data);   // metatrepei se string to data
+          document.getElementById('id_chartis').value = lastdata;
+          console.log(lastdata);
+          //console.log(lastdata);
+          //document.getElementById('timi_pou_thelo').value = lastdata;
+          //document.getElementById('id_description').value = lastdata;
+        }
 
-    function editNodeEdit(info, cancelAction, callback) {
-      console.log(data);
-      console.log(info.id);
-      console.log(info.label);
-      document.getElementById('node-label').value = info.label;
-      document.getElementById('node-saveButton').onclick = saveNodeDataEdit.bind(this, info, callback);
-      document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
-      document.getElementById('node-popUp').style.display = 'block';
-    }
+      window.onload = init;
+    </script>
+    <script type="text/javascript">
+        function showTooltip2(e, id) {
+            var offset = $(this).offset();
+            var scroll = $('.main-panel').scrollTop();
+            var left = e.pageX;
+            var top = e.pageY;
+            var theHeight = $('#popover-'+id).height();
+            var theWidth = $('#popover-'+id).width();
+            $('.popover').hide();
+            $('#popover-'+id).show();
+            $('#popover-'+id).css('left', (left-theWidth/2) + 'px');
+            $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            var pWidth = $(this).innerWidth();
+            var pHeight= $(this).innerHeight();
+            var status_orizontia = 1; //1 means left, 2 means right
+            var status_katheta = 1;  //1 means up, 2 means down
+            if (pWidth/2 < left){
+                status_katheta = 2;
+            }
+            if (pHeight/2 < top){
+                status_orizontia = 2;
+            }
+            if (status_orizontia == 1 &&  status_katheta == 1){
+                $('#popover-'+id).css('left', (left) + 'px');
+                $('#popover-'+id).css('top', (scroll+top+10) + 'px');
+            }
+            else if (status_orizontia == 1 &&  status_katheta == 2) {
+                $('#popover-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-'+id).css('top', (scroll+top+10) + 'px');
+            }
 
-    function editNodeAdd(info, cancelAction, callback) {
-      console.log(data);
-      console.log(info.id);
-      console.log(info.label);
-      document.getElementById('node-label').value = info.label;
-      document.getElementById('node-saveButton').onclick = saveNodeDataAdd.bind(this, info, callback);
-      document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
-      document.getElementById('node-popUp').style.display = 'block';
-    }
-    // Callback passed as parameter is ignored
-    function clearNodePopUp() {
-      document.getElementById('node-saveButton').onclick = null;
-      document.getElementById('node-cancelButton').onclick = null;
-      document.getElementById('node-popUp').style.display = 'none';
-    }
-    function cancelNodeEdit(callback) {
-      clearNodePopUp();
-      callback(null);
-    }
-    function saveNodeDataAdd(info, callback) {
-      info.label = document.getElementById('node-label').value;
-      numOfNodes++;
-      info.id = numOfNodes;
-      info.shape = 'box';
-      //info.title = document.getElementById('node-title').value;
-      data.nodes.push({
-        id: info.id,
-        label: info.label,
-        x: info.x,
-        y: info.y,
-        shape: 'box',
-        fixed: true
-      });
-      clearNodePopUp();
-      callback(info);
-    }
-    function saveNodeDataEdit(info, callback) {
-      info.label = document.getElementById('node-label').value;
-      var x = data.nodes;
-      var y = x.filter(item => ((item.id === info.id) ))
-      y[0].label = info.label
-      clearNodePopUp();
-      callback(info);
-    }
-    function editEdgeWithoutDragAdd(data, callback) {
-      // filling in the popup DOM elements
-      document.getElementById('edge-label').value = data.label;
-      document.getElementById('edge-saveButton').onclick = saveEdgeDataAdd.bind(this, data, callback);
-      document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
-      document.getElementById('edge-popUp').style.display = 'block';
-    }
-    function editEdgeWithoutDragEdit(data, callback) {
-      // filling in the popup DOM elements
-      document.getElementById('edge-label').value = data.label;
-      document.getElementById('edge-saveButton').onclick = saveEdgeDataEdit.bind(this, data, callback);
-      document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
-      document.getElementById('edge-popUp').style.display = 'block';
-    }
-    function clearEdgePopUp() {
-      document.getElementById('edge-saveButton').onclick = null;
-      document.getElementById('edge-cancelButton').onclick = null;
-      document.getElementById('edge-popUp').style.display = 'none';
-    }
-    function cancelEdgeEdit(callback) {
-      clearEdgePopUp();
-      callback(null);
-    }
-    function saveEdgeDataAdd(info, callback) {
-      if (typeof info.to === 'object')
-        info.to = info.to.id
-      if (typeof info.from === 'object')
-        info.from = info.from.id
-      info.label = document.getElementById('edge-label').value;
-      numOfEdges++;
-      info.id = numOfEdges;
-      data.edges.push({
-        id: info.id,
-        label: info.label,
-        from: info.from,
-        to: info.to
-      });
-      clearEdgePopUp();
-      callback(info);
-    }
-    function saveEdgeDataEdit(info, callback) {
-      if (typeof info.to === 'object')
-        info.to = info.to.id
-      if (typeof info.from === 'object')
-        info.from = info.from.id
-      info.label = document.getElementById('edge-label').value;
-      var x = data.edges;
-      var y = x.filter(item => ((item.id === info.id) ))
-      y[0].label = info.label
-      clearEdgePopUp();
-      callback(info);
-    }
-    function init() {
-      setDefaultLocale();
-      draw();
-    }
-    var lastdata = "blabla"
-    function kaneStringToData(){
-      lastdata = JSON.stringify(data);   // metatrepei se string to data
-      document.getElementById('id_chartis').value = lastdata;
-      console.log(lastdata);
-      //console.log(lastdata);
-      //document.getElementById('timi_pou_thelo').value = lastdata;
-      //document.getElementById('id_description').value = lastdata;
-    }
+            else if (status_orizontia == 2 &&  status_katheta == 1) {
+                $('#popover-'+id).css('left', (left) + 'px');
+                $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
 
-  window.onload = init;
-
-  </script>
-
+            else if (status_orizontia == 2 &&  status_katheta == 2) {
+                $('#popover-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
+        }
+    </script>
 
     <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
         <div class="panel-body">
@@ -530,6 +517,9 @@
 
 {% for key,value in info_dict.items %}
         <div class="popover" id="popover-{{ key }}">
+            <row>
+                <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>
+            </row>
             <div class="inner_info" style="max-width: none; padding: 10px; ">
                 {% autoescape off %}
                     {{ value }}

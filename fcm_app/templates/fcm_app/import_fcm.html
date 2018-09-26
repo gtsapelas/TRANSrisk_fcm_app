@@ -73,7 +73,11 @@
 
     <script>
         $(document).ready(function () {
-            $('select').select2();
+             $('#id_tags').select2({
+                tags:true,
+                tokenSeparators: [',', ' ']
+            });
+            $('#id_country').select2();
         })
     </script>
 

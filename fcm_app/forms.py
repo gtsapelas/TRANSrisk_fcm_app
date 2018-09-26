@@ -5,6 +5,9 @@ from django_countries import countries
 import calendar
 from .models import FCM
 
+class MyMultipleChoiceField(forms.MultipleChoiceField):
+    def validate(self, value):
+        return True
 
 STATUS_CHOICES= [
     ('1', 'Public'),
@@ -14,6 +17,9 @@ STATUS_CHOICES= [
 class FCMForm(forms.Form):
     title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control'}))
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
+    tags = MyMultipleChoiceField(label='Tags', required=False,
+                                 widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+                                 choices=())
     country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     status = forms.IntegerField(label='Status', initial = 1, widget= forms.RadioSelect(choices = STATUS_CHOICES))
     map_image = forms.FileField(label='Image', widget=forms.FileInput(attrs={'class': 'form-control'}))
@@ -42,6 +48,9 @@ COUNTRIES_CHOICES.insert(0,('-','---'))
 
 class FiltersForm(forms.Form):
     filtered_title_and_or_description = forms.CharField(label='Filter fcms which contain the word...', required=False, widget=forms.TextInput(attrs={'class': 'searchbox-input form-control'}))
+    filtered_tags = MyMultipleChoiceField(label='Filter fcms which contain one of the tags...', required=False,
+                                              widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+                                              choices=())
     filtered_year = forms.CharField(widget=forms.Select(choices=YEAR_CHOICES))
     filtered_country = forms.CharField(widget=forms.Select(choices=COUNTRIES_CHOICES))
     filtered_getmine = forms.BooleanField(required=False)
@@ -49,9 +58,13 @@ class FiltersForm(forms.Form):
 class jsForm(forms.Form):
     title = forms.CharField(label='Title', max_length=200, widget=forms.TextInput(attrs={'class': 'form-control', 'autocomplete': 'off'}))
     description = forms.CharField(label='Description', widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '4', 'cols': '50'}))
+    tags = MyMultipleChoiceField(label='Tags', required=False,
+                                 widget=forms.SelectMultiple(attrs={'multiple': 'multiple'}),
+                                 choices=())
     status = forms.IntegerField(label='Status', initial=1, widget=forms.RadioSelect(choices=STATUS_CHOICES))
     country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())
+
 
 class chartisForm(forms.Form):
     arxikos_chartis = forms.CharField(label='Arxikos_chartis', widget=forms.HiddenInput())
