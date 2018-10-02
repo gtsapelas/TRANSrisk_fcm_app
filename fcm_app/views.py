@@ -31,8 +31,14 @@ def index(request):
 
 def browse(request):
 
+    if not request.method == 'POST':
+        if 'filter-post' in request.session:
+            request.POST = request.session['filter-post']
+            request.method = 'POST'
+
     if request.method == 'POST':
         filter_form = FiltersForm(request.POST)
+        request.session['filter-post'] = request.POST
         if filter_form.is_valid():
             filtered_title_and_or_description = filter_form.cleaned_data['filtered_title_and_or_description']
             filtered_year = filter_form.cleaned_data['filtered_year']
@@ -76,7 +82,6 @@ def browse(request):
                 all_fcms = all_fcms.filter(manual='1')
 
             if filtered_sorting_type == 'creation_date':
-                pdb.set_trace()
                 all_fcms = all_fcms.order_by('-creation_date')
             elif filtered_sorting_type == 'title':
                 all_fcms = all_fcms.order_by('-title')
@@ -95,25 +100,25 @@ def browse(request):
                 all_fcms = paginator.page(paginator.num_pages)
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "filter_form": filter_form, "filter_tags":filtered_tags})
-
-
-    #all_fcms = FCM.objects.all()
-    if request.user.is_authenticated:
-        all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
     else:
-        all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
-    filter_form = FiltersForm()
-    paginator = Paginator(all_fcms, 6)
-    page = request.GET.get('page')
-    try:
-        all_fcms = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        all_fcms = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        all_fcms = paginator.page(paginator.num_pages)
-    return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "filter_form": filter_form})
+
+        #all_fcms = FCM.objects.all()
+        if request.user.is_authenticated:
+            all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
+        else:
+            all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
+        filter_form = FiltersForm()
+        paginator = Paginator(all_fcms, 6)
+        page = request.GET.get('page')
+        try:
+            all_fcms = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            all_fcms = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            all_fcms = paginator.page(paginator.num_pages)
+        return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "filter_form": filter_form})
 
 
 @login_required
