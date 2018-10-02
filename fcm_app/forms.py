@@ -51,6 +51,11 @@ MONTHS_CHOICES.insert(0,('-','---'))
 # COUNTRIES_CHOICES = [(countries[i][0], countries[i][1]) for i in range(0,len(countries))]
 # COUNTRIES_CHOICES.insert(0,('-','---'))
 
+SORT_CHOICES = [
+    ('creation_date', 'Creation date'),
+    ('title', 'Title'),
+    ]
+
 
 def selected_countries():
     x = FCM.objects.all().distinct('country')
@@ -84,6 +89,8 @@ class FiltersForm(forms.Form):
     filtered_getmine = forms.BooleanField(required=False)
     filtered_year = forms.ChoiceField(widget=forms.Select(choices=[]))
     filtered_country = forms.ChoiceField(widget=forms.Select(choices=[]))
+    filtered_sorting_type = forms.CharField(label='Order by:', widget=forms.Select(choices=SORT_CHOICES))
+
 
 
 class jsForm(forms.Form):
@@ -94,8 +101,12 @@ class jsForm(forms.Form):
                                  choices=())
     status = forms.IntegerField(label='Status', initial=1, widget=forms.RadioSelect(choices=STATUS_CHOICES))
     country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
-    chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())
+    chartis = forms.ChoiceField(label='Chartis',widget=forms.HiddenInput())
 
 
 class chartisForm(forms.Form):
     arxikos_chartis = forms.CharField(label='Arxikos_chartis', widget=forms.HiddenInput())
+
+
+class SortMapsForm(forms.Form):
+    sorting_type = forms.CharField(label='Order by:', widget=forms.Select(choices=SORT_CHOICES))

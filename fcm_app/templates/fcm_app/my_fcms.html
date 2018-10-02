@@ -13,6 +13,13 @@
     <div class="col-sm-offset-1 col-sm-10">
         <h1 class="col-sm-12" style="text-align: center">My System Maps</h1>
     </div>
+    <div class="col-sm-offset-1 col-sm-2">
+        <form class="form-horizontal" action="#" method="post" id = "mysortform" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>Sort by:</label>
+            {{sort_maps_form.sorting_type}}
+        </form>
+    </div>
     <div class="col-sm-offset-1 col-sm-10 panel panel-default">
         <div class="panel-body">
             {% for fcm in my_fcms %}
@@ -36,5 +43,22 @@
 {% endblock %}
 
 {% block js %}
+
+
+    <script>
+        $(document).ready(function () {
+            {#$('select').addClass("full-width");#}
+
+            $('#id_sorting_type').select2();
+            {#$(".select2").css('width', '100%;');#}
+        })
+
+        $(function(){
+            $('#id_sorting_type').change(function(){
+                $('#mysortform').submit();
+            });
+        });
+
+    </script>
 
 {% endblock %}

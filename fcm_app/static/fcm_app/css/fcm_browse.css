@@ -45,3 +45,7 @@
 select#id_filtered_country {
     max-width: 180px;
 }
+
+#browse_sort_by {
+    max-width:25%;
+}

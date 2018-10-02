@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm
+from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm, SortMapsForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
@@ -39,6 +39,8 @@ def browse(request):
             filtered_country = filter_form.cleaned_data['filtered_country']
             filtered_getmine = filter_form.cleaned_data['filtered_getmine']
             filtered_tags = filter_form.cleaned_data['filtered_tags']
+            filtered_sorting_type = filter_form.cleaned_data['filtered_sorting_type']
+
             if request.user.is_authenticated:
                 all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
             else:
@@ -72,7 +74,14 @@ def browse(request):
                 filtered_getmine = False
             if filtered_getmine:
                 all_fcms = all_fcms.filter(manual='1')
-            data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags}
+
+            if filtered_sorting_type == 'creation_date':
+                pdb.set_trace()
+                all_fcms = all_fcms.order_by('-creation_date')
+            elif filtered_sorting_type == 'title':
+                all_fcms = all_fcms.order_by('-title')
+
+            data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags, 'filtered_sorting_type': filtered_sorting_type}
             filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 6)
             page = request.GET.get('page')
@@ -252,13 +261,38 @@ def view_fcm_concept_info(request, fcm_id, concept_id):
 
 @login_required
 def my_fcms(request):
+
+    if request.method == 'POST':
+        sort_maps_form = SortMapsForm(request.POST)
+        if sort_maps_form.is_valid():
+            my_fcms = []
+            user = request.user
+            if user.is_authenticated():
+                my_fcms = FCM.objects.filter(user=user)
+                sorting_type = sort_maps_form.cleaned_data['sorting_type']
+                if sorting_type == 'creation_date':
+                    my_fcms = my_fcms.order_by('-creation_date')
+                else:
+                    my_fcms = my_fcms.order_by('title')
+
+                return render(request, 'fcm_app/my_fcms.html/', {
+                    'my_fcms': my_fcms,
+                    "sort_maps_form": sort_maps_form
+                })
+
+    sort_maps_form = SortMapsForm()
     my_fcms = []
     user = request.user
     if user.is_authenticated():
         my_fcms = FCM.objects.filter(user=user)
     return render(request, 'fcm_app/my_fcms.html/', {
         'my_fcms': my_fcms,
+        "sort_maps_form": sort_maps_form
     })
+
+
+
+
 
 @login_required
 def edit_fcm(request, fcm_id):
