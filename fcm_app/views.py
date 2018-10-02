@@ -153,7 +153,7 @@ def import_fcm(request):
                 for div in x:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
                     fcm_concept.save()
-                messages.success(request, 'Successfully imported the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
+                messages.success(request, 'Successfully imported the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to import a map")
     form = FCMForm()
@@ -513,7 +513,7 @@ def create_fcm(request):
                 for i in x2:
                     fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
-                messages.success(request, 'Successfully created the System Map. Edit the Map <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
+                messages.success(request, 'Successfully created the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
                 #print(searchTimi)
                 #print(searchTimi2)
                 #print("Some output")
