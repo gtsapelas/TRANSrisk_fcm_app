@@ -48,9 +48,9 @@ def browse(request):
             filtered_sorting_type = filter_form.cleaned_data['filtered_sorting_type']
 
             if request.user.is_authenticated:
-                all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
+                all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('-creation_date')
             else:
-                all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
+                all_fcms = FCM.objects.filter(Q(status='1')).order_by('-creation_date')
             if filtered_year != "-":
                 all_fcms = all_fcms.filter(creation_date__year=filtered_year)
             if filtered_country != "-":
@@ -84,7 +84,7 @@ def browse(request):
             if filtered_sorting_type == 'creation_date':
                 all_fcms = all_fcms.order_by('-creation_date')
             elif filtered_sorting_type == 'title':
-                all_fcms = all_fcms.order_by('-title')
+                all_fcms = all_fcms.order_by('title')
 
             data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags, 'filtered_sorting_type': filtered_sorting_type}
             filter_form = FiltersForm(initial=data)
@@ -104,9 +104,9 @@ def browse(request):
 
         #all_fcms = FCM.objects.all()
         if request.user.is_authenticated:
-            all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('creation_date').reverse()
+            all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('-creation_date')
         else:
-            all_fcms = FCM.objects.filter(Q(status='1')).order_by('creation_date').reverse()
+            all_fcms = FCM.objects.filter(Q(status='1')).order_by('-creation_date')
         filter_form = FiltersForm()
         paginator = Paginator(all_fcms, 6)
         page = request.GET.get('page')
