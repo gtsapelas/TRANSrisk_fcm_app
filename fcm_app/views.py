@@ -226,8 +226,25 @@ def delete_fcm(request, fcm_id):
 def view_fcm_concept(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
     if request.user == fcm.user:
-        concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
-        return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
+        concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id).order_by('id_in_fcm')   # den ksero mipos prepei na ginei get anti gia filter
+        relations = FCM_EDGES.objects.filter(fcm=fcm_id).order_by('id_in_fcm_edges')
+
+        from_list=[]
+        to_list = []
+        final_list=[]
+        for relation in relations:
+            for concept in concepts:
+                if relation.from_node == int(concept.id_in_fcm):
+                    from_list.append(concept.title)
+        # final_list.append(from_list)
+        for relation in relations:
+            for concept in concepts:
+                if relation.to_node == int(concept.id_in_fcm):
+                    to_list.append(concept.title)
+        for i in range(len(from_list)):
+            final_list.append(from_list[i])
+            final_list.append(to_list[i])
+        return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts, "relations": relations, "final_list": final_list})
     return HttpResponseForbidden()
 
 @login_required
