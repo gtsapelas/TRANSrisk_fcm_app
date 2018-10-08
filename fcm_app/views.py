@@ -156,6 +156,8 @@ def import_fcm(request):
                 messages.success(request, 'Successfully imported the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to import a map")
+        else:
+            messages.error(request, "form invalid")
     form = FCMForm()
     return render(request, 'fcm_app/import_fcm.html', {
         'form': form
@@ -539,7 +541,7 @@ def create_fcm(request):
                 #p2 = mynew(description = form.cleaned_data['description'])
                 #p2.save()
             else:
-                messages.error(request, "You must login to create a FCM")
+                messages.error(request, "You must login to create a map")
         else:
             messages.error(request, "form invalid")
         return redirect('/fcm/create_map')
