@@ -11,7 +11,7 @@
      <div class="col-sm-12 available-concepts-container">
          <h1 class="col-sm-12" style="text-align: center">Available Concepts and Relations</h1>
          <p class="col-sm-12" style="text-align: center"><span>Select one to edit</span> </p>
-         <p class="col-sm-12" style="text-align: center"><btn class="btn btn-default btn-sm"><a href="{% url 'fcm_app:view_fcm' fcm_id=fcm_id  %}">Back</a></btn></p>
+         <p class="col-sm-12" style="text-align: center"><btn class="btn btn-default btn-sm"><a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm_id  %}">Back</a></btn></p>
 
         {% for concept in concepts %}
             <div class="col-sm-3  panel panel-default concept-div">
@@ -21,6 +21,17 @@
             </div>
         {% empty %}
             <p style="text-align: center">No Concepts and Nodes available</p>
+        {% endfor %}
+        {% for relation in relations %}
+{#            {% for x in from_list; y in to_list: %}#}
+{#            {% for list in final_list %}#}
+            <div class="col-sm-3  panel panel-default concept-div">
+                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
+                    from {{  relation.from_node }} to {{ relation.to_node }}
+                </a>
+            </div>
+{#                {{  break }}#}
+{#            {% endfor %}#}
         {% endfor %}
      </div>
 

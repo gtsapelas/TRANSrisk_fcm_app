@@ -10,9 +10,19 @@
     <div class="container text-center browse-container">
 
         <h1>Available System Maps</h1>
-        <div class="col-sm-3" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
-            <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
+{#        <form class="form-horizontal" action="#" method="post" id = "mysortform" enctype="multipart/form-data">#}
+{#            {% csrf_token %}#}
+{#            <label>Sort by:</label>#}
+{#            {{filter_form.filtered_sorting_type}}#}
+{#        </form>#}
+        <form class="form-horizontal" action="#" method="post" id = "mysortform" enctype="multipart/form-data">
+            {% csrf_token %}
+                <div id = "browse_sort_by">
+                    <label>Sort by:</label>
+                    {{filter_form.filtered_sorting_type}}
+                </div>
+            <div class="col-sm-3" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
+
                 <div class="form-group is-empty" style="display: inline-block">
                     <label><dt>Search by:</dt></label><br>
                     <label>Title or description:</label>
@@ -27,8 +37,8 @@
                     {{filter_form.filtered_getmine}}<br><br>
                     <input class="btn btn-sm btn-success" type="Submit" value="Search"/>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
         <div class="col-sm-9">
             {% for fcm in all_fcms %}
                 <div class="col-sm-4 card-container">
@@ -99,8 +109,15 @@
 
             $('#id_filtered_year').select2();
             $('#id_filtered_country').select2();
+            $('#id_filtered_sorting_type').select2();
             $(".select2").css('width', '100%;');
         })
+
+            $(function(){
+                $('#id_filtered_sorting_type').change(function(){
+                    $('#mysortform').submit();
+                });
+            });
 
     </script>
 
