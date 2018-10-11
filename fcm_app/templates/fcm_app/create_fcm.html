@@ -240,7 +240,10 @@
                   min:1,
                   max:10
                 }
-            }
+            },
+            font: {
+                color:'white'
+            },
         },
         layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
         locale: document.getElementById('locale').value,
@@ -380,7 +383,10 @@
         x: info.x,
         y: info.y,
         shape: info.shape,
-        fixed: true
+        fixed: true,
+        font: {
+            color:'white'
+        }
       });
       clearNodePopUp();
       callback(info);
@@ -550,11 +556,11 @@
           <td>Color</td>
             <td>
                 <select id="node-color">
-                    <option value="#dedede" selected>Grey</option>
-                    <option value="#ff8383" >Red</option>
-                    <option value="#86d286" >Green</option>
-                    <option value="#89bbff" >Blue</option>
-                    <option value="#d6b680" >Brown</option>
+                    <option value="#6c6c6c" selected>Grey</option>
+                    <option value="#8d2b2b" >Red</option>
+                    <option value="#327666" >Green</option>
+                    <option value="#34477b" >Blue</option>
+                    <option value="#684126" >Brown</option>
                 </select>
             </td>
         </tr>
