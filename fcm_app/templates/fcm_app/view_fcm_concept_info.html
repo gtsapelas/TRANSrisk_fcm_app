@@ -30,7 +30,14 @@
     <br/><br/>
 
     <div class="col-sm-12 text-center concept-info-container">
-        <h1>Edit the information for the Concept</h1>
+        <h1>
+            Edit the information for the Concept:
+            <br>
+            <p title="{{ concept.title }}" style="font-size: 17pt; max-width: 100%; width: 100%; text-overflow: ellipsis; white-space: nowrap;overflow: hidden;">
+                {{ concept.title }}
+            </p>
+        </h1>
+
         <form method="post">
             {% csrf_token %}
 {#            <textarea class="row" cols="112" rows="5" id="information_text" name="information_text" ></textarea>#}

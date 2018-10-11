@@ -14,8 +14,8 @@
             <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-group is-empty" style="display: inline-block">
-                    <label><dt>Filter by:</dt></label><br>
-                    <label>Title and/or description:</label>
+                    <label><dt>Search by:</dt></label><br>
+                    <label>Title or description:</label>
                     {{filter_form.filtered_title_and_or_description}}
                     <label>Tags:</label>
                     {{ filter_form.filtered_tags }}
@@ -23,9 +23,9 @@
                     {{filter_form.filtered_year}}<br><br>
                     <label>Country:</label><br>
                     {{filter_form.filtered_country}}<br><br>
-                    <label>Bring my System Maps:</label>
+                    <label>Only my System Maps:</label>
                     {{filter_form.filtered_getmine}}<br><br>
-                    <input class="btn btn-sm btn-success" type="Submit" value="Submit"/>
+                    <input class="btn btn-sm btn-success" type="Submit" value="Search"/>
                 </div>
             </form>
         </div>
