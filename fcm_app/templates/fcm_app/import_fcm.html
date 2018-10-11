@@ -11,14 +11,14 @@
     {% if messages %}
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-danger">
+                <div class="col-sm-12  alert alert-dismissible alert-danger">
                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
             {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-success">
+                <div class="col-sm-12  col-sm-offset-2 alert alert-dismissible alert-success">
                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>

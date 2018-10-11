@@ -95,6 +95,7 @@ class jsForm(forms.Form):
     status = forms.IntegerField(label='Status', initial=1, widget=forms.RadioSelect(choices=STATUS_CHOICES))
     country = forms.ChoiceField(label = 'Country', initial = 'GR', widget = CountrySelectWidget(attrs={'class': 'form-control'}), choices=countries)
     chartis = forms.CharField(label='Chartis',widget=forms.HiddenInput())
+    image = forms.CharField(label='Image',widget=forms.HiddenInput())
 
 
 class chartisForm(forms.Form):

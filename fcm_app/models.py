@@ -22,6 +22,7 @@ class FCM(models.Model):
     map_html = models.FileField(upload_to='media/html')
     manual = models.BooleanField(default=False)   #  default = None  # allios null=True # false an einai etoimo kai to allazoume an einai manual
     tags = models.ManyToManyField(Tags, related_name='fcm_set')
+    image_url = models.TextField(null=True)
 
     def __str__(self):
         return self.title

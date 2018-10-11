@@ -132,14 +132,14 @@
     {% if messages %}
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-danger">
+                <div class="col-sm-12 alert alert-dismissible alert-danger">
                      <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div><br><br><br><br>
             {% else %}
-                <div class="col-sm-8 col-sm-offset-2 alert alert-dismissible alert-success">
+                <div class="col-sm-12 alert alert-dismissible alert-success">
                     <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|safe }}</p>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -496,7 +496,11 @@
       }
       lastdata = JSON.stringify(data);   // metatrepei se string to data
       document.getElementById('id_chartis').value = lastdata;
+      var canvas = document.getElementsByTagName('canvas');
+      var dataURL = canvas[0].toDataURL();
+      $('#id_image').val(dataURL);
       console.log(lastdata);
+      console.log(dataURL);
       //console.log(lastdata);
       //document.getElementById('timi_pou_thelo').value = lastdata;
       //document.getElementById('id_description').value = lastdata;
@@ -589,10 +593,10 @@
             <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {% for field in form %}
-                    <div class="row">
+                    <div class="row" {% if field.label == 'Chartis' or field.label == 'Image'  %} style="display: none;"{% endif %}>
                         <div class="col-sm-offset-1 col-sm-10">
                             <div class="form-group is-empty">
-                                {% if field.label != 'Chartis' %}
+                                {% if field.label != 'Chartis' and field.label != 'Image'  %}
                                     <label>{{ field.label }}</label>
                                  {% endif %}
                                 {{ field }}
