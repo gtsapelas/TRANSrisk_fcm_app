@@ -513,10 +513,14 @@
     <br>
 
     <div class="col-sm-12">
-        <a id="publish-link-btn" href="#publish_form" class="btn btn-default" style="background-color: #327666;">Publish</a>
-        <a id="cancel-link-btn" href="/fcm/browse" class="btn btn-default">Cancel</a>
+        <div class="col-sm-6 col-sm-offset-3">
+            <a id="publish-link-btn" href="#publish_form" class="btn btn-default" style="background-color: #327666;">Publish</a>
+            <a id="cancel-link-btn" href="/fcm/browse" class="btn btn-default">Cancel</a>
+        </div>
+        <div class="col-sm-2">
+            <btn class="btn btn-default" style="text-transform: inherit;"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Edit Concepts and Relations</a></btn>
+        </div>
     </div>
-
     <!--<h1>Create a new...</h1>-->
 
     <!--<div class="panel panel-default">-->
@@ -620,11 +624,9 @@
     </div>
 
 
-    <div class="col-sm-offset-1 col-sm-8">
-        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Available Concepts and Nodes</a></btn>
-    </div>
 
-    <div class="col-sm-2">
+
+    <div class="col-sm-2 col-sm-offset-9">
         <btn id="delete-fcm" class="btn btn-danger" style="float: right;">Delete</btn>
     </div>
 

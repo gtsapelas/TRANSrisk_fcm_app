@@ -132,4 +132,13 @@
 	{% block js %}
     {% endblock %}
 
+    <script type="text/javascript">
+
+        window.setInterval(function(){
+            $(".vis-add").find(".vis-label").text("Add Concept");
+            $(".vis-connect").find(".vis-label").text("Add Relation");
+            $(".vis-edit").find(".vis-label").text("Edit");
+        }, 50);
+
+    </script>
 </html>
