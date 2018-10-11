@@ -18,9 +18,18 @@
         <form class="form-horizontal" action="#" method="post" id = "mysortform" enctype="multipart/form-data">
             {% csrf_token %}
                 <div id = "browse_sort_by">
-                    <label>Sort by:</label>
-                    {{filter_form.filtered_sorting_type}}
+                    <span>
+                        <label>Sort by:</label>
+                        {{filter_form.filtered_sorting_type}}
+                    </span>
+                    <span>
+                        {{filter_form.filtered_sorting_order}}
+                    </span>
+                    <span>
+                        <button class="btn btn-sm">Sort</button>
+                    </span>
                 </div>
+
             <div class="col-sm-3" style="display: inline-block; background-color: white; padding-left: 25px; margin-top: 25px">
 
                 <div class="form-group is-empty" style="display: inline-block">
@@ -109,12 +118,12 @@
 
             $('#id_filtered_year').select2();
             $('#id_filtered_country').select2();
-            $('#id_filtered_sorting_type').select2();
-            $(".select2").css('width', '100%;');
+{#            $('#id_filtered_sorting_type').select2();#}
+{#            $(".select2").css('width', '100%;');#}
         })
 
             $(function(){
-                $('#id_filtered_sorting_type').change(function(){
+                $('#browse_sort_by button').click(function(){
                     $('#mysortform').submit();
                 });
             });

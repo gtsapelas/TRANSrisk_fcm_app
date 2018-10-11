@@ -56,6 +56,11 @@ SORT_CHOICES = [
     ('title', 'Title'),
     ]
 
+SORT_ORDERS = [
+    ('ascending ', 'ASC '),
+    ('descending', 'DESC'),
+    ]
+
 
 def selected_countries():
     x = FCM.objects.all().distinct('country')
@@ -90,6 +95,7 @@ class FiltersForm(forms.Form):
     filtered_year = forms.ChoiceField(widget=forms.Select(choices=[]))
     filtered_country = forms.ChoiceField(widget=forms.Select(choices=[]))
     filtered_sorting_type = forms.CharField(label='Order by:', widget=forms.Select(choices=SORT_CHOICES))
+    filtered_sorting_order = forms.CharField(widget=forms.Select(choices=SORT_ORDERS))
 
 
 

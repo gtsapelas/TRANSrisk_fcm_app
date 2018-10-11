@@ -32,11 +32,14 @@ def index(request):
 def browse(request):
 
     if not request.method == 'POST':
+        print request.session.items()
         if 'filter-post' in request.session:
+            print "filter-post in session"
             request.POST = request.session['filter-post']
             request.method = 'POST'
 
     if request.method == 'POST':
+        print "POST"
         filter_form = FiltersForm(request.POST)
         request.session['filter-post'] = request.POST
         if filter_form.is_valid():
@@ -100,9 +103,11 @@ def browse(request):
                 all_fcms = paginator.page(paginator.num_pages)
             return render(request, 'fcm_app/browse.html',
                           {"all_fcms": all_fcms, "filter_form": filter_form, "filter_tags":filtered_tags})
+        else:
+            all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('-creation_date')
+            return render(request, 'fcm_app/browse.html', {"all_fcms": all_fcms, "filter_form": filter_form})
     else:
-
-        #all_fcms = FCM.objects.all()
+        print 'NOT POST'
         if request.user.is_authenticated:
             all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('-creation_date')
         else:
