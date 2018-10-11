@@ -3,6 +3,10 @@ body {
     overflow-y: hidden;
 }
 
+textarea {
+  resize: none;
+}
+
 
 
 .alert-dismissable .close, .alert-dismissible .close {

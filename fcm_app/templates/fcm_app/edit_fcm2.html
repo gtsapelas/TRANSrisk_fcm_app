@@ -18,6 +18,10 @@
             font-size: 12px;
         }
 
+        #node-popUp td, #edge-popUp td{
+            border-style: none;
+        }
+
         table input {
             width: 100%;
         }
@@ -562,7 +566,7 @@
         <tr>
           <td>Color</td>
             <td>
-                <select id="node-color">
+                <select id="node-color" style="width: 100%">
                     <option value="#6c6c6c" selected>Grey</option>
                     <option value="#8d2b2b" >Red</option>
                     <option value="#327666" >Green</option>
@@ -574,7 +578,7 @@
           <tr>
                <td>Shape</td>
               <td>
-                  <select id="node-shape">
+                  <select id="node-shape" style="width: 100%">
                     <option value="box" selected>Box</option>
                     <option value="ellipse" >Ellipse</option>
                 </select>
