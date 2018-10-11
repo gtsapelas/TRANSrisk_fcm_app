@@ -522,7 +522,7 @@ def create_fcm(request):
                 #p2 = mynew(description = form.cleaned_data['description'])
                 #p2.save()
             else:
-                messages.error(request, "You must login to create a FCM")
+                messages.error(request, "You must login to create a map")
         else:
             messages.error(request, "form invalid")
         return redirect('/fcm/create_map')

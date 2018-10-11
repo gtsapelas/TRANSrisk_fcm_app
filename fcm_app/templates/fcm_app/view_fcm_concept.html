@@ -22,6 +22,17 @@
         {% empty %}
             <p style="text-align: center">No Concepts and Nodes available</p>
         {% endfor %}
+        {% for relation in relations %}
+{#            {% for x in from_list; y in to_list: %}#}
+{#            {% for list in final_list %}#}
+            <div class="col-sm-3  panel panel-default concept-div">
+                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
+                    from {{  relation.from_node }} to {{ relation.to_node }}
+                </a>
+            </div>
+{#                {{  break }}#}
+{#            {% endfor %}#}
+        {% endfor %}
      </div>
 
 {% endblock %}
