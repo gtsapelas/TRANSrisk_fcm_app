@@ -7,6 +7,8 @@ from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm, Sor
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
+from .models import FCM_EDGES_IN_FCM_CONCEPT
+from .models import FCM_EDGE_INFO
 from . models import Tags
 #from .models import mynew
 from .models import FCM_EDGES
@@ -226,8 +228,9 @@ def delete_fcm(request, fcm_id):
 def view_fcm_concept(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
     if request.user == fcm.user:
-        concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)   # den ksero mipos prepei na ginei get anti gia filter
-        return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts})
+        concepts = FCM_CONCEPT.objects.filter(fcm=fcm_id)
+        relations = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm_id)
+        return render(request, 'fcm_app/view_fcm_concept.html', {"fcm_id": fcm_id, "concepts": concepts, "relations": relations})
     return HttpResponseForbidden()
 
 @login_required
@@ -261,6 +264,41 @@ def view_fcm_concept_info(request, fcm_id, concept_id):
                 messages.error(request, "an error occured")
         return render(request, 'fcm_app/view_fcm_concept_info.html/', {
             'form': form, 'concept': concept,
+        })
+    return HttpResponseForbidden()
+
+
+@login_required
+def view_fcm_edge_info(request, fcm_id, edge_id):
+    storage = messages.get_messages(request)
+    storage.used = True
+    fcm = FCM.objects.get(pk=fcm_id)
+    if request.user == fcm.user:
+        edge = FCM_EDGES_IN_FCM_CONCEPT.objects.get(fcm=fcm_id, pk=edge_id)
+        edge_info = FCM_EDGE_INFO()
+        try:
+            edge_info = FCM_EDGE_INFO.objects.get(fcm_edge=edge_id)
+            data = {'edge_info': edge_info.info}
+        except edge_info.DoesNotExist:
+            data = {}
+
+        form = FCMCONCEPTForm(initial=data)
+        if request.method == 'POST':
+            form = FCMCONCEPTForm(request.POST)
+            if form.is_valid():
+                my_edge = get_object_or_404(FCM_EDGES_IN_FCM_CONCEPT, pk=edge_id)
+                fcm_edge_info = FCM_EDGE_INFO()
+                try:
+                    fcm_edge_info = FCM_EDGE_INFO.objects.get(fcm_edge=my_edge)
+                    fcm_edge_info.info = form.cleaned_data['concept_info']
+                except fcm_edge_info.DoesNotExist:
+                    fcm_edge_info = FCM_EDGE_INFO(fcm_edge=my_edge, info=form.cleaned_data['concept_info'])
+                fcm_edge_info.save()
+                messages.success(request, 'edited successfully')
+            else:
+                messages.error(request, "an error occured")
+        return render(request, 'fcm_app/view_fcm_edge_info.html/', {
+            'form': form, 'edge': edge,
         })
     return HttpResponseForbidden()
 
@@ -413,6 +451,7 @@ def edit_fcm(request, fcm_id):
                             i.save()
 
                         # antistoixa gia tis akmes
+                        y2=x2 # kratao edo tin teliki katastasi ton komvon
                         x1 = arxikos_chartis['edges']
                         print(x1)
                         x2 = telikos_chartis['edges']
@@ -426,9 +465,12 @@ def edit_fcm(request, fcm_id):
                             arr2.append(i['id'])
 
                         b=[]
+                        # pdb.set_trace()
                         for val in arr1:   # edo pairno tis akmes pou prepei na diagrapso
                             if val not in arr2:
                                 b = FCM_EDGES.objects.filter(fcm_id=fcm.id, id_in_fcm_edges=val)
+                                b.delete()
+                                b = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id, id_in_fcm=val)  # edo diagrafo tin akmi kai apo ton pinaka FCM_EDGES_IN_FCM_CONCEPT
                                 b.delete()
 
                         akmes = []
@@ -440,6 +482,14 @@ def edit_fcm(request, fcm_id):
                             fcm_edge = FCM_EDGES(fcm=fcm, title=i['label'], id_in_fcm_edges=i['id'], from_node=i['from'], to_node=i['to'])
                             fcm_edge.save()
 
+                            from_index = next((index for (index, d) in enumerate(y2) if d["id"] == i['from']), None)
+                            apo_komvo = y2[from_index]['label']
+                            to_index = next((index for (index, d) in enumerate(y2) if d["id"] == i['to']), None)
+                            pros_komvo = y2[to_index]['label']
+                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, title='from ' + str(
+                                apo_komvo) + ' to ' + str(pros_komvo) + '', id_in_fcm=i['id'])
+                            fcm_edges_in_fcm_concept.save()
+
                         c = FCM_EDGES.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
                         j = 0
                         for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
@@ -448,6 +498,20 @@ def edit_fcm(request, fcm_id):
                             i.to_node = x2[j]['to']
                             j += 1
                             i.save()
+                        c = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
+                        j = 0
+                        x2.reverse()
+                        for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
+                            for k in x2:
+                                from_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['from']), None)
+                                apo_komvo = y2[from_index]['label']
+                                to_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['to']), None)
+                                pros_komvo = y2[to_index]['label']
+                                i.title = 'from ' + str(apo_komvo) + ' to ' + str(pros_komvo) + ''
+                                j += 1
+                                i.save()
+                                x2.pop(0)
+                                break
 
                         messages.success(request, 'edited successfully')
                     else:
@@ -506,13 +570,19 @@ def create_fcm(request):
                 x1 = x['nodes']  #list pou exei dictionaries
                 x2 = x['edges']  #list
                 #PROSOHI AN EINAI MIDEN
-
                 for i in x1:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
                     fcm_concept.save()
                 for i in x2:
                     fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
                     fcm_edges.save()
+                    from_index = next((index for (index, d) in enumerate(x1) if d["id"] == i['from']), None)
+                    apo_komvo = x1[from_index]['label']
+                    to_index = next((index for (index, d) in enumerate(x1) if d["id"] == i['to']), None)
+                    pros_komvo = x1[to_index]['label']
+                    fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, title = 'from ' + str(apo_komvo) + ' to ' + str(pros_komvo) + '', id_in_fcm= i['id'])
+                    fcm_edges_in_fcm_concept.save()
+
                 messages.success(request, 'Successfully created the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
                 #print(searchTimi)
                 #print(searchTimi2)
