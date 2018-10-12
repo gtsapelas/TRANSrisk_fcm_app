@@ -3,16 +3,13 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from .forms import jsForm, FCMForm,FCMCONCEPTForm, FiltersForm, chartisForm, SortMapsForm
+from .forms import jsForm, FCMForm, FCMCONCEPTForm, FiltersForm, chartisForm, SortMapsForm, FCMEDGEForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
 from .models import FCM_EDGES_IN_FCM_CONCEPT
 from .models import FCM_EDGE_INFO
 from . models import Tags
-#from .models import mynew
-from .models import FCM_EDGES
-from django.http import HttpResponse
 from django.contrib import messages
 from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
@@ -287,23 +284,23 @@ def view_fcm_edge_info(request, fcm_id, edge_id):
         except edge_info.DoesNotExist:
             data = {}
 
-        form = FCMCONCEPTForm(initial=data)
+        form = FCMEDGEForm(initial=data)
         if request.method == 'POST':
-            form = FCMCONCEPTForm(request.POST)
+            form = FCMEDGEForm(request.POST)
             if form.is_valid():
                 my_edge = get_object_or_404(FCM_EDGES_IN_FCM_CONCEPT, pk=edge_id)
                 fcm_edge_info = FCM_EDGE_INFO()
                 try:
                     fcm_edge_info = FCM_EDGE_INFO.objects.get(fcm_edge=my_edge)
-                    fcm_edge_info.info = form.cleaned_data['concept_info']
+                    fcm_edge_info.info = form.cleaned_data['edge_info']
                 except fcm_edge_info.DoesNotExist:
-                    fcm_edge_info = FCM_EDGE_INFO(fcm_edge=my_edge, info=form.cleaned_data['concept_info'])
+                    fcm_edge_info = FCM_EDGE_INFO(fcm_edge=my_edge, info=form.cleaned_data['edge_info'])
                 fcm_edge_info.save()
                 messages.success(request, 'edited successfully')
             else:
                 messages.error(request, "an error occured")
         return render(request, 'fcm_app/view_fcm_edge_info.html/', {
-            'form': form, 'edge': edge,
+            'form': form, 'relation': edge,
         })
     return HttpResponseForbidden()
 
@@ -472,8 +469,6 @@ def edit_fcm(request, fcm_id):
                         b=[]
                         for val in arr1:   # edo pairno tis akmes pou prepei na diagrapso
                             if val not in arr2:
-                                b = FCM_EDGES.objects.filter(fcm_id=fcm.id, id_in_fcm_edges=val)
-                                b.delete()
                                 b = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id, id_in_fcm=val)  # edo diagrafo tin akmi kai apo ton pinaka FCM_EDGES_IN_FCM_CONCEPT
                                 b.delete()
 
@@ -483,35 +478,21 @@ def edit_fcm(request, fcm_id):
                                 akmes.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
 
                         for i in akmes:  # edo tis prostheto sti vasi
-                            fcm_edge = FCM_EDGES(fcm=fcm, title=i['label'], id_in_fcm_edges=i['id'], from_node=i['from'], to_node=i['to'])
-                            fcm_edge.save()
-
-                            from_index = next((index for (index, d) in enumerate(y2) if d["id"] == i['from']), None)
-                            apo_komvo = y2[from_index]['label']
-                            to_index = next((index for (index, d) in enumerate(y2) if d["id"] == i['to']), None)
-                            pros_komvo = y2[to_index]['label']
-                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, title='from ' + str(
-                                apo_komvo) + ' to ' + str(pros_komvo) + '', id_in_fcm=i['id'])
+                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=None, from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                             fcm_edges_in_fcm_concept.save()
 
-                        c = FCM_EDGES.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
-                        j = 0
-                        for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
-                            i.title = x2[j]['label']
-                            i.from_node = x2[j]['from']
-                            i.to_node = x2[j]['to']
-                            j += 1
-                            i.save()
+
                         c = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
                         j = 0
                         x2.reverse()
                         for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
                             for k in x2:
+                                # JOHN CHECK IT. HERE THE ALREADY ADDED RELATIONS ARE UPDATED
                                 from_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['from']), None)
                                 apo_komvo = y2[from_index]['label']
                                 to_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['to']), None)
                                 pros_komvo = y2[to_index]['label']
-                                i.title = 'from ' + str(apo_komvo) + ' to ' + str(pros_komvo) + ''
+                                i.text = None
                                 j += 1
                                 i.save()
                                 x2.pop(0)
@@ -580,29 +561,15 @@ def create_fcm(request):
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
                     fcm_concept.save()
                 for i in x2:
-                    fcm_edges = FCM_EDGES(fcm=fcm, title = i['label'], id_in_fcm_edges= i['id'], from_node = i['from'], to_node= i['to'])
-                    fcm_edges.save()
-                    from_index = next((index for (index, d) in enumerate(x1) if d["id"] == i['from']), None)
-                    apo_komvo = x1[from_index]['label']
-                    to_index = next((index for (index, d) in enumerate(x1) if d["id"] == i['to']), None)
-                    pros_komvo = x1[to_index]['label']
-                    fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, title = 'from ' + str(apo_komvo) + ' to ' + str(pros_komvo) + '', id_in_fcm= i['id'])
+                    fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm= i['id'], text=None, from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                     fcm_edges_in_fcm_concept.save()
 
-                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
-                #print(searchTimi)
-                #print(searchTimi2)
-                #print("Some output")
-                #p1 = mynew(description=searchTimi)
-                #p1.save()
-                #p2 = mynew(description = form.cleaned_data['description'])
-                #p2.save()
+                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to create a map")
         else:
             messages.error(request, "form invalid")
         return redirect('/fcm/create_map')
-    #data = {'title': "", 'description': "arxiko"}
     form = jsForm()
 
     return render(request, 'fcm_app/create_fcm.html', {

@@ -25,7 +25,7 @@ textarea {
     width: 100% !important;
 }
 
-.django-ckeditor-widget #cke_id_concept_info{
+.django-ckeditor-widget #cke_id_concept_info, .django-ckeditor-widget #cke_id_edge_info{
     width: 100% !important;
 }
 

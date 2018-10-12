@@ -133,6 +133,15 @@ USE_L10N = True
 USE_TZ = True
 
 
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_FILENAME_GENERATOR = 'utils.get_filename'
+CKEDITOR_CONFIGS = {
+    'default': {
+        # 'skin': 'moono',
+    },
+}
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 

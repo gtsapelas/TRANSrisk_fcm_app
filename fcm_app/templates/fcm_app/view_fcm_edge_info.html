@@ -30,14 +30,32 @@
     <br/><br/>
 
     <div class="col-sm-12 text-center concept-info-container">
-        <h1>Edit the information for the Relation</h1>
+        <h1>
+            Edit the information for the Relation:
+            <br>
+            <p title='
+                    {% if  relation.text is None%}
+                        from: "{{ relation.from_concept.title }}" to: "{{ relation.to_concept.title }}"
+                    {% else %}
+                        {{ relation.text }}
+                    {% endif %}'
+                style="font-size: 17pt; max-width: 100%; width: 100%; text-overflow: ellipsis; white-space: nowrap;overflow: hidden;">
+
+                {% if  relation.text is None%}
+                    from: "{{ relation.from_concept.title }}" <br>
+                    to: "{{ relation.to_concept.title }}"
+                {% else %}
+                    {{ relation.text }}
+                {% endif %}
+            </p>
+        </h1>
         <form method="post">
             {% csrf_token %}
 {#            <textarea class="row" cols="112" rows="5" id="information_text" name="information_text" ></textarea>#}
             {{ form.media }}
             {{ form.as_p }}
             <input class="btn btn-success" type='submit' value='Save' />
-            <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=edge.fcm.id  %}">Back</a></btn>
+            <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=relation.fcm.id  %}">Back</a></btn>
         </form>
 
     </div>

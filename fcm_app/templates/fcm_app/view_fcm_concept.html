@@ -35,8 +35,14 @@
             <div id="relations" class="tab-pane fade in ">
                 {% for relation in relations %}
                     <div class="col-sm-3  panel panel-default concept-div">
-                        <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
-                            {{ relation.title }}
+                        <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.text }}">
+                            {% if  relation.text is None%}
+                                Relation <br>
+                                from: "{{ relation.from_concept.title }}" <br>
+                                to: "{{ relation.to_concept.title }}"
+                            {% else %}
+                                {{ relation.text }}
+                            {% endif %}
                         </a>
                     </div>
                 {% empty %}

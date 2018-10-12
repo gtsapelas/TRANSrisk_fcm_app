@@ -25,11 +25,18 @@ class FCMForm(forms.Form):
     map_image = forms.FileField(label='Image', widget=forms.FileInput(attrs={'class': 'form-control'}))
     map_html = forms.FileField(label='HTML', widget=forms.FileInput(attrs={'class': 'form-control'}))
 
+
 class FCMCONCEPTForm(forms.Form):
     concept_info = forms.CharField(widget=CKEditorWidget)
 
+
+class FCMEDGEForm(forms.Form):
+    edge_info = forms.CharField(widget=CKEditorWidget)
+
+
 def first_year():
     return int(FCM.objects.all().order_by('creation_date')[0].creation_date.strftime('%Y'))
+
 
 def last_year():
     import datetime

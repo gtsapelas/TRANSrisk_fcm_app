@@ -13,7 +13,7 @@
             <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Description</button>
             {% if fcm.user == request.user %}
-                <button type="button" class="btn btn-default" ><a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button">Edit</a></button>
+                <a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button btn btn-default"  style="background-color: #948a7c; width: 60px;">Edit</a>
             {% endif %}
             <div id="demo" class="collapse">
                 {{ fcm.description }}
@@ -21,27 +21,38 @@
         </div>
     </div>
 
-    <div class="col-sm-12 panel panel-default" style="padding: 0; margin-top: 0;">
-        <div id = 'map-panel' class="panel-body" style="margin: 0; padding: 0">
-            {% autoescape off %}
-                {{ map_body }}
-            {% endautoescape %}
-        </div>
-    </div>
+    <div class="container">
 
-    {% for key,value in info_dict.items %}
-        <div class="popover" id="popover-{{ key }}">
-            <row>
-                <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>
-            </row>
-            <div style="max-width: none; padding: 20px 10px;">
-                {% autoescape off %}
-                    {{ value }}
+        <div class="wrapper1 linked" style=" width: 98.9% ;height: 20px; overflow-x: scroll; overflow-y: hidden">
+            <div class="div1">
+                 {% autoescape off %}
+                    {{ map_body }}
                 {% endautoescape %}
             </div>
         </div>
-    {% endfor %}
+        <div class="wrapper2 ">
 
+            <div id = 'map-panel' class="div2 linked" style="overflow: scroll; height: 1000px">
+                {% autoescape off %}
+                    {{ map_body }}
+                {% endautoescape %}
+            </div>
+        </div>
+
+
+        {% for key,value in info_dict.items %}
+            <div class="popover" id="popover-{{ key }}">
+                <row>
+                    <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>
+                </row>
+                <div style="max-width: none; padding: 20px 10px;">
+                    {% autoescape off %}
+                        {{ value }}
+                    {% endautoescape %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}
 
@@ -109,10 +120,17 @@
     <script type="text/javascript">
         $(function() {
             $('.yimage').maphilight();
-
         });
     </script>
 
+
+    <script>
+        $(".tooltip").css("display","none");
+        $(function(){
+            $('.linked').scroll(function(){
+                $('.linked').scrollLeft($(this).scrollLeft());})
+        })
+    </script>
 
 
 
