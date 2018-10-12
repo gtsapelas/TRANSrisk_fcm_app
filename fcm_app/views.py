@@ -158,6 +158,8 @@ def import_fcm(request):
                 messages.success(request, 'Successfully imported the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to import a map")
+        else:
+            messages.error(request, "form invalid")
     form = FCMForm()
     return render(request, 'fcm_app/import_fcm.html', {
         'form': form
@@ -465,7 +467,6 @@ def edit_fcm(request, fcm_id):
                             arr2.append(i['id'])
 
                         b=[]
-                        # pdb.set_trace()
                         for val in arr1:   # edo pairno tis akmes pou prepei na diagrapso
                             if val not in arr2:
                                 b = FCM_EDGES.objects.filter(fcm_id=fcm.id, id_in_fcm_edges=val)
@@ -570,6 +571,7 @@ def create_fcm(request):
                 x1 = x['nodes']  #list pou exei dictionaries
                 x2 = x['edges']  #list
                 #PROSOHI AN EINAI MIDEN
+
                 for i in x1:
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
                     fcm_concept.save()
@@ -592,7 +594,7 @@ def create_fcm(request):
                 #p2 = mynew(description = form.cleaned_data['description'])
                 #p2.save()
             else:
-                messages.error(request, "You must login to create a FCM")
+                messages.error(request, "You must login to create a map")
         else:
             messages.error(request, "form invalid")
         return redirect('/fcm/create_map')
