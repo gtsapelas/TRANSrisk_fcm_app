@@ -20,7 +20,27 @@
                 </a>
             </div>
         {% empty %}
-            <p style="text-align: center">No Concepts and Nodes available</p>
+            <p style="text-align: center">No Concepts available</p>
+        {% endfor %}
+             {% for relation in relations %}
+            <div class="col-sm-3  panel panel-default concept-div">
+                <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
+                    {{ relation.title }}
+                </a>
+            </div>
+        {% empty %}
+            <p style="text-align: center">No Relations available</p>
+        {% endfor %}
+        {% for relation in relations %}
+{#            {% for x in from_list; y in to_list: %}#}
+{#            {% for list in final_list %}#}
+            <div class="col-sm-3  panel panel-default concept-div">
+                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
+                    from {{  relation.from_node }} to {{ relation.to_node }}
+                </a>
+            </div>
+{#                {{  break }}#}
+{#            {% endfor %}#}
         {% endfor %}
         {% for relation in relations %}
 {#            {% for x in from_list; y in to_list: %}#}
