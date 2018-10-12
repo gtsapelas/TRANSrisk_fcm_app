@@ -94,9 +94,9 @@
 
 {% block content %}
 
-    <script type="text/javascript" src="http://visjs.org/examples/network/exampleUtil.js"></script>
-	<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
-    <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://visjs.org/examples/network/exampleUtil.js"></script>
+	<script type="text/javascript" src="https://visjs.org/dist/vis.js"></script>
+    <link href="https://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
@@ -261,8 +261,16 @@
           network.on("deselectNode", function () {
               $('.popover').hide();
           });
+          network.on("deselectEdge", function () {
+              $('.popover').hide();
+          });
+
+
+          var clickedNode=false;
 
           network.on("selectNode", function (params) {
+              clickedNode=true;
+            console.log('selectNode');
             console.log(params);
             var nodeID = params.nodes[0];  // to id tou komvou pou patithike
             //--nodeID
@@ -274,7 +282,18 @@
 {#          showJQueryDialog(properties, nodes, title);#}
               showTooltip2(event,nodeID);
 
+              window.setTimeout(function(){clickedNode=false;}, 100);
             });
+
+          network.on("selectEdge", function (params) {
+              if(!clickedNode) {
+                  console.log('selectEdge');
+                  console.log(params);
+                  var edgeID = params.edges[0];  // to id tou edge pou patithike
+                  console.log(edgeID);
+                  showTooltip3(event, edgeID);
+              }
+          });
           <!--network.on("deselectNode", function (params) {-->
             <!--console.log(params);-->
             <!--$('.popover').hide();-->
@@ -449,6 +468,49 @@
         }
     </script>
 
+    <script type="text/javascript">
+        function showTooltip3(e, id) {
+            var offset = $(this).offset();
+            var scroll = $('.main-panel').scrollTop();
+            var left = e.pageX;
+            var top = e.pageY;
+            var theHeight = $('#popover-edge-'+id).height();
+            var theWidth = $('#popover-edge-'+id).width();
+            $('.popover').hide();
+            $('#popover-edge-'+id).show();
+            $('#popover-edge-'+id).css('left', (left-theWidth/2) + 'px');
+            $('#popover-edge-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            var pWidth = $(this).innerWidth();
+            var pHeight= $(this).innerHeight();
+            var status_orizontia = 1; //1 means left, 2 means right
+            var status_katheta = 1;  //1 means up, 2 means down
+            if (pWidth/2 < left){
+                status_katheta = 2;
+            }
+            if (pHeight/2 < top){
+                status_orizontia = 2;
+            }
+            if (status_orizontia == 1 &&  status_katheta == 1){
+                $('#popover-edge-'+id).css('left', (left) + 'px');
+                $('#popover-edge-'+id).css('top', (scroll+top+10) + 'px');
+            }
+            else if (status_orizontia == 1 &&  status_katheta == 2) {
+                $('#popover-edge-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-edge-'+id).css('top', (scroll+top+10) + 'px');
+            }
+
+            else if (status_orizontia == 2 &&  status_katheta == 1) {
+                $('#popover-edge-'+id).css('left', (left) + 'px');
+                $('#popover-edge-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
+
+            else if (status_orizontia == 2 &&  status_katheta == 2) {
+                $('#popover-edge-'+id).css('left', (left-theWidth) + 'px');
+                $('#popover-edge-'+id).css('top', (scroll+top-(theHeight)-10) + 'px');
+            }
+        }
+    </script>
+
     <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
         <div class="panel-body">
             <h1>{{ fcm.title}}</h1>
@@ -518,11 +580,11 @@
     <div id="mynetwork"></div>
 </div>
 
-{% for key,value in info_dict.items %}
+    {% for key,value in info_dict.items %}
         <div class="popover" id="popover-{{ key }}">
-            <row>
-                <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>
-            </row>
+{#            <row>#}
+{#                <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>#}
+{#            </row>#}
             <div class="inner_info" style="max-width: none; padding: 10px; ">
                 {% autoescape off %}
                     {{ value }}
@@ -530,6 +592,21 @@
             </div>
         </div>
     {% endfor %}
+
+
+    {% for key,value in info_edge_dict.items %}
+        <div class="popover" id="popover-edge-{{ key }}">
+{#            <row>#}
+{#                <button type="button" onclick='$(this).closest(".popover").hide()' style="border: none; float: right;">&times</button>#}
+{#            </row>#}
+            <div class="inner_info" style="max-width: none; padding: 10px; ">
+                {% autoescape off %}
+                    {{ value }}
+                {% endautoescape %}
+            </div>
+        </div>
+    {% endfor %}
+
 {% endblock %}
 
 

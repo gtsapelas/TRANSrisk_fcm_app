@@ -47,7 +47,7 @@ class FCM_EDGES_IN_FCM_CONCEPT(models.Model):
     id_in_fcm = models.CharField(max_length=10) # den ksero gt to exoume afisei Charfield
 
     def __str__(self):
-        return self.title
+        return self.text
 
 
 class FCM_CONCEPT_INFO(models.Model):
@@ -63,4 +63,4 @@ class FCM_EDGE_INFO(models.Model):
     info = RichTextField()
 
     def __str__(self):
-        return self.info
+        return self.text

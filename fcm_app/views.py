@@ -212,11 +212,25 @@ def view_fcm(request, fcm_id):
             except FCM_CONCEPT_INFO.DoesNotExist:
                 info_dict[str(concepts_item.id_in_fcm)] = 'No information available'
         print(info_dict)
+
+        edges = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm)
+        print 'edges:'
+        # print(edges)
+        info_edge_dict = dict()
+        for edge_item in edges:
+            try:
+                edge_info = FCM_EDGE_INFO.objects.get(fcm_edge=edge_item)
+                info_edge_dict[str(edge_item.id_in_fcm)] = edge_info.info
+            except FCM_EDGE_INFO.DoesNotExist:
+                info_edge_dict[str(edge_item.id_in_fcm)] = 'No information available'
+        print(info_edge_dict)
+
         return render(request, 'fcm_app/view_fcm4.html', {
             'fcm': fcm,
             #'data1': x,
             #'form': form,
-            'info_dict': info_dict
+            'info_dict': info_dict,
+            'info_edge_dict': info_edge_dict,
         })
 
 
