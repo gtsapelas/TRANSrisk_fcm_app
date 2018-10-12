@@ -15,3 +15,16 @@
     vertical-align: middle;
     line-height: normal;
 }
+
+.concept-a:hover {
+    color: #858585;
+    text-decoration: none;
+}
+
+li.active{
+    background-color: #ececec;
+    border-style: solid;
+    border-bottom-style: none;
+    border-color: #cbcbcb;
+    border-width: 1px;
+}

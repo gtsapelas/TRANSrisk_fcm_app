@@ -9,52 +9,42 @@
 {% block content %}
 
      <div class="col-sm-12 available-concepts-container">
-         <h1 class="col-sm-12" style="text-align: center">Available Concepts and Relations</h1>
-         <p class="col-sm-12" style="text-align: center"><span>Select one to edit</span> </p>
-         <p class="col-sm-12" style="text-align: center"><btn class="btn btn-default btn-sm"><a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm_id  %}">Back</a></btn></p>
+        <h1 class="col-sm-12" style="text-align: center">Available Concepts and Relations</h1>
+        <p class="col-sm-12" style="text-align: center"><span>Select one to edit</span> </p>
+        <p class="col-sm-12" style="text-align: center"><btn class="btn btn-default btn-sm"><a href="{% url 'fcm_app:edit_fcm' fcm_id=fcm_id  %}">Back</a></btn></p>
 
-        {% for concept in concepts %}
-            <div class="col-sm-3  panel panel-default concept-div">
-                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ concept.id }}/" title="{{ concept.title }}">
-                    {{ concept.title }}
-                </a>
-            </div>
-        {% empty %}
-            <p style="text-align: center">No Concepts available</p>
-        {% endfor %}
-             {% for relation in relations %}
-            <div class="col-sm-3  panel panel-default concept-div">
-                <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
-                    {{ relation.title }}
-                </a>
-            </div>
-        {% empty %}
-            <p style="text-align: center">No Relations available</p>
-        {% endfor %}
-        {% for relation in relations %}
-{#            {% for x in from_list; y in to_list: %}#}
-{#            {% for list in final_list %}#}
-            <div class="col-sm-3  panel panel-default concept-div">
-                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
-                    from {{  relation.from_node }} to {{ relation.to_node }}
-                </a>
-            </div>
-{#                {{  break }}#}
-{#            {% endfor %}#}
-        {% endfor %}
-        {% for relation in relations %}
-{#            {% for x in from_list; y in to_list: %}#}
-{#            {% for list in final_list %}#}
-            <div class="col-sm-3  panel panel-default concept-div">
-                <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
-                    from {{  relation.from_node }} to {{ relation.to_node }}
-                </a>
-            </div>
-{#                {{  break }}#}
-{#            {% endfor %}#}
-        {% endfor %}
-     </div>
+        <ul class="nav nav-tabs nav-justified" style="background: rgba(255,255,255,.15); padding: 0px; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #cbcbcb;color: black;">
+            <li class="active" style="min-height: unset; line-height: unset;"><a data-toggle="tab" href="#concepts"  style="color: black !important;">Concepts</a></li>
+            <li style="min-height: unset; line-height: unset;"><a data-toggle="tab" href="#relations" style="color: black !important;">Relations</a></li>
+        </ul>
 
+        <div class="tab-content">
+
+            <div id="concepts" class="tab-pane fade in active">
+                {% for concept in concepts %}
+                    <div class="col-sm-3  panel panel-default concept-div">
+                        <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ concept.id }}/" title="{{ concept.title }}">
+                            {{ concept.title }}
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="text-align: center">No Concepts available</p>
+                {% endfor %}
+            </div>
+
+            <div id="relations" class="tab-pane fade in ">
+                {% for relation in relations %}
+                    <div class="col-sm-3  panel panel-default concept-div">
+                        <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.title }}">
+                            {{ relation.title }}
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="text-align: center">No Relations available</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}
