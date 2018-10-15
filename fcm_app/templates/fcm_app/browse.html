@@ -15,7 +15,7 @@
 {#            <label>Sort by:</label>#}
 {#            {{filter_form.filtered_sorting_type}}#}
 {#        </form>#}
-        <form class="form-horizontal" action="#" method="post" id = "mysortform" enctype="multipart/form-data">
+        <form class="form-horizontal" action="#" method="post" id = "mysortform" >
             {% csrf_token %}
                 <div id = "browse_sort_by">
                     <span>
@@ -139,6 +139,8 @@
             $('#id_filtered_year').val("-").trigger("change");
             $('#id_filtered_country').val("-").trigger("change");
             $('#id_filtered_getmine').prop('checked', false);
+            $('#id_filtered_sorting_type').val("creation_date").trigger("change");
+            $('#id_filtered_sorting_order').val("ascending ").trigger("change");
         });
 
 

@@ -49,6 +49,8 @@ def browse(request):
             filtered_getmine = filter_form.cleaned_data['filtered_getmine']
             filtered_tags = filter_form.cleaned_data['filtered_tags']
             filtered_sorting_type = filter_form.cleaned_data['filtered_sorting_type']
+            filtered_sorting_order = filter_form.cleaned_data['filtered_sorting_order']
+
 
             if request.user.is_authenticated:
                 all_fcms = FCM.objects.filter(Q(status='1') | Q(user=request.user)).order_by('-creation_date')
@@ -85,11 +87,23 @@ def browse(request):
                 all_fcms = all_fcms.filter(manual='1')
 
             if filtered_sorting_type == 'creation_date':
-                all_fcms = all_fcms.order_by('-creation_date')
+                if filtered_sorting_order == 'ASC':
+                    all_fcms = all_fcms.order_by('creation_date')
+                else:
+                    all_fcms = all_fcms.order_by('-creation_date')
             elif filtered_sorting_type == 'title':
-                all_fcms = all_fcms.order_by('title')
+                if filtered_sorting_order == 'ASC':
+                    all_fcms = all_fcms.order_by('title')
+                else:
+                    all_fcms = all_fcms.order_by('-title')
 
-            data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags, 'filtered_sorting_type': filtered_sorting_type}
+            data = {'filtered_title_and_or_description': filtered_title_and_or_description,
+                    'filtered_year': filtered_year,
+                    'filtered_country': filtered_country,
+                    'filtered_getmine': filtered_getmine,
+                    'filtered_tags': filtered_tags,
+                    'filtered_sorting_type': filtered_sorting_type,
+                    'filtered_sorting_order': filtered_sorting_order}
             filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 9)
             page = request.GET.get('page')
