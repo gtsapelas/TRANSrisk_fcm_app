@@ -6,6 +6,37 @@
     <link href="{% static 'fcm_app/css/edit_fcm.css' %}" rel="stylesheet" />
     <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 15px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+
         /*
         body, select {
             font: 10pt sans;
@@ -83,7 +114,7 @@
           left:30vw;
           z-index:299;
           width:450px;
-          height:150px;
+          height:200px;
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
@@ -115,9 +146,9 @@
 
 
 
-    <script type="text/javascript" src="https://visjs.org/examples/network/exampleUtil.js"></script>
-	<script type="text/javascript" src="https://visjs.org/dist/vis.js"></script>
-    <link href="https://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="http://visjs.org/examples/network/exampleUtil.js"></script>
+	<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+    <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     {% if messages %}
@@ -406,13 +437,26 @@
     }
     function editEdgeWithoutDragAdd(data, callback) {
       // filling in the popup DOM elements
-      document.getElementById('edge-label').value = data.label;
+      if(data.label != undefined){
+          var label = data.label.split("(weight:")[0].trim();
+          var weight = data.label.split("(weight:")[1].split(")")[0];
+          document.getElementById('edge-label').value = label;
+          document.getElementById('edge-weight').value = parseFloat(weight);
+          document.getElementById('edge-weight-label').innerHTML = weight;
+      }
       document.getElementById('edge-saveButton').onclick = saveEdgeDataAdd.bind(this, data, callback);
       document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
       document.getElementById('edge-popUp').style.display = 'block';
     }
     function editEdgeWithoutDragEdit(data, callback) {
       // filling in the popup DOM elements
+      if(data.label != undefined){
+          var label = data.label.split("(weight:")[0].trim();
+          var weight = data.label.split("(weight:")[1].split(")")[0];
+          document.getElementById('edge-label').value = label;
+          document.getElementById('edge-weight').value = parseFloat(weight);
+          document.getElementById('edge-weight-label').innerHTML = weight;
+      }
       document.getElementById('edge-label').value = data.label;
       document.getElementById('edge-saveButton').onclick = saveEdgeDataEdit.bind(this, data, callback);
       document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
@@ -422,6 +466,10 @@
       document.getElementById('edge-saveButton').onclick = null;
       document.getElementById('edge-cancelButton').onclick = null;
       document.getElementById('edge-popUp').style.display = 'none';
+
+      $("#edge-weight").val(0);
+      $("#edge-label").val("");
+      $("#edge-weight-label").html($('#edge-weight').val());
     }
     function cancelEdgeEdit(callback) {
       clearEdgePopUp();
@@ -432,21 +480,20 @@
         info.to = info.to.id
       if (typeof info.from === 'object')
         info.from = info.from.id
-      var label = document.getElementById('edge-label').value;
+      var weight = parseFloat(document.getElementById('edge-weight').value);
+      var label = document.getElementById('edge-label').value.trim() + " (weight: " + document.getElementById('edge-weight').value+ ")";
       var color = "grey";
-      var w = 0;
-      if (label !== "") {
-          w = parseFloat(label);
-          if (w > 0)
+      if (weight !== 0) {
+          if (weight > 0)
               color = "#86d286";
           else {
               color = "#ff8383";
-              w = w * (-1)
+              weight = weight * (-1)
           }
       }
 
       info.label = label;
-      info.width = (w * 10) + 1;
+      info.width = (weight * 10) + 1;
       info.color = { color: color };
       numOfEdges++;
       info.id = numOfEdges;
@@ -457,7 +504,7 @@
         from: info.from,
         to: info.to,
         label: label,
-        width: (w * 10) + 1,
+        width: (weight * 10) + 1,
         color: { color: color }
 
       });
@@ -469,27 +516,26 @@
         info.to = info.to.id;
       if (typeof info.from === 'object')
         info.from = info.from.id;
-      var label = document.getElementById('edge-label').value;
+      var weight = parseFloat(document.getElementById('edge-weight').value);
+      var label = document.getElementById('edge-label').value.trim() + " (weight: " + document.getElementById('edge-weight').value+ ")";
       var color = "grey";
-      var w = 0;
-      if (label !== "") {
-          w = parseFloat(label);
-          if (w > 0)
+      if (weight !== 0) {
+          if (weight > 0)
               color = "#86d286";
           else {
               color = "#ff8383";
-              w = w * (-1)
+              weight = weight * (-1)
           }
       }
 
       info.label = label;
-      info.width = (w * 10) + 1;
+      info.width = (weight * 10) + 1;
       info.color = { color: color };
 
       var x = data.edges;
       var y = x.filter(item => ((item.id === info.id) ))
       y[0].label = info.label;
-      y[0].width = (w * 10) + 1;
+      y[0].width = (weight * 10) + 1;
       y[0].color = { color: color };
       clearEdgePopUp();
       callback(info);
@@ -599,7 +645,13 @@
       <span id="edge-operation">edge</span> <br>
       <table style="margin: 0;width: 100%;">
         <tr>
-          <td style="width: 75px;">weight</td><td><input id="edge-label" type="number" min="-1" max="1" step="0.1" value="new value" onkeyup="this.value = minmax(this.value, -1, 1)"/></td>
+          <td style="width: 100px;">weight</td><td><input id="edge-weight" type="range" min="-1" max="1" step="0.1" value="0" class="slider" oninput="updateWeightLabel();"/></td>
+        </tr>
+        <tr>
+            <td style="width: 100px;"></td><td><div id="edge-weight-label">0</div></td>
+        </tr>
+        <tr>
+          <td style="width: 100px;">label</td><td><input id="edge-label" type="text" value="" /></td>
         </tr>
       </table>
       <input type="button" value="save" id="edge-saveButton" />
@@ -664,6 +716,20 @@
             });
             $('#id_country').select2();
         });
+
+
+
+        $(document).ready(function () {
+             $('#edge-weight').change(function () {
+                 updateWeightLabel();
+             });
+        });
+
+
+        function updateWeightLabel() {
+            $("#edge-weight-label").html($('#edge-weight').val());
+        }
+
 
 
         $("#delete-fcm").click(function () {
