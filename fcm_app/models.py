@@ -42,9 +42,9 @@ class FCM_EDGES_IN_FCM_CONCEPT(models.Model):
     fcm = models.ForeignKey(FCM, on_delete=models.CASCADE)
     text = models.CharField(max_length=500, null=True)
     weight = models.IntegerField(default=0)
-    from_concept = models.ForeignKey(FCM_CONCEPT, on_delete=models.CASCADE, related_name="from_concept")
-    to_concept = models.ForeignKey(FCM_CONCEPT, on_delete=models.CASCADE, related_name="to_concept")
-    id_in_fcm = models.CharField(max_length=10) # den ksero gt to exoume afisei Charfield
+    from_concept = models.ForeignKey(FCM_CONCEPT, on_delete=models.CASCADE, related_name="from_concept", null=True)
+    to_concept = models.ForeignKey(FCM_CONCEPT, on_delete=models.CASCADE, related_name="to_concept", null=True)
+    id_in_fcm = models.CharField(max_length=10, null=True) # den ksero gt to exoume afisei Charfield
 
     def __str__(self):
         return self.text
