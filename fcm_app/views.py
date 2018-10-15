@@ -29,15 +29,19 @@ def index(request):
 
 
 def browse(request):
-
-    if not request.method == 'POST':
-        if 'filter-post' in request.session:
-            request.POST = request.session['filter-post']
+    if request.method == 'GET':
+        if 'hasFilters' in request.GET:
+            if bool(request.GET['hasFilters']) is True:
+                pass
+            else:
+                request.method = 'GET'
+        else:
             request.method = 'POST'
+    else:
+        request.session['filter-post'] = request.POST
 
     if request.method == 'POST':
-        filter_form = FiltersForm(request.POST)
-        request.session['filter-post'] = request.POST
+        filter_form = FiltersForm(request.session['filter-post'])
         if filter_form.is_valid():
             filtered_title_and_or_description = filter_form.cleaned_data['filtered_title_and_or_description']
             filtered_year = filter_form.cleaned_data['filtered_year']
@@ -87,7 +91,7 @@ def browse(request):
 
             data = {'filtered_title_and_or_description': filtered_title_and_or_description, 'filtered_year': filtered_year, 'filtered_country': filtered_country, 'filtered_getmine': filtered_getmine,'filtered_tags': filtered_tags, 'filtered_sorting_type': filtered_sorting_type}
             filter_form = FiltersForm(initial=data)
-            paginator = Paginator(all_fcms, 6)
+            paginator = Paginator(all_fcms, 9)
             page = request.GET.get('page')
             try:
                 all_fcms = paginator.page(page)
@@ -110,7 +114,7 @@ def browse(request):
         else:
             all_fcms = FCM.objects.filter(Q(status='1')).order_by('-creation_date')
         filter_form = FiltersForm()
-        paginator = Paginator(all_fcms, 6)
+        paginator = Paginator(all_fcms, 9)
         page = request.GET.get('page')
         try:
             all_fcms = paginator.page(page)

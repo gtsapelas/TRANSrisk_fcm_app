@@ -45,6 +45,7 @@
                     <label>My System Maps only:</label>
                     {{filter_form.filtered_getmine}}<br><br>
                     <input class="btn btn-sm btn-success" type="Submit" value="Search"/>
+                    <input class="btn btn-sm btn-default" type="button" id="clear_btn" value="Clear"/>
                 </div>
             </div>
         </form>
@@ -122,11 +123,24 @@
 {#            $(".select2").css('width', '100%;');#}
         })
 
-            $(function(){
-                $('#browse_sort_by button').click(function(){
-                    $('#mysortform').submit();
-                });
+
+        $(function(){
+            $('#browse_sort_by button').click(function(){
+                $('#mysortform').submit();
             });
+        });
+
+
+        $('#clear_btn').click(function(){
+            $('#id_filtered_title_and_or_description').val("");
+            $('#id_filtered_tags option').each(function () {
+                $(this).remove();
+            });
+            $('#id_filtered_year').val("-").trigger("change");
+            $('#id_filtered_country').val("-").trigger("change");
+            $('#id_filtered_getmine').prop('checked', false);
+        });
+
 
     </script>
 

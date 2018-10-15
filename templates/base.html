@@ -54,7 +54,7 @@
 					<div class="collapse navbar-collapse">
 						<ul class="nav navbar-nav navbar-right">
 							<li><a href="{% url 'fcm_app:index' %}">Home</a></li>
-                            <li><a href="{%  url 'fcm_app:browse' %}">Browse</a></li>
+                            <li><a href="{%  url 'fcm_app:browse' %}?hasFilters=false" >Browse</a></li>
 							<li><a href="{%  url 'fcm_app:create_map' %}">Create</a></li>
                             <li><a href="{%  url 'fcm_app:import_map' %}">Import</a></li>
                             <li>
@@ -140,5 +140,8 @@
             $(".vis-edit").find(".vis-label").text("Edit");
         }, 50);
 
+{#        $("#browse_link").click(function () {#}
+{#            localStorage['filter-post'] = false;#}
+{#        });#}
     </script>
 </html>
