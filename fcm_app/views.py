@@ -152,8 +152,8 @@ def import_fcm(request):
             user = request.user
             soup = BeautifulSoup(form.cleaned_data['map_html'], "html.parser")  # vazo i lxml  i html.parser
             if len(soup.find("table", class_="yimagetable")) > 0:
-                print "src in html: " + soup.find("img", class_="yimage")['src']
-                print "image name: " + form.cleaned_data['map_image'].name
+                print("src in html: " + soup.find("img", class_="yimage")['src'])
+                print("image name: " + form.cleaned_data['map_image'].name)
                 if urllib2.unquote(soup.find("img", class_="yimage")['src']) == form.cleaned_data['map_image'].name:
                     if user.is_authenticated():
                         fcm = FCM(user=user,
@@ -254,7 +254,7 @@ def view_fcm(request, fcm_id):
         print(info_dict)
 
         edges = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm)
-        print 'edges:'
+        print('edges:')
         # print(edges)
         info_edge_dict = dict()
         for edge_item in edges:
@@ -434,7 +434,7 @@ def edit_fcm(request, fcm_id):
                     messages.error(request, "form invalid")
             tags = [t.name for t in fcm.tags.all()]
             data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status}
-            print tags
+            print(tags)
             form = FCMForm(initial=data)
             # pdb.set_trace()
             form.fields['map_image'].widget = forms.HiddenInput()
@@ -569,7 +569,7 @@ def edit_fcm(request, fcm_id):
             form1 = chartisForm()
 
             tags = [t.name for t in fcm.tags.all()]
-            print tags
+            print(tags)
 
             #form.fields['chartis'].widget = forms.HiddenInput()
             #form.fields['map_image'].widget = forms.HiddenInput()
