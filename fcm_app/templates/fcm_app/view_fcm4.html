@@ -520,7 +520,11 @@
                 <a type="button" href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button btn btn-default" style="background-color: #948a7c; width: 60px;">Edit</a>
             {% endif %}
             <div id="demo" class="collapse">
-                {{ fcm.description }}
+                <table class="table">
+                    <tr><td>Description</td><td>{{ fcm.description }}</td></tr>
+                    <tr><td>Country</td><td>{{ fcm.country }}</td></tr>
+                    <tr><td>Tags</td><td>{% for tag in fcm.tags.all %} {{ tag.name }} {{ '    ' }} {% endfor %}</td></tr>
+                </table>
             </div>
         </div>
     </div>
