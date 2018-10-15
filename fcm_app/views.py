@@ -182,7 +182,7 @@ def import_fcm(request):
                             else:
                                 fcm_edge = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, text=div.text, id_in_fcm=div.get('id'))
                                 fcm_edge.save()
-                        messages.success(request, 'Successfully imported the System Map. Add more info <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a href="/fcm/browse"><u>here</u></a>. ')
+                        messages.success(request, 'Successfully imported the System Map. Add more info <a style="color: #a05017;" href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a  style="color: #a05017;" href="/fcm/browse"><u>here</u></a>. ')
                     else:
                         messages.error(request, "You must login to import a map")
                 else:
@@ -630,7 +630,7 @@ def create_fcm(request):
                     fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm= i['id'], text=None, from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                     fcm_edges_in_fcm_concept.save()
 
-                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a href="/fcm/browse"><u>here</u></a>. ')
+                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a style="color: #a05017;"  href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to create a map")
         else:

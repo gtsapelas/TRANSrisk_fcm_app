@@ -170,6 +170,16 @@
                    color:'white'
                 },
             },
+            edges:{
+                smooth:{
+                    enabled: true,
+                    type: 'continuous',
+                    roundness: 0.6
+                },
+                font:{
+                    align: 'top',
+                }
+            },
             layout: {randomSeed:seed}, // just to make sure the layout is the same when the locale is changed
             locale: document.getElementById('locale').value,
             manipulation: {

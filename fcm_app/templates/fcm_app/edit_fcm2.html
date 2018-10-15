@@ -222,6 +222,19 @@
                     from:   {enabled: false, scaleFactor:1, type:'arrow'}
             },
             arrowStrikethrough: false,
+            smooth:{
+                enabled: true,
+                type: 'continuous',
+                roundness: 0.6,
+            },
+            font:{
+                align: 'top',
+            }
+        },
+        smooth:{
+            enabled: true,
+            type: 'continuous',
+            roundness: 0.6,
         },
         nodes: {
             shape: 'box',
@@ -481,7 +494,7 @@
       if (typeof info.from === 'object')
         info.from = info.from.id
       var weight = parseFloat(document.getElementById('edge-weight').value);
-      var label = document.getElementById('edge-label').value.trim() + " (weight: " + document.getElementById('edge-weight').value+ ")";
+      var label = document.getElementById('edge-label').value.trim() + "\n(weight: " + document.getElementById('edge-weight').value+ ")";
       var color = "grey";
       if (weight !== 0) {
           if (weight > 0)
@@ -517,7 +530,7 @@
       if (typeof info.from === 'object')
         info.from = info.from.id;
       var weight = parseFloat(document.getElementById('edge-weight').value);
-      var label = document.getElementById('edge-label').value.trim() + " (weight: " + document.getElementById('edge-weight').value+ ")";
+      var label = document.getElementById('edge-label').value.trim() + "\n(weight: " + document.getElementById('edge-weight').value+ ")";
       var color = "grey";
       if (weight !== 0) {
           if (weight > 0)
@@ -651,7 +664,7 @@
             <td style="width: 100px;"></td><td><div id="edge-weight-label">0</div></td>
         </tr>
         <tr>
-          <td style="width: 100px;">label</td><td><input id="edge-label" type="text" value="" /></td>
+          <td style="width: 100px;">label</td><td><textarea cols="40" rows="4" id="edge-label"value=""></textarea></td>
         </tr>
       </table>
       <input type="button" value="save" id="edge-saveButton" />
