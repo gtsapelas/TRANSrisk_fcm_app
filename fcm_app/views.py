@@ -14,7 +14,8 @@ from django.contrib import messages
 from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
-import json, pdb, urllib2
+import json, pdb
+import urllib.parse as urllib
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -154,7 +155,7 @@ def import_fcm(request):
             if len(soup.find("table", class_="yimagetable")) > 0:
                 print("src in html: " + soup.find("img", class_="yimage")['src'])
                 print("image name: " + form.cleaned_data['map_image'].name)
-                if urllib2.unquote(soup.find("img", class_="yimage")['src']) == form.cleaned_data['map_image'].name:
+                if urllib.unquote(soup.find("img", class_="yimage")['src']) == form.cleaned_data['map_image'].name:
                     if user.is_authenticated():
                         fcm = FCM(user=user,
                                   title=form.cleaned_data['title'],
