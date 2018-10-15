@@ -37,7 +37,7 @@
     </div>
 
     <div class="col-sm-offset-1 col-sm-8">
-        <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Available Concepts and Nodes</a></btn>
+        <a class="btn btn-default"  href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Available Concepts and Relations</a>
     </div>
 
     <div class="col-sm-2">
@@ -48,7 +48,7 @@
         <div id="dialog" style="text-align: center">
             <p>Are you sure you want to delete the System Map?</p>
             <btn id="cancel-delete" class="btn btn-default">Cancel</btn>
-            <btn id="confirm-delete" class="btn btn-danger"><a href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a></btn>
+            <a id="confirm-delete" class="btn btn-danger" href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a>
         </div>
     </div>
 

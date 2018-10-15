@@ -55,7 +55,7 @@
             {{ form.media }}
             {{ form.as_p }}
             <input class="btn btn-success" type='submit' value='Save' />
-            <btn class="btn btn-default"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=relation.fcm.id  %}">Back</a></btn>
+            <a class="btn btn-default" href="{% url 'fcm_app:view_fcm_concept' fcm_id=relation.fcm.id  %}">Back</a>
         </form>
 
     </div>

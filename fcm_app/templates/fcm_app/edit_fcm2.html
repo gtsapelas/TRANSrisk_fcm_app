@@ -578,7 +578,7 @@
             <a id="cancel-link-btn" href="/fcm/browse" class="btn btn-default">Cancel</a>
         </div>
         <div class="col-sm-2">
-            <btn class="btn btn-default" style="text-transform: inherit; background-color: #54608a"><a href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Edit Concepts and Relations</a></btn>
+            <a  class="btn btn-default" style="text-transform: inherit; background-color: #54608a" href="{% url 'fcm_app:view_fcm_concept' fcm_id=fcm.id %}">Edit Concepts and Relations</a>
         </div>
     </div>
     <!--<h1>Create a new...</h1>-->
@@ -700,7 +700,7 @@
         <div id="dialog" style="text-align: center">
             <p>Are you sure you want to delete the System Map?</p>
             <btn id="cancel-delete" class="btn btn-default">Cancel</btn>
-            <btn id="confirm-delete" class="btn btn-danger"><a href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a></btn>
+            <a id="confirm-delete" class="btn btn-danger" href="{% url 'fcm_app:delete_fcm' fcm_id=fcm.id %}"> Delete </a>
         </div>
     </div>
 
