@@ -16,6 +16,5 @@ pillow==4.2.1
 bs4
 django-ckeditor
 django-countries
-urllib2
 
 psycopg2
