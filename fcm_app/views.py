@@ -540,7 +540,7 @@ def edit_fcm(request, fcm_id):
                                 akmes.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
 
                         for i in akmes:  # edo tis prostheto sti vasi
-                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=None, from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
+                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=i['label'], from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                             fcm_edges_in_fcm_concept.save()
 
 
@@ -628,7 +628,7 @@ def create_fcm(request):
                     fcm_concept = FCM_CONCEPT(fcm=fcm, title = i['label'], id_in_fcm= i['id'], x_position = i['x'], y_position = i['y'])
                     fcm_concept.save()
                 for i in x2:
-                    fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm= i['id'], text=None, from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
+                    fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm= i['id'], text=i['label'], from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                     fcm_edges_in_fcm_concept.save()
 
                 messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a style="color: #a05017;"  href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse"><u>here</u></a>. ')
