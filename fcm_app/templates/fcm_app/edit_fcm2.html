@@ -146,10 +146,9 @@
 
 
 
-    <script type="text/javascript" src="http://visjs.org/examples/network/exampleUtil.js"></script>
-	<script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
-    <link href="http://visjs.org/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{% static 'js/vis.min.js' %}"></script>
+    <link href="{% static 'css/vis.min.css' %}" rel="stylesheet" type="text/css" />
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 
     {% if messages %}
         {% for message in messages %}
