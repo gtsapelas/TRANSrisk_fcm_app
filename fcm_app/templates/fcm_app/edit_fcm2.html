@@ -715,6 +715,10 @@
                 tokenSeparators: [',', ' ']
             });
             $('#id_country').select2();
+
+            {% for tag_element in tags %}
+                $("#id_tags").append("<option value=\"{{ tag_element }}\" selected>{{ tag_element }}</option>");
+            {% endfor %}
         });
 
 

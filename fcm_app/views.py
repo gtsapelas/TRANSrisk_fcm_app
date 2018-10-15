@@ -549,6 +549,10 @@ def edit_fcm(request, fcm_id):
             data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status, 'chartis': fcm.chartis}
             form = jsForm(initial=data)
             form1 = chartisForm()
+
+            tags = [t.name for t in fcm.tags.all()]
+            print tags
+
             #form.fields['chartis'].widget = forms.HiddenInput()
             #form.fields['map_image'].widget = forms.HiddenInput()
             #form.fields['map_html'].widget = forms.HiddenInput()
@@ -557,6 +561,7 @@ def edit_fcm(request, fcm_id):
                 'form': form,
                 'fcm': fcm,
                 'form1': form1,
+                'tags': tags,
             })
         return HttpResponseForbidden()
 
