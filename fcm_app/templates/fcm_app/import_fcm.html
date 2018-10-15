@@ -34,7 +34,7 @@
             <form class="form-horizontal" action="{% url 'fcm_app:import_map' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-header card-header-text" data-background-color="rose">
-                    <h5 class="card-title">Import a new System Map, using files created by the yEd Graph Editor from yWorks<small style="color: white;"></small></h5>
+                    <h5 class="card-title">Import a new System Map, using files created by the yEd Graph Editor<small style="color: white;"></small></h5>
                 </div>
                 <div class="card-content">
                     {% for field in form %}

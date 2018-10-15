@@ -63,7 +63,7 @@
                                 <img src="{{ fcm.map_image.url }}" alt="{{ fcm.description }}" class="img-responsive" >
                             {% endif %}
                             <div class="hover-block text-center" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(98, 98, 98, 0.49);">
-                                <h3 style="margin-top: 70px; color: #fff6f6;">{{ fcm.description }}</h3>
+                                <h3 style="margin-top: 70px; color: #fff6f6; overflow-wrap: break-word;">{{ fcm.description }}</h3>
                             </div>
                         </div>
                         <div class="card-footer text-center"> Created at {{ fcm.creation_date|date:"d M Y" }}</div>
