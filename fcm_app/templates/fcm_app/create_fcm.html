@@ -662,7 +662,7 @@
             <h4 class="card-title">Publish a new System Map</h4>
         </div>
         <div class="card-content">
-            <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" enctype="multipart/form-data">
+            <form class="form-horizontal" action="{% url 'fcm_app:create_map' %}" method="post" >
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="row" {% if field.label == 'Chartis' or field.label == 'Image'  %} style="display: none;"{% endif %}>

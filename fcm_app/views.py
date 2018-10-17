@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 
-from .forms import jsForm, FCMForm, FCMCONCEPTForm, FiltersForm, chartisForm, SortMapsForm, FCMEDGEForm
+from .forms import jsForm, FCMForm, FCMCONCEPTForm, FiltersForm, SortMapsForm, FCMEDGEForm
 from .models import FCM
 from .models import FCM_CONCEPT
 from .models import FCM_CONCEPT_INFO
@@ -184,7 +184,7 @@ def import_fcm(request):
                             else:
                                 fcm_edge = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, text=div.text, id_in_fcm=div.get('id'))
                                 fcm_edge.save()
-                        messages.success(request, 'Successfully imported the System Map. Add more info <a style="color: #a05017;" href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a  style="color: #a05017;" href="/fcm/browse"><u>here</u></a>. ')
+                        messages.success(request, 'Successfully imported the System Map. Add more info <a style="color: #a05017;" href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
                     else:
                         messages.error(request, "You must login to import a map")
                 else:
@@ -201,6 +201,8 @@ def import_fcm(request):
 
 def view_fcm(request, fcm_id):
     fcm = FCM.objects.get(pk=fcm_id)
+    # fcm.chartis = str(fcm.chartis)
+
     if fcm.manual == False:
         html = fcm.map_html.read()
         soup = BeautifulSoup(html, 'html.parser')
@@ -455,7 +457,7 @@ def edit_fcm(request, fcm_id):
                 #data = {'chartis': fcm.chartis}
                 #print(data)
                 form = jsForm(request.POST)
-                form1 = chartisForm(request.POST)
+                # pdb.set_trace()
                 if form.is_valid():
                     print(request.user)
                     user = request.user
@@ -464,8 +466,8 @@ def edit_fcm(request, fcm_id):
                         fcm.description=form.cleaned_data['description']
                         fcm.country=form.cleaned_data['country']
                         fcm.status=form.cleaned_data['status']
-                        fcm.chartis = form.cleaned_data['chartis'],
-                        fcm.image_url = form.cleaned_data['image'],
+                        fcm.chartis = form.cleaned_data['chartis']
+                        fcm.image_url = form.cleaned_data['image']
                         fcm.save()
                         tags = form.cleaned_data['tags']
                         fcm.tags.clear()
@@ -476,91 +478,34 @@ def edit_fcm(request, fcm_id):
                             except DatabaseError:
                                 pass
                             fcm.tags.add(str(tag_element))
-                        if form1.is_valid():
-                            arxikos_chartis = json.loads(form1.cleaned_data['arxikos_chartis'])
-                        #print(arxikos_chartis)
-                        telikos_chartis = json.loads(form.cleaned_data['chartis'])
 
-                        #print(telikos_chartis)
+                        description_json = json.loads(form.cleaned_data['chartis'])
 
-                        x1 = arxikos_chartis['nodes']  # list pou exei dictionaries
-                        x2 = telikos_chartis['nodes']
-                        arr1 = []
-                        arr2 = []
+                        print(description_json)
+                        x = description_json
+                        x1 = x['nodes']  # list pou exei dictionaries
+                        x2 = x['edges']  # list
+
+                        for concept in FCM_CONCEPT.objects.filter(fcm=fcm):
+                            concept.delete()
+
+                        for edge in FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm):
+                            edge.delete()
 
                         for i in x1:
-                            arr1.append(i['id'])
-                        for i in x2:
-                            arr2.append(i['id'])
-
-                        for val in arr1:   # edo pairno tous komvous pou prepei na diagrapso
-                            if val not in arr2:
-                                b = FCM_CONCEPT.objects.filter(fcm_id=fcm.id, id_in_fcm=val)
-                                b.delete()
-
-                        komvoi = []
-                        for i in arr2:  # vazo ston pinaka komvoi tous komvous pou prosthethikan
-                            if i not in arr1:
-                                komvoi.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
-
-                        for i in komvoi:  # edo tous prostheto sti vasi
-                            fcm_concept = FCM_CONCEPT(fcm=fcm, title=i['label'], id_in_fcm=i['id'], x_position=i['x'],y_position=i['y'])
+                            fcm_concept = FCM_CONCEPT(fcm=fcm, title=i['label'], id_in_fcm=i['id'], x_position=i['x'], y_position=i['y'])
                             fcm_concept.save()
-
-                        b = FCM_CONCEPT.objects.filter(fcm_id=fcm.id) # pairno edo olous tous komvous pou yparhoun pleon
-                        j=0
-                        for i in b:  # edo kano update se kathe fcm_concept pou einai sti vasi ta parakato stoixeia
-                            i.title = x2[j]['label']
-                            i.x_position = x2[j]['x']
-                            i.y_position = x2[j]['y']
-                            j += 1
-                            i.save()
-
-                        # antistoixa gia tis akmes
-                        y2=x2 # kratao edo tin teliki katastasi ton komvon
-                        x1 = arxikos_chartis['edges']
-                        print(x1)
-                        x2 = telikos_chartis['edges']
-                        print(x2)
-                        arr1 = []
-                        arr2 = []
-
-                        for i in x1:
-                            arr1.append(i['id'])
+                            if str(i['concept_info']).strip() != "":
+                                fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=fcm_concept, info=str(i['concept_info']).strip())
+                                fcm_concept_info.save()
                         for i in x2:
-                            arr2.append(i['id'])
-
-                        b=[]
-                        for val in arr1:   # edo pairno tis akmes pou prepei na diagrapso
-                            if val not in arr2:
-                                b = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id, id_in_fcm=val)  # edo diagrafo tin akmi kai apo ton pinaka FCM_EDGES_IN_FCM_CONCEPT
-                                b.delete()
-
-                        akmes = []
-                        for i in arr2:  # vazo ston pinaka akmes tis akmes pou prosthethikan
-                            if i not in arr1:
-                                akmes.append(x2[next((index for (index, d) in enumerate(x2) if d['id'] == i), None)])
-
-                        for i in akmes:  # edo tis prostheto sti vasi
-                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=i['label'], from_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
+                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=i['label'], from_concept=
+                            FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=
+                                                                                FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
                             fcm_edges_in_fcm_concept.save()
-
-
-                        c = FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm_id=fcm.id)  # pairno edo oles tis akmes pou yparhoun pleon
-                        j = 0
-                        x2.reverse()
-                        for i in c:  # edo kano update se kathe fcm_edge pou einai sti vasi ta parakato stoixeia
-                            for k in x2:
-                                # JOHN CHECK IT. HERE THE ALREADY ADDED RELATIONS ARE UPDATED
-                                from_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['from']), None)
-                                apo_komvo = y2[from_index]['label']
-                                to_index = next((index for (index, d) in enumerate(y2) if d["id"] == k['to']), None)
-                                pros_komvo = y2[to_index]['label']
-                                i.text = None
-                                j += 1
-                                i.save()
-                                x2.pop(0)
-                                break
+                            if str(i['relation_info']).strip() != "":
+                                fcm_relation_info = FCM_EDGE_INFO(fcm_edge=fcm_edges_in_fcm_concept, info=str(i['relation_info']).strip())
+                                fcm_relation_info.save()
 
                         messages.success(request, 'edited successfully')
                     else:
@@ -569,7 +514,6 @@ def edit_fcm(request, fcm_id):
                     messages.error(request, "form invalid")
             data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status, 'chartis': fcm.chartis}
             form = jsForm(initial=data)
-            form1 = chartisForm()
 
             tags = [t.name for t in fcm.tags.all()]
             print(tags)
@@ -584,7 +528,6 @@ def edit_fcm(request, fcm_id):
             return render(request, 'fcm_app/edit_fcm2.html', {
                 'form': form,
                 'fcm': fcm,
-                'form1': form1,
                 'tags': tags,
                 'concept_info_form': concept_info_form,
                 'relation_info_form': relation_info_form
@@ -644,7 +587,7 @@ def create_fcm(request):
                         fcm_relation_info = FCM_EDGE_INFO(fcm_edge=fcm_edges_in_fcm_concept, info=str(i['relation_info']).strip())
                         fcm_relation_info.save()
 
-                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a style="color: #a05017;"  href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse"><u>here</u></a>. ')
+                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a style="color: #a05017;"  href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to create a map")
         else:

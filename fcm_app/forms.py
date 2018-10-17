@@ -118,9 +118,5 @@ class jsForm(forms.Form):
     image = forms.CharField(label='Image',widget=forms.HiddenInput())
 
 
-class chartisForm(forms.Form):
-    arxikos_chartis = forms.CharField(label='Arxikos_chartis', widget=forms.HiddenInput())
-
-
 class SortMapsForm(forms.Form):
     sorting_type = forms.CharField(label='Order by:', widget=forms.Select(choices=SORT_CHOICES))
