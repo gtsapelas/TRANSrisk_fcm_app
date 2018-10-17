@@ -464,7 +464,8 @@ def edit_fcm(request, fcm_id):
                         fcm.description=form.cleaned_data['description']
                         fcm.country=form.cleaned_data['country']
                         fcm.status=form.cleaned_data['status']
-                        fcm.chartis = form.cleaned_data['chartis']
+                        fcm.chartis = form.cleaned_data['chartis'],
+                        fcm.image_url = form.cleaned_data['image'],
                         fcm.save()
                         tags = form.cleaned_data['tags']
                         fcm.tags.clear()

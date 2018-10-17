@@ -597,7 +597,11 @@
       console.log(lastdata);
       lastdata = JSON.stringify(data);   // metatrepei se string to data
       document.getElementById('id_chartis').value = lastdata;
+      var canvas = document.getElementsByTagName('canvas');
+      var dataURL = canvas[0].toDataURL();
+      $('#id_image').val(dataURL);
       console.log(lastdata);
+      console.log(dataURL);
       //document.getElementById('timi_pou_thelo').value = lastdata;
       //document.getElementById('id_description').value = lastdata;
     }
