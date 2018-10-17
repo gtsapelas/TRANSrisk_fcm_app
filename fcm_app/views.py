@@ -15,8 +15,8 @@ from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
 import json, pdb
-# import urllib.parse as urllib
-import urllib2
+import urllib.parse as urllib
+# import urllib2
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
