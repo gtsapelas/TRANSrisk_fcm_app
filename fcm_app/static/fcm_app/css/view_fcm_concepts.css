@@ -4,9 +4,9 @@
 
 .concept-div{
     margin: 1% 4%;
-    height: 80px;
+    height: 90px;
     line-height: 80px;
-    overflow: hidden;
+    overflow: auto;
     text-align: center;
 }
 

@@ -24,7 +24,7 @@
                 {% for concept in concepts %}
                     <div class="col-sm-3  panel panel-default concept-div">
                         <a class="concept-a" href="/fcm/view-fcm-concept-info/{{ fcm_id }}/{{ concept.id }}/" title="{{ concept.title }}">
-                            {{ concept.title }}
+                            <pre style="background-color: transparent;border: none; margin: 0;">{{ concept.title }}</pre>
                         </a>
                     </div>
                 {% empty %}
@@ -37,11 +37,13 @@
                     <div class="col-sm-3  panel panel-default concept-div">
                         <a class="concept-a" href="/fcm/view-fcm-edge-info/{{ fcm_id }}/{{ relation.id }}/" title="{{ relation.text }}">
                             {% if  relation.text is None%}
-                                Relation <br>
-                                from: "{{ relation.from_concept.title }}" <br>
-                                to: "{{ relation.to_concept.title }}"
+                                <pre style="background-color: transparent;border: none; margin: 0;">
+                                    Relation <br>
+                                    from: "{{ relation.from_concept.title }}" <br>
+                                    to: "{{ relation.to_concept.title }}"
+                                </pre>
                             {% else %}
-                                {{ relation.text }}
+                                <pre style="background-color: transparent;border: none; margin: 0;">{{ relation.text }}</pre>
                             {% endif %}
                         </a>
                     </div>

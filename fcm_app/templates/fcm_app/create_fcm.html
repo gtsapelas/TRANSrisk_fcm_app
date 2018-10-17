@@ -89,8 +89,8 @@
           top:350px;
           left:30vw;
           z-index:299;
-          width:450px;
-          height:250px;
+          width:650px;
+          height:450px;
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
@@ -107,7 +107,7 @@
           left:30vw;
           z-index:299;
           width:550px;
-          height:200px;
+          height:450px;
           background-color: #f9f9f9;
           border-style:solid;
           border-width:3px;
@@ -202,8 +202,8 @@
             arrowStrikethrough: false,
             smooth:{
                 enabled: true,
-                type: 'continuous',
-                roundness: 0.6,
+                type: 'curvedCW',
+                roundness: 0.15,
             },
             font:{
                 align: 'top',
@@ -324,9 +324,24 @@
 {#        });#}
     }
     function editNodeEdit(info, cancelAction, callback) {
-      console.log(data);
-      console.log(info.id);
-      console.log(info.label);
+      if(info.label != undefined) {
+          var concept_info = '';
+          var color = '';
+          var shape = '';
+          $.each(network.body.data.nodes._data, function (idx, elem) {
+              if (parseInt(elem.id) === parseInt(info.id)) {
+                  concept_info = elem.concept_info;
+                  color = elem.color;
+                  shape = elem.shape;
+              }
+          });
+      }
+
+      CKEDITOR.instances['id_concept_info'].setData(concept_info);
+      document.getElementById('node-shape').value = shape;
+      document.getElementById('node-color').value = color;
+
+
       document.getElementById('node-label').value = info.label;
       document.getElementById('node-saveButton').onclick = saveNodeDataEdit.bind(this, info, callback);
       document.getElementById('node-cancelButton').onclick = cancelAction.bind(this, callback);
@@ -347,6 +362,8 @@
       document.getElementById('node-saveButton').onclick = null;
       document.getElementById('node-cancelButton').onclick = null;
       document.getElementById('node-popUp').style.display = 'none';
+
+      CKEDITOR.instances['id_concept_info'].setData("");
     }
     function cancelNodeEdit(callback) {
       clearNodePopUp();
@@ -359,6 +376,9 @@
       info.shape = document.getElementById('node-shape').value;
 
       info.color = document.getElementById('node-color').value;
+
+      info.concept_info = CKEDITOR.instances['id_concept_info'].getData() ;
+
       console.log(info);
       //info.title = document.getElementById('node-title').value;
       data.nodes.push({
@@ -367,6 +387,7 @@
         color: info.color,
         x: info.x,
         y: info.y,
+        concept_info: info.concept_info,
         shape: info.shape,
         fixed: true,
         font: {
@@ -383,23 +404,28 @@
 
       info.shape = document.getElementById('node-shape').value;
 
+      info.concept_info = CKEDITOR.instances['id_concept_info'].getData() ;
+
       var x = data.nodes;
       var y = x.filter(item => ((item.id === info.id) ));
       y[0].label = info.label;
       y[0].color = info.color;
       y[0].shape = info.shape;
+      y[0].concept_info = info.concept_info;
       clearNodePopUp();
       callback(info);
     }
     function editEdgeWithoutDragAdd(data, callback) {
       // filling in the popup DOM elements
-      if(data.label != undefined){
-          var label = data.label.split("(weight:")[0].trim();
-          var weight = data.label.split("(weight:")[1].split(")")[0];
-          document.getElementById('edge-label').value = label;
-          document.getElementById('edge-weight').value = parseFloat(weight);
-          document.getElementById('edge-weight-label').innerHTML = weight;
-      }
+{#      if(data.label != undefined){#}
+{#          var label = data.label.split("(weight:")[0].trim();#}
+{#          var weight = data.label.split("(weight:")[1].split(")")[0];#}
+{#          var relation_info = data.relation_info;#}
+{#          document.getElementById('edge-label').value = label;#}
+{#          document.getElementById('edge-weight').value = parseFloat(weight);#}
+{#          document.getElementById('edge-weight-label').innerHTML = weight;#}
+{#          document.getElementById('id_edge_info').value = relation_info;#}
+{#      }#}
       document.getElementById('edge-saveButton').onclick = saveEdgeDataAdd.bind(this, data, callback);
       document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
       document.getElementById('edge-popUp').style.display = 'block';
@@ -409,9 +435,16 @@
       if(data.label != undefined){
           var label = data.label.split("(weight:")[0].trim();
           var weight = data.label.split("(weight:")[1].split(")")[0];
+          var relation_info = '';
+          $.each(network.body.data.edges._data, function(idx, elem) {
+            if (parseInt(elem.id) === parseInt(data.id)){
+                relation_info = elem.relation_info;
+            }
+          });
           document.getElementById('edge-label').value = label;
           document.getElementById('edge-weight').value = parseFloat(weight);
           document.getElementById('edge-weight-label').innerHTML = weight;
+          CKEDITOR.instances['id_edge_info'].setData(relation_info);
       }
       document.getElementById('edge-saveButton').onclick = saveEdgeDataEdit.bind(this, data, callback);
       document.getElementById('edge-cancelButton').onclick = cancelEdgeEdit.bind(this,callback);
@@ -425,6 +458,8 @@
       $("#edge-weight").val(0);
       $("#edge-label").val("");
       $("#edge-weight-label").html($('#edge-weight').val());
+      CKEDITOR.instances['id_edge_info'].setData("");
+
     }
 
     function cancelEdgeEdit(callback) {
@@ -439,6 +474,8 @@
         info.from = info.from.id;
       var weight = parseFloat(document.getElementById('edge-weight').value);
       var label = document.getElementById('edge-label').value.trim() + "\n(weight: " + document.getElementById('edge-weight').value+ ")";
+      var relation_info = CKEDITOR.instances['id_edge_info'].getData() ;
+
       var color = "grey";
       if (weight !== 0) {
           if (weight > 0)
@@ -451,6 +488,7 @@
 
       info.label = label;
       info.width = (weight * 10) + 1;
+      info.relation_info = relation_info;
       info.color = { color: color };
       numOfEdges++;
       info.id = numOfEdges;
@@ -462,8 +500,8 @@
         to: info.to,
         label: label,
         width: (weight * 10) + 1,
+        relation_info: relation_info,
         color: { color: color }
-
       });
       clearEdgePopUp();
       callback(info);
@@ -475,6 +513,7 @@
         info.from = info.from.id;
       var weight = parseFloat(document.getElementById('edge-weight').value);
       var label = document.getElementById('edge-label').value.trim() + "\n(weight: " + document.getElementById('edge-weight').value+ ")";
+      var relation_info = CKEDITOR.instances['id_edge_info'].getData() ;
       var color = "grey";
       if (weight !== 0) {
           if (weight > 0)
@@ -487,6 +526,7 @@
 
       info.label = label;
       info.width = (weight * 10) + 1;
+      info.relation_info = relation_info;
       info.color = { color: color };
 
       var x = data.edges;
@@ -494,6 +534,7 @@
       y[0].label = info.label;
       y[0].width = (weight * 10) + 1;
       y[0].color = { color: color };
+      y[0].relation_info = relation_info;
       clearEdgePopUp();
       callback(info);
     }
@@ -575,6 +616,12 @@
           </tr>
 
       </table>
+
+      <div style="margin-top: 30px;" id="concept_info_div">
+          {{ concept_info_form.media }}
+          {{ concept_info_form.as_p }}
+      </div>
+
       <input type="button" value="save" id="node-saveButton" />
       <input type="button" value="cancel" id="node-cancelButton" />
     </div>
@@ -592,6 +639,12 @@
             <td style="width: 100px;">label</td><td><textarea cols="40" rows="4" id="edge-label"value=""></textarea></td>
         </tr>
       </table>
+
+      <div style="margin-top: 30px;" id="relation_info_div">
+          {{ relation_info_form.media }}
+          {{ relation_info_form.as_p }}
+      </div>
+
       <input type="button" value="save" id="edge-saveButton" />
       <input type="button" value="cancel" id="edge-cancelButton" />
     </div>
