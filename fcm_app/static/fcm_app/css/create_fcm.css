@@ -1,0 +1,22 @@
+#node-popUp .nav-tabs, #edge-popUp .nav-tabs{
+    background: none;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #d1d1d1;
+}
+
+
+#node-popUp .nav>li, #edge-popUp .nav>li{
+    min-height: unset;
+    line-height: unset;
+}
+
+#node-popUp .nav>li.active, #edge-popUp .nav>li.active{
+    background: #e8e8e8;
+}
+
+#node-popUp .nav-tabs > li > a, #edge-popUp .nav-tabs > li > a{
+    color: black !important;
+}
+
+

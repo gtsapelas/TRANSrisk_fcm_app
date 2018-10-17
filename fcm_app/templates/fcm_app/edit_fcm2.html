@@ -5,6 +5,7 @@
 {% block css %}
     <link href="{% static 'fcm_app/css/edit_fcm.css' %}" rel="stylesheet" />
     <link href="{% static 'fcm_app/css/import_fcm.css' %}" rel="stylesheet" />
+    <link href="{% static 'fcm_app/css/create_fcm.css' %}" rel="stylesheet" />
     <style type="text/css">
         .slider {
             -webkit-appearance: none;
@@ -96,7 +97,7 @@
           top:350px;
           left:30vw;
           z-index:299;
-          width:450px;
+          width:650px;
           height:450px;
           background-color: #f9f9f9;
           border-style:solid;
@@ -113,7 +114,7 @@
           top:350px;
           left:30vw;
           z-index:299;
-          width:450px;
+          width:650px;
           height:450px;
           background-color: #f9f9f9;
           border-style:solid;
@@ -660,46 +661,55 @@
 
     <div id="node-popUp">
       <span id="node-operation">node</span> <br>
-      <table style="margin: 0;width: 100%;">
-        <tr hidden>
-          <td>id</td><td><input id="node-id" value="la"/></td>
-        </tr>
-        <tr>
-            <td>Label</td><td><textarea cols="40" rows="5" id="node-label" value="la" ></textarea></td>
-        </tr>
-        <tr>
-          <td>Color</td>
-            <td>
-                <select id="node-color" style="width: 100%">
-                    <option value="#6c6c6c" selected>Grey</option>
-                    <option value="#8d2b2b" >Red</option>
-                    <option value="#327666" >Green</option>
-                    <option value="#34477b" >Blue</option>
-                    <option value="#684126" >Brown</option>
-                </select>
-            </td>
-        </tr>
-          <tr>
-               <td>Shape</td>
-              <td>
-                  <select id="node-shape" style="width: 100%">
-                    <option value="box" selected>Box</option>
-                    <option value="ellipse" >Ellipse</option>
-                </select>
-              </td>
-          </tr>
-{#        <tr>#}
-{#            <td>Width</td><td  class="slidecontainer"><span id="demo"></span><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></td>#}
-{#        </tr>#}
-        <!--tr>
-          <td>title</td><td><input id="node-title" value="" /></td>
-        </tr-->
-      </table>
-
-      <div style="margin-top: 30px;" id="concept_info_div">
-          {{ concept_info_form.media }}
-          {{ concept_info_form.as_p }}
-      </div>
+        <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+          <li class="active"><a data-toggle="tab" href="#node_label_tab">Properties</a></li>
+          <li><a data-toggle="tab" href="#node_info_tab">More info</a></li>
+        </ul>
+        <div class="tab-content" >
+            <div id="node_label_tab" class="tab-pane fade in active">
+                <table style="margin: 0;width: 100%;">
+                    <tr hidden>
+                      <td>id</td><td><input id="node-id" value="la"/></td>
+                    </tr>
+                    <tr>
+                        <td>Label</td><td><textarea cols="40" rows="5" id="node-label" value="la" ></textarea></td>
+                    </tr>
+                    <tr>
+                      <td>Color</td>
+                        <td>
+                            <select id="node-color" style="width: 100%">
+                                <option value="#6c6c6c" selected>Grey</option>
+                                <option value="#8d2b2b" >Red</option>
+                                <option value="#327666" >Green</option>
+                                <option value="#34477b" >Blue</option>
+                                <option value="#684126" >Brown</option>
+                            </select>
+                        </td>
+                    </tr>
+                      <tr>
+                           <td>Shape</td>
+                          <td>
+                              <select id="node-shape" style="width: 100%">
+                                <option value="box" selected>Box</option>
+                                <option value="ellipse" >Ellipse</option>
+                            </select>
+                          </td>
+                      </tr>
+            {#        <tr>#}
+            {#            <td>Width</td><td  class="slidecontainer"><span id="demo"></span><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></td>#}
+            {#        </tr>#}
+                    <!--tr>
+                      <td>title</td><td><input id="node-title" value="" /></td>
+                    </tr-->
+                  </table>
+            </div>
+            <div id="node_info_tab" class="tab-pane fade">
+              <div style="margin-top: 30px;" id="concept_info_div">
+                  {{ concept_info_form.media }}
+                  {{ concept_info_form.as_p }}
+              </div>
+            </div>
+        </div>
 
       <input type="button" value="save" id="node-saveButton" />
       <input type="button" value="cancel" id="node-cancelButton" />
@@ -707,21 +717,30 @@
 
     <div id="edge-popUp">
       <span id="edge-operation">edge</span> <br>
-      <table style="margin: 0;width: 100%;">
-        <tr>
-          <td style="width: 100px;">weight</td><td><input id="edge-weight" type="range" min="-1" max="1" step="0.1" value="0" class="slider" oninput="updateWeightLabel();"/></td>
-        </tr>
-        <tr>
-            <td style="width: 100px;"></td><td><div id="edge-weight-label">0</div></td>
-        </tr>
-        <tr>
-          <td style="width: 100px;">label</td><td><textarea cols="40" rows="4" id="edge-label"value=""></textarea></td>
-        </tr>
-      </table>
-
-      <div style="margin-top: 30px;" id="relation_info_div">
-          {{ relation_info_form.media }}
-          {{ relation_info_form.as_p }}
+        <ul class="nav nav-tabs" style="margin-bottom: 15px;">
+          <li class="active"><a data-toggle="tab" href="#edge_label_tab">Properties</a></li>
+          <li><a data-toggle="tab" href="#edge_info_tab">More info</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="edge_label_tab" class="tab-pane fade in active">
+                <table style="margin: 0;width: 100%;">
+                    <tr>
+                      <td style="width: 100px;">weight</td><td><input id="edge-weight" type="range" min="-1" max="1" step="0.1" value="0" class="slider" oninput="updateWeightLabel();"/></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 100px;"></td><td><div id="edge-weight-label">0</div></td>
+                    </tr>
+                    <tr>
+                      <td style="width: 100px;">label</td><td><textarea cols="40" rows="4" id="edge-label"value=""></textarea></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="edge_info_tab" class="tab-pane fade">
+                <div id="relation_info_div">
+                      {{ relation_info_form.media }}
+                      {{ relation_info_form.as_p }}
+                 </div>
+            </div>
       </div>
       <input type="button" value="save" id="edge-saveButton" />
       <input type="button" value="cancel" id="edge-cancelButton" />
