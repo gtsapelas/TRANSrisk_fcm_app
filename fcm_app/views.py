@@ -150,47 +150,50 @@ def import_fcm(request):
     if request.method == 'POST':
         form = FCMForm(request.POST, request.FILES)
         if form.is_valid():
-            print(request.user)
-            user = request.user
-            soup = BeautifulSoup(form.cleaned_data['map_html'], "html.parser")  # vazo i lxml  i html.parser
-            if len(soup.find("table", class_="yimagetable")) > 0:
-                print("src in html: " + soup.find("img", class_="yimage")['src'])
-                print("image name: " + form.cleaned_data['map_image'].name)
-                if urllib.unquote(soup.find("img", class_="yimage")['src']) == form.cleaned_data['map_image'].name:
-                    if user.is_authenticated():
-                        fcm = FCM(user=user,
-                                  title=form.cleaned_data['title'],
-                                  country = form.cleaned_data['country'],
-                                  status = form.cleaned_data['status'],
-                                  description=form.cleaned_data['description'],
-                                  creation_date=datetime.now(),
-                                  map_image=form.cleaned_data['map_image'],
-                                  map_html=form.cleaned_data['map_html'])
-                        fcm.save()
-                        tags = form.cleaned_data['tags']
-                        for tag_element in tags:
-                            try:
-                                new_tag = Tags(name=str(tag_element))
-                                new_tag.save()
-                            except DatabaseError:
-                                pass
-                            fcm.tags.add(str(tag_element))
-                        soup = BeautifulSoup(fcm.map_html, "html.parser")  # vazo i lxml  i html.parser
-                        x = soup.findAll("div", class_="tooltip")
-                        for div in x:
-                            if str(div['id']).startswith("n"):
-                                fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
-                                fcm_concept.save()
-                            else:
-                                fcm_edge = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, text=div.text, id_in_fcm=div.get('id'))
-                                fcm_edge.save()
-                        messages.success(request, 'Successfully imported the System Map. Add more info <a style="color: #a05017;" href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
+            try:
+                print(request.user)
+                user = request.user
+                soup = BeautifulSoup(form.cleaned_data['map_html'], "html.parser")  # vazo i lxml  i html.parser
+                if len(soup.find("table", class_="yimagetable")) > 0:
+                    print("src in html: " + soup.find("img", class_="yimage")['src'])
+                    print("image name: " + form.cleaned_data['map_image'].name)
+                    if urllib.unquote(soup.find("img", class_="yimage")['src']) == form.cleaned_data['map_image'].name:
+                        if user.is_authenticated():
+                            fcm = FCM(user=user,
+                                      title=form.cleaned_data['title'],
+                                      country = form.cleaned_data['country'],
+                                      status = form.cleaned_data['status'],
+                                      description=form.cleaned_data['description'],
+                                      creation_date=datetime.now(),
+                                      map_image=form.cleaned_data['map_image'],
+                                      map_html=form.cleaned_data['map_html'])
+                            fcm.save()
+                            tags = form.cleaned_data['tags']
+                            for tag_element in tags:
+                                try:
+                                    new_tag = Tags(name=str(tag_element))
+                                    new_tag.save()
+                                except DatabaseError:
+                                    pass
+                                fcm.tags.add(str(tag_element))
+                            soup = BeautifulSoup(fcm.map_html, "html.parser")  # vazo i lxml  i html.parser
+                            x = soup.findAll("div", class_="tooltip")
+                            for div in x:
+                                if str(div['id']).startswith("n"):
+                                    fcm_concept = FCM_CONCEPT(fcm=fcm, title=div.text, id_in_fcm=div.get('id'))
+                                    fcm_concept.save()
+                                else:
+                                    fcm_edge = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, text=div.text, id_in_fcm=div.get('id'))
+                                    fcm_edge.save()
+                            messages.success(request, 'Successfully imported the System Map. Add more info <a style="color: #a05017;" href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the Maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
+                        else:
+                            messages.error(request, "You must login to import a map")
                     else:
-                        messages.error(request, "You must login to import a map")
+                        messages.error(request, "The image you uploaded does not match with the html file")
                 else:
-                    messages.error(request, "The image you uploaded does not match with the html file")
-            else:
-                messages.error(request, "The html file was not exported from yEd")
+                    messages.error(request, "The html file was not exported from yEd")
+            except:
+                messages.error(request, "Import failed, please check the files you uploaed")
         else:
             messages.error(request, "form invalid")
     form = FCMForm()
