@@ -284,60 +284,55 @@
             }
           },
           deleteNode: function (info, callback){
-            console.log("diagrafike komvos");
-            var akmes = info.edges.length;
-            if ( akmes!==0){
-              var y =0; // dinei to id tis protis akmis pou tha diagrafei
-              for (var i = akmes - 1; i >= 0; --i) {
-                y = info.edges[i]
-                for (var j = data.edges.length - 1; j >= 0; --j) {
-                if (data.edges[j].id == y) {
-                  console.log(j);
-                  data.edges.splice(j,1);
-                  break;
+            var deletion_choice = confirm("Are you sure, you want to delete the node?");
+            if (deletion_choice == true) {
+                var akmes = info.edges.length;
+                if (akmes !== 0) {
+                    var y = 0; // dinei to id tis protis akmis pou tha diagrafei
+                    for (var i = akmes - 1; i >= 0; --i) {
+                        y = info.edges[i]
+                        for (var j = data.edges.length - 1; j >= 0; --j) {
+                            if (data.edges[j].id == y) {
+                                data.edges.splice(j, 1);
+                                break;
+                            }
+                        }
+                    }
                 }
-              }
+                var x = info.nodes[0] // dinei to id tou komvou pou tha diagrafei
+                //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+                for (var i = data.nodes.length - 1; i >= 0; --i) {
+                    if (data.nodes[i].id == x) {
+                        data.nodes.splice(i, 1);
+                        break;
+                    }
+                }
             }
+            else{
+                info.nodes = 0
+                info.edges = 0
             }
-            var x = info.nodes[0] // dinei to id tou komvou pou tha diagrafei
-            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
-            for (var i = data.nodes.length - 1; i >= 0; --i) {
-              if (data.nodes[i].id == x) {
-                console.log(i);
-                data.nodes.splice(i,1);
-                break;
-              }
-            }
-            console.log(data);
             callback(info);
           },
           deleteEdge: function (info, callback){
-            console.log("diagrafike akmi");
-            var x = info.edges[0] // dinei to id tis akmis pou tha diagrafei
-            //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
-            for (var i = data.edges.length - 1; i >= 0; --i) {
-              if (data.edges[i].id == x) {
-                console.log(i);
-                data.edges.splice(i,1);
-                break;
-              }
+            var deletion_choice = confirm("Are you sure, you want to delete the edge?");
+            if (deletion_choice == true) {
+                var x = info.edges[0] // dinei to id tis akmis pou tha diagrafei
+                //var y = data.nodes.filter(item => ((item.id === x)))  //dinei ta stoixeia tou komvou pou theloume na diagrapsoume
+                for (var i = data.edges.length - 1; i >= 0; --i) {
+                    if (data.edges[i].id == x) {
+                        data.edges.splice(i, 1);
+                        break;
+                    }
+                }
             }
-            console.log(data);
+            else{
+                info.edges = 0
+            }
             callback(info);
           }
         }
       };
-      /*
-      var lala = {"nodes":[{"id":0,"label":"0"},{"id":1,"label":"1"},{"id":2,"label":"2"},{"id":3,"label":"3"},{"id":4,"label":"4"},{"id":5,"label":"5"}],"edges":[{"from":1,"to":0,"id":"31f2e17b-5e4a-4e60-bc79-aeb2dde3800f"},{"from":2,"to":0,"id":"57c796d6-b560-4a24-b037-b8b03d3cdbb5"},{"from":3,"to":2,"id":"da8c3f78-d5ea-4cc2-b97b-bd09116dd6ba"},{"from":4,"to":3,"id":"4601698a-234f-4a45-9233-77bd970d70cb"},{"from":5,"to":4,"id":"3d83d4a2-4cea-45ac-b34d-23ebda61f387"}]}
-      var lala2 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
-      var lala3 = {"nodes":[{"id":1,"label":"Node 1","x":0,"y":0,"shape":"box"},{"id":2,"label":"Node 2","x":-308,"y":-144,"shape":"box"},{"id":3,"label":"Node 3","x":-319.5454545454545,"y":-52.45454545454549,"shape":"box"},{"id":4,"label":"Node 4","x":-312.27272727272725,"y":46.63636363636359,"shape":"box"},{"id":5,"label":"Node 5","x":-302.81818181818176,"y":136.090909090909,"shape":"box"},{"id":6,"label":"Node 6","x":-236.81818181818176,"y":49.09090909090901,"shape":"box"},{"id":7,"label":"sds","x":-310.05626649800604,"y":-149.29670101968725,"shape":"box"}],"edges":[{"id":1,"label":"1 se 0","from":2,"to":1},{"id":2,"label":"2 se 0","from":3,"to":1},{"id":3,"label":"3 se 2","from":4,"to":3},{"id":4,"label":"4 se 3","from":5,"to":4},{"id":5,"label":"5 se 4","from":6,"to":5}]}
-      var lala4 = {"nodes":[{"id":1,"label":"aa","x":-334,"y":-181,"shape":"box"},{"id":2,"label":"bb","x":257,"y":-165,"shape":"box"},{"id":3,"label":"cc","x":-296,"y":162,"shape":"box"},{"id":4,"label":"dd","x":283,"y":159,"shape":"box"},{"id":5,"label":"ee","x":-14,"y":4,"shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
-      var lala5 = {"nodes":[{"id":"1","label":"aa","x":-334,"y":-181,"shape":"box"},{"id":"2","label":"bb","x":257,"y":-165,"shape":"box"},{"id":"3","label":"cc","x":"-296","y":"162","shape":"box"},{"id":"4","label":"dd","x":"283","y":"159","shape":"box"},{"id":"5","label":"ee","x":"-14","y":"4","shape":"box"}],"edges":[{"id":"1","label":"aaee","from":"1","to":"5"},{"id":"2","label":"bbee","from":"5","to":"2"}]}
-      var lala6 = {"nodes":[{"id":1,"label":"aa","x":"0","y":"0","shape":"box"},{"id":2,"label":"bb","x":50,"y":0,"shape":"box"},{"id":3,"label":"cc","shape":"box"},{"id":4,"label":"dd","shape":"box"},{"id":5,"label":"ee","shape":"box"}],"edges":[{"id":1,"label":"aaee","from":1,"to":5},{"id":2,"label":"bbee","from":5,"to":2}]}
-      var sketos = {"nodes":[{"id":0,"label":"sketos", "fixed": true, "x":0,"y":0, "shape":"box"}, {"id":1,"label":"sketos1", "fixed": true, "x":0,"y":0, "shape":"box"}],"edges":[]}
-      var lala7 = {"nodes":[{"id":1,"label":"vv","x":-339.97569465637207,"y":-212.6944580078125,"shape":"box","fixed":true},{"id":2,"label":"bb","x":237.02430534362793,"y":19.3055419921875,"shape":"box","fixed":true},{"id":3,"label":"cc","x":-313.97569465637207,"y":159.3055419921875,"shape":"box","fixed":true}],"edges":[{"id":1,"label":"cc","from":1,"to":2},{"id":2,"label":"cvbcv","from":3,"to":2}]}
-      data = lala7;
-      */
 {#      var data1 = String('{{ fcm.chartis }}').replace('&quot;', '"');  // pernao ta dedomena apo piso#}
 {#     console.log('{{ fcm.chartis|safe }}');#}
      var data1 = {{ fcm.chartis|safe }};

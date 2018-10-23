@@ -31,17 +31,24 @@ def index(request):
 
 
 def browse(request):
+    pdb.set_trace()
     if request.method == 'GET':
+        pdb.set_trace()
         if 'hasFilters' in request.GET:
+            pdb.set_trace()
             if bool(request.GET['hasFilters']) is True:
+                pdb.set_trace()
                 pass
             else:
+                pdb.set_trace()
                 request.method = 'GET'
         else:
+            pdb.set_trace()
             request.method = 'POST'
     else:
+        pdb.set_trace()
         request.session['filter-post'] = request.POST
-
+    pdb.set_trace()
     if request.method == 'POST':
         filter_form = FiltersForm(request.session['filter-post'])
         if filter_form.is_valid():
@@ -86,7 +93,8 @@ def browse(request):
             else:
                 filtered_getmine = False
             if filtered_getmine:
-                all_fcms = all_fcms.filter(manual='1')
+                pdb.set_trace()
+                all_fcms = all_fcms.filter(user_id=request.user.id)
 
             if filtered_sorting_type == 'creation_date':
                 if filtered_sorting_order == 'ASC':
@@ -590,7 +598,7 @@ def create_fcm(request):
                         fcm_relation_info = FCM_EDGE_INFO(fcm_edge=fcm_edges_in_fcm_concept, info=str(i['relation_info']).strip())
                         fcm_relation_info.save()
 
-                messages.success(request, 'Successfully created the System Map. <br> Add more info to the Map\'s Concepts and Relations <a style="color: #a05017;"  href="/fcm/view-fcm-concept/' + str(fcm.id) + '/"><u>here</u></a>, or you can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
+                messages.success(request, 'Successfully created the System Map. You can browse the rest of the maps <a  style="color: #a05017;" href="/fcm/browse?hasFilters=false"><u>here</u></a>. ')
             else:
                 messages.error(request, "You must login to create a map")
         else:
