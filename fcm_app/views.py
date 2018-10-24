@@ -31,25 +31,19 @@ def index(request):
 
 
 def browse(request):
-    pdb.set_trace()
     if request.method == 'GET':
-        pdb.set_trace()
         if 'hasFilters' in request.GET:
-            pdb.set_trace()
             if bool(request.GET['hasFilters']) is True:
-                pdb.set_trace()
                 pass
             else:
-                pdb.set_trace()
                 request.method = 'GET'
         else:
-            pdb.set_trace()
             request.method = 'POST'
     else:
-        pdb.set_trace()
         request.session['filter-post'] = request.POST
-    pdb.set_trace()
     if request.method == 'POST':
+        request.GET = request.GET.copy()
+        request.GET['hasFilters'] = 'true'
         filter_form = FiltersForm(request.session['filter-post'])
         if filter_form.is_valid():
             filtered_title_and_or_description = filter_form.cleaned_data['filtered_title_and_or_description']
@@ -93,16 +87,15 @@ def browse(request):
             else:
                 filtered_getmine = False
             if filtered_getmine:
-                pdb.set_trace()
                 all_fcms = all_fcms.filter(user_id=request.user.id)
 
             if filtered_sorting_type == 'creation_date':
-                if filtered_sorting_order == 'ASC':
+                if filtered_sorting_order == 'ascending':
                     all_fcms = all_fcms.order_by('creation_date')
                 else:
                     all_fcms = all_fcms.order_by('-creation_date')
             elif filtered_sorting_type == 'title':
-                if filtered_sorting_order == 'ASC':
+                if filtered_sorting_order == 'ascending':
                     all_fcms = all_fcms.order_by('title')
                 else:
                     all_fcms = all_fcms.order_by('-title')
