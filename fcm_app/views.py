@@ -31,6 +31,9 @@ def index(request):
 
 
 def browse(request):
+    post_query = False
+    if request.method == 'POST':
+        post_query = True
     if request.method == 'GET':
         if 'hasFilters' in request.GET:
             if bool(request.GET['hasFilters']) is True:
@@ -109,7 +112,10 @@ def browse(request):
                     'filtered_sorting_order': filtered_sorting_order}
             filter_form = FiltersForm(initial=data)
             paginator = Paginator(all_fcms, 9)
-            page = request.GET.get('page')
+            if post_query == True:
+                page = 1
+            else:
+                page = request.GET.get('page')
             try:
                 all_fcms = paginator.page(page)
             except PageNotAnInteger:
