@@ -15,7 +15,7 @@
 {#            <label>Sort by:</label>#}
 {#            {{filter_form.filtered_sorting_type}}#}
 {#        </form>#}
-        <form class="form-horizontal" action="#" method="post" id = "mysortform" >
+        <form class="form-horizontal" action="/fcm/browse?hasFilters=true" method="post" id = "mysortform" >
             {% csrf_token %}
                 <div id = "browse_sort_by">
                     <span>

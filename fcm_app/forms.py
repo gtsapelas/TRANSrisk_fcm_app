@@ -102,7 +102,7 @@ class FiltersForm(forms.Form):
     filtered_year = forms.ChoiceField(widget=forms.Select(choices=[]))
     filtered_country = forms.ChoiceField(widget=forms.Select(choices=[]))
     filtered_sorting_type = forms.CharField(label='Order by:', widget=forms.Select(choices=SORT_CHOICES))
-    filtered_sorting_order = forms.CharField(widget=forms.Select(choices=SORT_ORDERS))
+    filtered_sorting_order = forms.CharField(widget=forms.Select(choices=SORT_ORDERS), initial= 'descending')
 
 
 
