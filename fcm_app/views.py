@@ -32,22 +32,28 @@ def index(request):
 
 def browse(request):
     post_query = False
-    if request.method == 'POST':
+    if request.method == 'POST': # an methodos post, tote post_query true
         post_query = True
-    if request.method == 'GET':
-        if 'hasFilters' in request.GET:
-            if bool(request.GET['hasFilters']) is True:
+    if request.method == 'GET':  # an i methodos GET, tote
+        if 'hasFilters' in request.GET: # an iparxei to 'hasFilters' sto request
+            if bool(request.GET['hasFilters']) is True: # an i timi tou einai true, tote
+                if 'filter-post' in request.session:
+                    del request.session['filter-post']
                 pass
             else:
                 request.method = 'GET'
-        else:
+        elif ('page' in request.GET) and ('filter-post' in request.session):
             request.method = 'POST'
+        else:
+            pass
     else:
         request.session['filter-post'] = request.POST
     if request.method == 'POST':
         request.GET = request.GET.copy()
         request.GET['hasFilters'] = 'true'
-        filter_form = FiltersForm(request.session['filter-post'])
+        filter_form = FiltersForm(request.POST)
+        if 'filter-post' in request.session:
+            filter_form = FiltersForm(request.session['filter-post'])
         if filter_form.is_valid():
             filtered_title_and_or_description = filter_form.cleaned_data['filtered_title_and_or_description']
             filtered_year = filter_form.cleaned_data['filtered_year']
@@ -84,11 +90,6 @@ def browse(request):
                     results_union = (results_union | q )
                 results_union = results_union.distinct()
                 all_fcms = results_union & all_fcms
-
-            if 'filtered_getmine' in request.POST:  #check if the checkbox is checked or not
-                filtered_getmine = request.POST['filtered_getmine']
-            else:
-                filtered_getmine = False
             if filtered_getmine:
                 all_fcms = all_fcms.filter(user_id=request.user.id)
 
@@ -102,7 +103,6 @@ def browse(request):
                     all_fcms = all_fcms.order_by('title')
                 else:
                     all_fcms = all_fcms.order_by('-title')
-
             data = {'filtered_title_and_or_description': filtered_title_and_or_description,
                     'filtered_year': filtered_year,
                     'filtered_country': filtered_country,
