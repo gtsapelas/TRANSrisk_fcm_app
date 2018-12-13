@@ -15,8 +15,8 @@ from bs4 import BeautifulSoup
 from django.shortcuts import get_object_or_404
 from django import forms
 import json, pdb
-import urllib.parse as urllib
-# import urllib2
+# import urllib.parse as urllib
+import urllib2 as urllib
 
 from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import login_required
@@ -279,12 +279,21 @@ def view_fcm(request, fcm_id):
                 info_edge_dict[str(edge_item.id_in_fcm)] = 'No more information available'
         print(info_edge_dict)
 
+        original_title = ''
+        original_username = ''
+        if fcm.original is not None:
+            original_id = int(fcm.original)
+            original_title = FCM.objects.get(pk=int(original_id)).title
+            original_username = FCM.objects.get(pk=int(original_id)).user.username
+
         return render(request, 'fcm_app/view_fcm4.html', {
             'fcm': fcm,
             #'data1': x,
             #'form': form,
             'info_dict': info_dict,
             'info_edge_dict': info_edge_dict,
+            'original_title': original_title,
+            'original_username': original_username
         })
 
 
@@ -411,8 +420,9 @@ def my_fcms(request):
 def edit_fcm(request, fcm_id):
     storage = messages.get_messages(request)
     storage.used = True
-
+    another_user = False
     fcm = FCM.objects.get(pk=fcm_id)
+    original_id=-1
     if fcm.manual == False:
         if request.user == fcm.user:
             if request.method == 'POST':
@@ -461,80 +471,93 @@ def edit_fcm(request, fcm_id):
             })
         return HttpResponseForbidden()
     else:
-        if request.user == fcm.user:
-            if request.method == 'POST':
-                #data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
-                #data = {'chartis': fcm.chartis}
-                #print(data)
-                form = jsForm(request.POST)
-                # pdb.set_trace()
-                if form.is_valid():
-                    print(request.user)
-                    user = request.user
-                    if user.is_authenticated():
-                        fcm.title=form.cleaned_data['title']
-                        fcm.description=form.cleaned_data['description']
-                        fcm.country=form.cleaned_data['country']
-                        fcm.status=form.cleaned_data['status']
-                        fcm.chartis = form.cleaned_data['chartis']
-                        fcm.image_url = form.cleaned_data['image']
-                        fcm.save()
-                        tags = form.cleaned_data['tags']
-                        fcm.tags.clear()
-                        for tag_element in tags:
-                            try:
-                                new_tag = Tags(name=str(tag_element))
-                                new_tag.save()
-                            except DatabaseError:
-                                pass
-                            fcm.tags.add(str(tag_element))
+        if request.method == 'POST':
+            #data = {'map_image': fcm.map_image, 'map_html': fcm.map_html}
+            #data = {'chartis': fcm.chartis}
+            #print(data)
 
-                        description_json = json.loads(form.cleaned_data['chartis'])
+            if request.user != fcm.user:
+                another_user = True
+            form = jsForm(request.POST)
+            # pdb.set_trace()
+            if form.is_valid():
+                print(request.user)
+                user = request.user
+                if user.is_authenticated():
+                    if another_user:
+                        original_id = fcm.id
+                        fcm=FCM(user=user, creation_date=datetime.now(), manual = True, original=original_id)
+                        # fcm.title = form.cleaned_data['title'] + ", updated by:" + str(user.username)
 
-                        print(description_json)
-                        x = description_json
-                        x1 = x['nodes']  # list pou exei dictionaries
-                        x2 = x['edges']  # list
+                    # else:
+                    fcm.title=form.cleaned_data['title']
+                    fcm.description=form.cleaned_data['description']
+                    fcm.country=form.cleaned_data['country']
+                    fcm.status=form.cleaned_data['status']
+                    fcm.chartis = form.cleaned_data['chartis']
+                    fcm.image_url = form.cleaned_data['image']
+                    fcm.save()
+                    tags = form.cleaned_data['tags']
+                    fcm.tags.clear()
+                    for tag_element in tags:
+                        try:
+                            new_tag = Tags(name=str(tag_element))
+                            new_tag.save()
+                        except DatabaseError:
+                            pass
+                        fcm.tags.add(str(tag_element))
 
-                        for concept in FCM_CONCEPT.objects.filter(fcm=fcm):
-                            concept.delete()
+                    description_json = json.loads(form.cleaned_data['chartis'])
 
-                        for edge in FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm):
-                            edge.delete()
+                    print(description_json)
+                    x = description_json
+                    x1 = x['nodes']  # list pou exei dictionaries
+                    x2 = x['edges']  # list
 
-                        for i in x1:
-                            fcm_concept = FCM_CONCEPT(fcm=fcm, title=i['label'], id_in_fcm=i['id'], x_position=i['x'], y_position=i['y'])
-                            fcm_concept.save()
-                            if str(i['concept_info']).strip() != "":
-                                fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=fcm_concept, info=str(i['concept_info']).strip())
-                                fcm_concept_info.save()
-                        for i in x2:
-                            fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=i['label'], from_concept=
-                            FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=
-                                                                                FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
-                            fcm_edges_in_fcm_concept.save()
-                            if str(i['relation_info']).strip() != "":
-                                fcm_relation_info = FCM_EDGE_INFO(fcm_edge=fcm_edges_in_fcm_concept, info=str(i['relation_info']).strip())
-                                fcm_relation_info.save()
+                    for concept in FCM_CONCEPT.objects.filter(fcm=fcm):
+                        concept.delete()
 
-                        messages.success(request, 'edited successfully')
-                    else:
-                        messages.error(request, "You must login to edit a map")
+                    for edge in FCM_EDGES_IN_FCM_CONCEPT.objects.filter(fcm=fcm):
+                        edge.delete()
+
+                    for i in x1:
+                        fcm_concept = FCM_CONCEPT(fcm=fcm, title=i['label'], id_in_fcm=i['id'], x_position=i['x'], y_position=i['y'])
+                        fcm_concept.save()
+                        if str(i['concept_info']).strip() != "":
+                            fcm_concept_info = FCM_CONCEPT_INFO(fcm_concept=fcm_concept, info=str(i['concept_info']).strip())
+                            fcm_concept_info.save()
+                    for i in x2:
+                        fcm_edges_in_fcm_concept = FCM_EDGES_IN_FCM_CONCEPT(fcm=fcm, id_in_fcm=i['id'], text=i['label'], from_concept=
+                        FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['from'])[0], to_concept=
+                                                                            FCM_CONCEPT.objects.filter(fcm=fcm).filter(id_in_fcm=i['to'])[0])
+                        fcm_edges_in_fcm_concept.save()
+                        if str(i['relation_info']).strip() != "":
+                            fcm_relation_info = FCM_EDGE_INFO(fcm_edge=fcm_edges_in_fcm_concept, info=str(i['relation_info']).strip())
+                            fcm_relation_info.save()
+
+                    messages.success(request, 'edited successfully')
                 else:
-                    messages.error(request, "form invalid")
-            data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status, 'chartis': fcm.chartis}
-            form = jsForm(initial=data)
+                    messages.error(request, "You must login to edit a map")
+            else:
+                messages.error(request, "form invalid")
+        data = {'title': fcm.title, 'description': fcm.description, 'country': fcm.country, 'status': fcm.status, 'chartis': fcm.chartis}
+        form = jsForm(initial=data)
 
-            tags = [t.name for t in fcm.tags.all()]
-            print(tags)
+        tags = [t.name for t in fcm.tags.all()]
+        print(tags)
 
-            #form.fields['chartis'].widget = forms.HiddenInput()
-            #form.fields['map_image'].widget = forms.HiddenInput()
-            #form.fields['map_html'].widget = forms.HiddenInput()
+        #form.fields['chartis'].widget = forms.HiddenInput()
+        #form.fields['map_image'].widget = forms.HiddenInput()
+        #form.fields['map_html'].widget = forms.HiddenInput()
 
-            concept_info_form = FCMCONCEPTForm()
-            relation_info_form = FCMEDGEForm()
+        concept_info_form = FCMCONCEPTForm()
+        relation_info_form = FCMEDGEForm()
 
+
+
+        if another_user:
+            return redirect('/fcm/view-fcm/'+str(fcm.id)+'/')
+        else:
             return render(request, 'fcm_app/edit_fcm2.html', {
                 'form': form,
                 'fcm': fcm,
@@ -542,7 +565,7 @@ def edit_fcm(request, fcm_id):
                 'concept_info_form': concept_info_form,
                 'relation_info_form': relation_info_form
             })
-        return HttpResponseForbidden()
+        # return HttpResponseForbidden()
 
 
 @login_required

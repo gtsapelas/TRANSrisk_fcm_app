@@ -53,8 +53,8 @@
             {% for fcm in all_fcms %}
                 <div class="col-sm-4 card-container">
                     <a href="{% url 'fcm_app:view_fcm' fcm.id %}" class="card">
-                        <div class="card-header text-center" title="{{ fcm.title }}">
-                           {{ fcm.title }}
+                        <div class="card-header text-center" title="{{ fcm.title }}{% if fcm.original is not None %}, updated by: {{ fcm.user.username }} {% endif %}">
+                           {{ fcm.title }} {% if fcm.original is not None %}, updated by: {{ fcm.user.username }} {% endif %}
                         </div>
                         <div class="card-content text-center" style="position: relative">
                             {% if fcm.image_url != None %}

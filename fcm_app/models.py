@@ -23,6 +23,7 @@ class FCM(models.Model):
     manual = models.BooleanField(default=False)   #  default = None  # allios null=True # false an einai etoimo kai to allazoume an einai manual
     tags = models.ManyToManyField(Tags, related_name='fcm_set')
     image_url = models.TextField(null=True)
+    original = models.IntegerField(default=None, null=True)
 
     def __str__(self):
         return self.title

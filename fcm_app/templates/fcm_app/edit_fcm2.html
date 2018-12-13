@@ -622,7 +622,7 @@
 <!--<body onload="init(); ">-->
 <div class="container text-center create-fcm-container">
     <div class="col-sm-offset-1 col-sm-10 edit-fcm-container">
-        <h1 class="col-sm-12" style="text-align: center">Edit the {{ fcm.title }}</h1>
+        <h1 class="col-sm-12" style="text-align: center">Edit the {{ fcm.title }}{% if fcm.original is not None %}, updated by: {{ fcm.user.username }} {% endif %}</h1>
     </div>
     <br>
 

@@ -539,11 +539,17 @@
 
     <div class="col-sm-offset-1 col-sm-10 panel panel-default" style="padding: 0; margin-top: 0;">
         <div class="panel-body">
-            <h1>{{ fcm.title}}</h1>
+            <h1>{{ fcm.title}}{% if fcm.original is not None %}, updated by: {{ fcm.user.username }} {% endif %}</h1>
+            {% if original_title != ""%}
+                <p> Updated version of: {{ original_title }}, created by: {{ original_username }}</p>
+            {% endif %}
             <div id="creation"> Created at: {{ fcm.creation_date|date:"d M Y" }}</div>
+
             <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">More info</button>
             {% if fcm.user == request.user %}
                 <a type="button" href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button btn btn-default" style="background-color: #948a7c; width: 60px;">Edit</a>
+            {% else %}
+                <a type="button" href="{% url 'fcm_app:edit_fcm' fcm_id=fcm.id %}" class="button btn btn-default" style="background-color: #948a7c;">Edit and save under another name</a>
             {% endif %}
             <div id="demo" class="collapse">
                 <table class="table">
