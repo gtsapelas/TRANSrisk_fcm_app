@@ -15,6 +15,8 @@ else:
                 from TRANSrisk_fcm_project.settings_management.development_gtsap import *
             elif settings_file == 'development':
                 from TRANSrisk_fcm_project.settings_management.development import *
+            elif settings_file == 'production':
+                from TRANSrisk_fcm_project.settings_management.production import *
     except IOError:
         # default development settings
         from TRANSrisk_fcm_project.settings_management.development import *

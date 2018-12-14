@@ -18,12 +18,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from fcm_app import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # FCM app
     url(r'^fcm/', include('fcm_app.urls')),
+    url(r'^$', views.index, name='index'),
 
     # authentication
     url(r'^accounts/', include('allauth.urls')),

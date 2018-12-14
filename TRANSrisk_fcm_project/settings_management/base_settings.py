@@ -25,7 +25,7 @@ SECRET_KEY = '702dt(wcvmi(claq^)ls-6qy03nm#*xc!ngszh=xzunw1#xexa'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['fast-reaches-98625.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['fast-reaches-98625.herokuapp.com', 'localhost', 'matise-online.transrisk-project.eu']
 
 
 # Application definition
@@ -147,11 +147,11 @@ CKEDITOR_CONFIGS = {
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'static'),
+#]
 
-STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
